@@ -5,7 +5,7 @@ import {
   CanonicalHeadersFunction,
   CanonicalHeadersOptions,
   EventToBufferFunction,
-  GenerateSignFunction,
+  RequestSignFunction,
   MD5Function,
   RequestHeadersFunction,
   RequestTokenFunction,
@@ -60,12 +60,12 @@ export const requestToken: RequestTokenFunction = ({
   return `FC ${accessId}:${_.compose(sign, signStr)(args)}`
 }
 
-export const signStr: SignStrFunction = ({ method, path, headers }) => {
+export const signStr: SignStrFunction = ({ method, url, headers }) => {
   const contentMD5 = headers['content-md5']
   const contentType = headers['content-type']
   const date = headers['date']
   const signHeaders = canonicalHeaders({ headers, prefix: 'x-fc-' })
-  const pathUnescaped = decodeURIComponent(new URL(path).pathname)
+  const pathUnescaped = decodeURIComponent(new URL(url).pathname)
 
   return _.join('\n', [
     method,
@@ -77,10 +77,7 @@ export const signStr: SignStrFunction = ({ method, path, headers }) => {
   ])
 }
 
-export const generateSign: GenerateSignFunction = (
-  accessSecretKey,
-  signStr
-) => {
+export const generateSign: RequestSignFunction = (accessSecretKey, signStr) => {
   const buffer = crypto
     .createHmac('sha256', accessSecretKey)
     .update(signStr, 'utf8')
@@ -122,8 +119,12 @@ export const canonicalHeaders: CanonicalHeadersFunction = ({
     _.keys
   )
 
+  const result = _.keys(canonicalHeaders(headers))
+
+  result
+
   return `${_.compose(canonicalHeadersStr, canonicalHeaders)(headers)}\n`
 }
 
-export const md5: MD5Function = (data: crypto.BinaryLike): string =>
+export const md5: MD5Function = (data) =>
   crypto.createHash('md5').update(data).digest('hex').toUpperCase()
