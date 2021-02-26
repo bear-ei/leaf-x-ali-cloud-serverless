@@ -1,6 +1,5 @@
 'use strict'
 
-import { AxiosResponse } from 'axios'
 import { EventOptions } from './util'
 
 /**
@@ -8,7 +7,7 @@ import { EventOptions } from './util'
  */
 export interface FCOptions {
   /**
-   * Ali cloud account id.
+   * AliCloud account id.
    */
   accountId: string
 
@@ -48,7 +47,7 @@ export interface FCOptions {
   secure?: boolean
 
   /**
-   * Ali cloud api version, default value 2016-08-15.
+   * AliCloud api version, default value 2016-08-15.
    */
   version?: string
 }
@@ -62,7 +61,7 @@ export interface FCResult {
 }
 
 /**
- * FC.
+ * Get FC method.
  */
 export interface FCFunction {
   (options: FCOptions): FCResult
@@ -99,7 +98,7 @@ export interface InvokeOptions {
 }
 
 /**
- * Invoking configuration.
+ * Invoke configuration.
  */
 export interface InvokeConfig extends RequestConfig {
   /**
@@ -108,28 +107,33 @@ export interface InvokeConfig extends RequestConfig {
   endpoint: string
 
   /**
-   * Ali cloud api version, default value 2016-08-15.
+   * AliCloud api version, default value 2016-08-15.
    */
   version: string
 }
 
 /**
- * Invoking results.
+ * Invoke results.
  */
 export interface InvokeResult {
   /**
    * Response data.
    */
-  data: Record<string, unknown>
+  data: unknown
 
   /**
    * Response status code.
    */
   status: number
+
+  /**
+   * Response headers
+   */
+  headers: Record<string, unknown>
 }
 
 /**
- * Invoking the specified function.
+ * Invoke the specified function.
  */
 export interface InvokeFunction {
   (config: InvokeConfig, options: InvokeOptions): Promise<InvokeResult>
@@ -145,7 +149,7 @@ export interface RequestConfig {
   host: string
 
   /**
-   * Ali cloud account id.
+   * AliCloud account id.
    */
   accountId: string
 
@@ -181,33 +185,38 @@ export interface RequestOptions extends InvokeOptions {
 }
 
 /**
- * Execute remote requests.
+ * Request Results.
  */
-export interface RequestFunction {
-  (config: RequestConfig, options: RequestOptions): Promise<
-    AxiosResponse<unknown>
-  >
-}
-
-/**
- * Response options.
- */
-export interface ResponseOptions {
-  /**
-   * Response data.
-   */
-  data: Record<string, unknown>
-
+export interface RequestResult {
   /**
    * Response status code.
    */
   status: number
 
   /**
+   * Response data.
+   */
+  data: unknown
+
+  /**
    * Response headers.
    */
   headers: Record<string, string>
+
+  [key: string]: unknown
 }
+
+/**
+ * Execute remote requests.
+ */
+export interface RequestFunction {
+  (config: RequestConfig, options: RequestOptions): Promise<RequestResult>
+}
+
+/**
+ * Response options.
+ */
+export type ResponseOptions = RequestResult
 
 /**
  * Response results.
@@ -215,7 +224,7 @@ export interface ResponseOptions {
 export type ResponseResult = InvokeResult
 
 /**
- * Handling response data.
+ * Handle response data.
  */
 export interface ResponseFunction {
   (options: ResponseOptions): ResponseResult
@@ -247,14 +256,14 @@ export interface WarmUpOptions {
  */
 export interface WarmUpFunction {
   (config: WarmUpConfig, options: WarmUpOptions): Promise<
-    (HandleErrorResult | InvokeResult)[]
+    (ErrorDataResult | InvokeResult)[]
   >
 }
 
 /**
- * Handling error options.
+ * Generate error data options.
  */
-export interface HandleErrorOptions {
+export interface ErrorDataOptions {
   /**
    * Service name.
    */
@@ -268,23 +277,18 @@ export interface HandleErrorOptions {
   /**
    * Request id.
    */
-  requestId: string
+  requestId?: string
 
   /**
    * Running environment.
    */
   env: string
-
-  /**
-   * Retry times.
-   */
-  retry?: number
 }
 
 /**
- * Handling error results.
+ * Generate error data results.
  */
-export interface HandleErrorResult extends HandleErrorOptions {
+export interface ErrorDataResult extends ErrorDataOptions {
   /**
    * Response status code.
    */
@@ -301,9 +305,9 @@ export interface HandleErrorResult extends HandleErrorOptions {
   message: string
 
   /**
-   * Invoking chain information.
+   * Invoke chain information.
    */
-  apis?: HandleErrorOptions[]
+  apis?: ErrorDataOptions[]
 
   /**
    * Error details.
@@ -312,11 +316,88 @@ export interface HandleErrorResult extends HandleErrorOptions {
 }
 
 /**
- * Handling errors.
+ * Generate error data.
  */
-export interface HandleErrorFunction {
+export interface ErrorDataFunction {
+  (options: ErrorDataOptions, error: Record<string, unknown>): ErrorDataResult
+}
+
+/**
+ * AliCloud Gateway options.
+ */
+export interface AliCloudGatewayOptions {
+  /**
+   * Response status code.
+   *
+   */
+  statusCode: number
+
+  /**
+   * Whether base64 encoding.
+   */
+  isBase64Encoded: boolean
+
+  /**
+   * Response headers.
+   */
+  headers: Record<string, string>
+
+  /**
+   * Response data.
+   */
+  body: unknown
+}
+
+/**
+ * AliCloud gateway results.
+ */
+export type AliCloudGatewayResult = AliCloudGatewayOptions
+
+/**
+ * Handle AliCloud gateway responses.
+ */
+export interface AliCloudGatewayDataFunction {
+  (options: AliCloudGatewayOptions): AliCloudGatewayResult | never
+}
+
+/**
+ * Execution request options.
+ */
+export interface ExecRequestOptions {
+  config: RequestConfig
+  options: RequestOptions
+}
+
+/**
+ * Execution request.
+ *
+ * @param retryNum Retry times.
+ */
+export interface ExecRequestFunction {
   (
-    options: HandleErrorOptions,
-    error: Record<string, unknown>
-  ): HandleErrorResult
+    retryNum: number | undefined,
+    options: ExecRequestOptions
+  ): Promise<RequestResult>
+}
+
+/**
+ * Retry request.
+ *
+ * @param retry Retry times.
+ * @param error Error.
+ */
+export interface RetryRequestFunction {
+  (retry: number, error: Record<string, Record<string, unknown>>):
+    | Promise<RequestResult>
+    | never
+}
+
+/**
+ * Handle request errors.
+ *
+ * @export
+ * @interface HandleRequestErrorFunction
+ */
+export interface HandleRequestErrorFunction {
+  (error: unknown): never
 }

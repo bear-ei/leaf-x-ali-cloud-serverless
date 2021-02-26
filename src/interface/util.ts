@@ -10,7 +10,28 @@ export interface EventOptions {
    * Http method.
    *
    */
-  httpMethod: string
+  httpMethod:
+    | 'GET'
+    | 'POST'
+    | 'get'
+    | 'delete'
+    | 'DELETE'
+    | 'head'
+    | 'HEAD'
+    | 'options'
+    | 'OPTIONS'
+    | 'post'
+    | 'put'
+    | 'PUT'
+    | 'patch'
+    | 'PATCH'
+    | 'purge'
+    | 'PURGE'
+    | 'link'
+    | 'LINK'
+    | 'unlink'
+    | 'UNLINK'
+    | undefined
 
   /**
    * Whether base64 encoding.
@@ -108,7 +129,7 @@ export interface RequestTokenFunction {
 }
 
 /**
- * Generating request signatures。
+ * Generating request signatures.
  *
  * @param accessSecretKey Access Key.
  * @param signStr Signature string.
@@ -167,7 +188,7 @@ export interface CanonicalHeadersOptions {
 }
 
 /**
- * Handling canonical request headers.
+ * Handle canonical request headers.
  */
 export interface CanonicalHeadersFunction {
   (options: CanonicalHeadersOptions): string
@@ -178,4 +199,23 @@ export interface CanonicalHeadersFunction {
  */
 export interface MD5Function {
   (options: crypto.BinaryLike): string
+}
+
+/**
+ * Handle request header strings.
+ *
+ * @param headers Request Headers.
+ * @param key Request Headers key.
+ */
+export interface HeadersStrFunction {
+  (headers: Record<string, string>, key: string): string
+}
+
+/**
+ * Filtering specification request headers.
+ *
+ * @param key Request Headers key.
+ */
+export interface FilterCanonicalHeadersFunction {
+  (options: CanonicalHeadersOptions, key: string): Record<string, string>
 }

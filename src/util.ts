@@ -3,13 +3,14 @@
 import * as _ from 'ramda'
 import {
   CanonicalHeadersFunction,
-  CanonicalHeadersOptions,
   EventToBufferFunction,
   RequestSignFunction,
   MD5Function,
   RequestHeadersFunction,
   RequestTokenFunction,
-  SignStrFunction
+  SignStrFunction,
+  HeadersStrFunction,
+  FilterCanonicalHeadersFunction
 } from './interface/util'
 import * as crypto from 'crypto'
 
@@ -91,20 +92,14 @@ export const canonicalHeaders: CanonicalHeadersFunction = ({
   prefix
 }) => {
   const headersStr = _.curry(
-    (headers: Record<string, string>, key: string): string =>
-      `${key}:${headers[key]}`
+    ((headers, key) => `${key}:${headers[key]}`) as HeadersStrFunction
   )(headers)
 
-  const canonical = _.curry(
-    (
-      { headers, prefix }: CanonicalHeadersOptions,
-      key: string
-    ): Record<string, string> => {
-      const lowerKey = _.toLower(key)
+  const canonical = _.curry((({ headers, prefix }, key: string) => {
+    const lowerKey = _.toLower(key)
 
-      return _.startsWith(prefix, lowerKey) ? { [lowerKey]: headers[key] } : {}
-    }
-  )({ headers, prefix })
+    return _.startsWith(prefix, lowerKey) ? { [lowerKey]: headers[key] } : {}
+  }) as FilterCanonicalHeadersFunction)({ headers, prefix })
 
   const canonicalHeaders = _.compose(
     _.reduce((a, b) => Object.assign(a, b), {}),
@@ -118,10 +113,6 @@ export const canonicalHeaders: CanonicalHeadersFunction = ({
     _.sort((a, b) => a.localeCompare(b)),
     _.keys
   )
-
-  const result = _.keys(canonicalHeaders(headers))
-
-  result
 
   return `${_.compose(canonicalHeadersStr, canonicalHeaders)(headers)}\n`
 }

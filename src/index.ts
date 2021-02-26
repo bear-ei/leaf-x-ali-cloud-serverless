@@ -1,19 +1,23 @@
 'use strict'
 
 import * as _ from 'ramda'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import { eventToBuffer, requestHeaders, requestToken } from './util'
 import {
   FCFunction,
-  HandleErrorFunction,
-  HandleErrorOptions,
+  ErrorDataFunction,
+  ErrorDataOptions,
   InvokeFunction,
-  RequestConfig,
   RequestFunction,
-  RequestOptions,
   ResponseFunction,
-  HandleErrorResult,
-  WarmUpFunction
+  ErrorDataResult,
+  WarmUpFunction,
+  RequestResult,
+  AliCloudGatewayOptions,
+  AliCloudGatewayDataFunction,
+  RetryRequestFunction,
+  HandleRequestErrorFunction,
+  ExecRequestFunction
 } from './interface'
 
 export const fc: FCFunction = ({
@@ -40,10 +44,7 @@ export const fc: FCFunction = ({
     ...args
   }
 
-  return {
-    invoke: _.curry(invoke)(config),
-    warmUp: _.curry(warmUp)(config)
-  }
+  return { invoke: _.curry(invoke)(config), warmUp: _.curry(warmUp)(config) }
 }
 
 export const invoke: InvokeFunction = async (
@@ -52,41 +53,37 @@ export const invoke: InvokeFunction = async (
 ) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
-  const exec = (
+  const exec: ExecRequestFunction = async (
     retryNum = 0,
-    { config, options }: { config: RequestConfig; options: RequestOptions }
+    { config, options }
   ) => {
-    return async () => {
-      let error!: Record<string, Record<string, unknown>>
+    let error!: Record<string, Record<string, unknown>>
 
-      const result = await request(config, options)
-        .then(({ data }) => data)
-        .catch((err) => (error = err))
+    const result = (await request(config, options)
+      .then((result) => result)
+      .catch((err) => (error = err))) as RequestResult
 
-      const retry = (
-        retry: number,
-        error: Record<string, Record<string, unknown>>
-      ) => {
-        const isRetry =
-          retry > 0 && ((error.status as unknown) as number) >= 500
+    const retry: RetryRequestFunction = (retry, error) => {
+      const isRetry = retry > 0 && ((error.status as unknown) as number) >= 500
 
-        if (isRetry) {
-          retry--
+      if (isRetry) {
+        retry--
 
-          return exec(retry, { config, options })
-        }
-
-        throw _.assoc('retry', retry, error)
+        return exec(retry, { config, options })
       }
 
-      return error ? retry(retryNum, error) : result
+      throw error
     }
+
+    return error ? retry(retryNum, error) : result
   }
 
-  return _.curry(exec)(0)({
+  const result = await exec(3, {
     config: { qualifier, ...configArgs },
     options: { url, serviceName, functionName, ...optionsArgs }
   })
+
+  return response(result)
 }
 
 export const request: RequestFunction = async (
@@ -94,17 +91,8 @@ export const request: RequestFunction = async (
   { url, event, isAsync, serviceName, functionName }
 ) => {
   const method = 'POST'
-  const buffer = eventToBuffer(
-    _.assoc('headers', { 'x-service': 'service', ...event.headers }, event)
-  )
-
-  const headers = requestHeaders({
-    content: buffer,
-    host,
-    accountId,
-    isAsync
-  })
-
+  const buffer = eventToBuffer(event)
+  const headers = requestHeaders({ content: buffer, host, accountId, isAsync })
   const token = requestToken({
     accessId,
     accessSecretKey,
@@ -113,33 +101,47 @@ export const request: RequestFunction = async (
     headers
   })
 
+  const handleError: HandleRequestErrorFunction = (error) => {
+    const responseError = (error as Record<
+      string,
+      Record<string, Record<string, unknown>>
+    >)?.response?.data
+
+    if (responseError) {
+      throw errorData(
+        {
+          serviceName,
+          functionName,
+          requestId: responseError?.headers as Record<
+            string,
+            string
+          >['x-fc-request-id'],
+          env: qualifier
+        },
+        responseError
+      )
+    }
+
+    throw errorData(
+      { serviceName, functionName, env: qualifier },
+      _.is(Object, error) ? (error as Record<string, unknown>) : { error }
+    )
+  }
+
   return axios
     .request({
       url,
       method,
       data: buffer,
       timeout,
-      headers: _.assoc('token', token, headers)
+      headers: Object.assign(headers, { token })
     })
-    .then((result: AxiosResponse<any>) => result)
-    .catch((error) => {
-      throw handleError(
-        {
-          serviceName,
-          functionName,
-          requestId: error?.headers as Record<
-            string,
-            string
-          >['x-fc-request-id'],
-          env: qualifier
-        },
-        error
-      )
-    })
+    .then((result) => (result as unknown) as RequestResult)
+    .catch((error) => handleError(error))
 }
 
-export const handleError: HandleErrorFunction = (
-  { serviceName, functionName, requestId, env, ...args },
+export const errorData: ErrorDataFunction = (
+  { serviceName, functionName, requestId, env },
   error
 ) => {
   const status = (error.status as number) ?? 500
@@ -157,13 +159,13 @@ export const handleError: HandleErrorFunction = (
     ? { details: error }
     : error
 
-  const currentApis = [{ serviceName, functionName, requestId, env, ...args }]
+  const currentApis = [{ serviceName, functionName, requestId, env }]
   const message = (error.message ??
     `${serviceName} ${functionName} invoke failed.`) as string
 
   const apis = !isProdEnv
     ? result.apis
-      ? _.concat(result.apis as HandleErrorOptions[], currentApis)
+      ? _.concat(result.apis as ErrorDataOptions[], currentApis)
       : currentApis
     : []
 
@@ -175,30 +177,31 @@ export const handleError: HandleErrorFunction = (
     requestId,
     message,
     env,
-    apis,
-    ...args
+    apis
   })
 }
 
-export const response: ResponseFunction = ({ data, status, headers }) => {
-  const isCanonicalData =
-    _.is(Object, data) && data.statusCode && _.is(Boolean, data.isBase64Encoded)
+export const response: ResponseFunction = ({ data, status, ...args }) => {
+  const isAliCloudGatewayData =
+    _.is(Object, data) &&
+    _.equals(_.keys(data), ['statusCode', 'isBase64Encoded', 'headers', 'body'])
 
-  const response = isCanonicalData
-    ? data
-    : { statusCode: status, isBase64Encoded: false, headers, body: data }
+  const aliCloudGatewayData: AliCloudGatewayDataFunction = (data) => {
+    const { statusCode, headers, body } =
+      data.headers['content-type'] === 'application/json; charset=utf-8'
+        ? Object.assign(data, { body: JSON.parse(data.body as string) })
+        : data
 
-  const result =
-    (response.headers as Record<string, string>['content-type']) ===
-    'application/json; charset=utf-8'
-      ? _.assoc('body', response, { body: JSON.parse(response.body as string) })
-      : response
+    if (statusCode >= 400) {
+      throw body
+    }
 
-  if ((result.statusCode as number) >= 400) {
-    throw result.body
+    return { status: statusCode, headers, body }
   }
 
-  return { data: result, status }
+  return isAliCloudGatewayData
+    ? aliCloudGatewayData(data as AliCloudGatewayOptions)
+    : { data, status, ...args }
 }
 
 export const warmUp: WarmUpFunction = async (
@@ -210,7 +213,7 @@ export const warmUp: WarmUpFunction = async (
       serviceName,
       functionName: key,
       event: { httpMethod: 'OPTIONS', headers: { 'x-warm-up': 'warmUp' } }
-    }).catch((error: HandleErrorResult) => error))(serviceName)
+    }).catch((error: ErrorDataResult) => error))(serviceName)
 
   return Promise.all(_.map(exec)(functionNames))
 }
