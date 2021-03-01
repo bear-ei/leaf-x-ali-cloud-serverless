@@ -46,7 +46,7 @@ export const requestHeaders: RequestHeadersFunction = ({
   'user-agent': `Node.js(${process.version}) OS(${process.platform}/${process.arch})`,
   'x-fc-account-id': accountId,
   'content-type': 'application/octet-stream; charset=utf-8',
-  'content-length': `${_.toString(content)}`,
+  'content-length': content.length.toString(),
   'content-md5': md5(content),
   ...(isAsync ? { 'x-fc-invocation-type': 'Async' } : undefined)
 })
@@ -68,14 +68,14 @@ export const signStr: SignStrFunction = ({ method, url, headers }) => {
   const signHeaders = canonicalHeaders({ headers, prefix: 'x-fc-' })
   const pathUnescaped = decodeURIComponent(new URL(url).pathname)
 
-  return _.join('\n', [
+  return [
     method,
     contentMD5,
     contentType,
     date,
     signHeaders,
     pathUnescaped
-  ])
+  ].join('/n')
 }
 
 export const generateSign: RequestSignFunction = (accessSecretKey, signStr) => {
@@ -96,25 +96,38 @@ export const canonicalHeaders: CanonicalHeadersFunction = ({
   )(headers)
 
   const canonical = _.curry((({ headers, prefix }, key: string) => {
-    const lowerKey = _.toLower(key)
+    const lowerKey = key.toLowerCase()
 
     return _.startsWith(prefix, lowerKey) ? { [lowerKey]: headers[key] } : {}
   }) as FilterCanonicalHeadersFunction)({ headers, prefix })
 
-  const canonicalHeaders = _.compose(
-    _.reduce((a, b) => Object.assign(a, b), {}),
-    _.map(canonical),
-    _.keys
-  )
+  const canonicalHeaders =
+    // Object.keys(headers)
+    //   .map(canonical)
+    //   .reduce((a, b) => Object.assign(a, b), {})
 
-  const canonicalHeadersStr = _.compose(
-    _.join('\n'),
-    _.map(headersStr),
-    _.sort((a, b) => a.localeCompare(b)),
-    _.keys
-  )
+    _.compose(
+      _.reduce((a, b) => Object.assign(a, b), {}),
+      _.map(canonical),
+      _.keys
+    )
 
-  return `${_.compose(canonicalHeadersStr, canonicalHeaders)(headers)}\n`
+  const canonicalHeadersStr =
+    // `${Object.keys(headers)
+    //   .sort((a, b) => a.localeCompare(b))
+    //   .map(headersStr)
+    //   .join('\n')}`
+
+    _.compose(
+      _.join('\n'),
+      _.map(headersStr),
+      _.sort((a, b) => a.localeCompare(b)),
+      _.keys
+    )
+
+  console.info(_.compose(canonicalHeadersStr, canonicalHeaders)(headers))
+
+  return _.compose(canonicalHeadersStr, canonicalHeaders)(headers)
 }
 
 export const md5: MD5Function = (data) =>

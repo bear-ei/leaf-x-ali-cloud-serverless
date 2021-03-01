@@ -53,10 +53,7 @@ export const invoke: InvokeFunction = async (
 ) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
-  const exec: ExecRequestFunction = async (
-    retryNum = 0,
-    { config, options }
-  ) => {
+  const exec: ExecRequestFunction = async (retryNum, { config, options }) => {
     let error!: Record<string, Record<string, unknown>>
 
     const result = (await request(config, options)
@@ -86,76 +83,16 @@ export const invoke: InvokeFunction = async (
   return response(result)
 }
 
-export const request: RequestFunction = async (
-  { host, accountId, accessId, accessSecretKey, timeout, qualifier },
-  { url, event, isAsync, serviceName, functionName }
-) => {
-  const method = 'POST'
-  const buffer = eventToBuffer(event)
-  const headers = requestHeaders({ content: buffer, host, accountId, isAsync })
-  const token = requestToken({
-    accessId,
-    accessSecretKey,
-    method,
-    url,
-    headers
-  })
-
-  const handleError: HandleRequestErrorFunction = (error) => {
-    const responseError = (error as Record<
-      string,
-      Record<string, Record<string, unknown>>
-    >)?.response?.data
-
-    if (responseError) {
-      throw errorData(
-        {
-          serviceName,
-          functionName,
-          requestId: responseError?.headers as Record<
-            string,
-            string
-          >['x-fc-request-id'],
-          env: qualifier
-        },
-        responseError
-      )
-    }
-
-    throw errorData(
-      { serviceName, functionName, env: qualifier },
-      _.is(Object, error) ? (error as Record<string, unknown>) : { error }
-    )
-  }
-
-  return axios
-    .request({
-      url,
-      method,
-      data: buffer,
-      timeout,
-      headers: Object.assign(headers, { token })
-    })
-    .then((result) => (result as unknown) as RequestResult)
-    .catch((error) => handleError(error))
-}
-
 export const errorData: ErrorDataFunction = (
   { serviceName, functionName, requestId, env },
   error
 ) => {
   const status = (error.status as number) ?? 500
-  const code =
-    error.code && _.is(Number, error.code)
-      ? (error.code as number)
-      : error.status
-      ? Number(`${error.status}000`)
-      : 500000
-
+  const code = error.code ? (error.code as number) : Number(`${status}000`)
   const isProdEnv = env === 'PROD' || env === 'PRE'
   const result = isProdEnv
     ? { code }
-    : !error.status && !_.is(Number, error.code)
+    : !error.status && !error.code
     ? { details: error }
     : error
 
@@ -182,21 +119,27 @@ export const errorData: ErrorDataFunction = (
 }
 
 export const response: ResponseFunction = ({ data, status, ...args }) => {
+  const sort = _.sort((a: string, b: string) => a.localeCompare(b))
   const isAliCloudGatewayData =
     _.is(Object, data) &&
-    _.equals(_.keys(data), ['statusCode', 'isBase64Encoded', 'headers', 'body'])
+    _.equals(
+      sort(_.keys(data)),
+      sort(['statusCode', 'isBase64Encoded', 'headers', 'body'])
+    )
 
   const aliCloudGatewayData: AliCloudGatewayDataFunction = (data) => {
-    const { statusCode, headers, body } =
-      data.headers['content-type'] === 'application/json; charset=utf-8'
-        ? Object.assign(data, { body: JSON.parse(data.body as string) })
-        : data
+    const { statusCode, headers, body } = _.startsWith(
+      'application/json',
+      data.headers['content-type']
+    )
+      ? Object.assign(data, { body: JSON.parse(data.body as string) })
+      : data
 
     if (statusCode >= 400) {
       throw body
     }
 
-    return { status: statusCode, headers, body }
+    return { status: statusCode, headers, data: body }
   }
 
   return isAliCloudGatewayData
@@ -216,4 +159,52 @@ export const warmUp: WarmUpFunction = async (
     }).catch((error: ErrorDataResult) => error))(serviceName)
 
   return Promise.all(_.map(exec)(functionNames))
+}
+
+export const request: RequestFunction = async (
+  { host, accountId, accessId, accessSecretKey, timeout, qualifier },
+  { url, event, isAsync, serviceName, functionName }
+) => {
+  const method = 'POST'
+  const buffer = eventToBuffer(event)
+  const headers = requestHeaders({ content: buffer, host, accountId, isAsync })
+  const token = requestToken({
+    accessId,
+    accessSecretKey,
+    method,
+    url,
+    headers
+  })
+
+  const handleError: HandleRequestErrorFunction = (error) => {
+    const responseError = error.response as Record<
+      string,
+      Record<string, unknown>
+    >
+
+    if (responseError) {
+      throw errorData(
+        {
+          serviceName,
+          functionName,
+          requestId: responseError.headers['x-fc-request-id'] as string,
+          env: qualifier
+        },
+        responseError.data
+      )
+    }
+
+    throw errorData({ serviceName, functionName, env: qualifier }, error)
+  }
+
+  return axios
+    .request({
+      url,
+      method,
+      data: buffer,
+      timeout,
+      headers: Object.assign(headers, { authorization: token })
+    })
+    .then((result) => (result as unknown) as RequestResult)
+    .catch((error) => handleError(error))
 }

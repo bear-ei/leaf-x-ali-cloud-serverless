@@ -56,7 +56,7 @@ export interface FCOptions {
  * FC Results.
  */
 export interface FCResult {
-  invoke: InvokeFunction
+  invoke: (options: InvokeOptions) => Promise<InvokeResult>
   warmUp: WarmUpFunction
 }
 
@@ -85,11 +85,6 @@ export interface InvokeOptions {
    * Request events.
    */
   event: EventOptions
-
-  /**
-   * Request headers.
-   */
-  headers?: Record<string, string>
 
   /**
    * Whether to request asynchronously.
@@ -349,15 +344,10 @@ export interface AliCloudGatewayOptions {
 }
 
 /**
- * AliCloud gateway results.
- */
-export type AliCloudGatewayResult = AliCloudGatewayOptions
-
-/**
  * Handle AliCloud gateway responses.
  */
 export interface AliCloudGatewayDataFunction {
-  (options: AliCloudGatewayOptions): AliCloudGatewayResult | never
+  (options: AliCloudGatewayOptions): ResponseResult | never
 }
 
 /**
@@ -374,10 +364,7 @@ export interface ExecRequestOptions {
  * @param retryNum Retry times.
  */
 export interface ExecRequestFunction {
-  (
-    retryNum: number | undefined,
-    options: ExecRequestOptions
-  ): Promise<RequestResult>
+  (retryNum: number, options: ExecRequestOptions): Promise<RequestResult>
 }
 
 /**
@@ -399,5 +386,5 @@ export interface RetryRequestFunction {
  * @interface HandleRequestErrorFunction
  */
 export interface HandleRequestErrorFunction {
-  (error: unknown): never
+  (error: Record<string, unknown>): never
 }
