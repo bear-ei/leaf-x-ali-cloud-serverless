@@ -1,24 +1,28 @@
-'use strict'
-
-import * as _ from 'ramda'
+import * as R from 'ramda'
 import axios from 'axios'
-import { eventToBuffer, requestHeaders, requestToken } from './util'
 import {
-  FCFunction,
-  ErrorDataFunction,
-  ErrorDataOptions,
-  InvokeFunction,
-  RequestFunction,
-  ResponseFunction,
-  ErrorDataResult,
-  WarmUpFunction,
-  RequestResult,
-  AliCloudGatewayOptions,
   AliCloudGatewayDataFunction,
-  RetryRequestFunction,
+  AliCloudGatewayOptions,
+  ExecRequestFunction,
+  FCFunction,
+  HandleErrorFunction,
   HandleRequestErrorFunction,
-  ExecRequestFunction
+  InvokeFunction,
+  PreheatFunction,
+  RequestFunction,
+  RequestResult,
+  ResponseFunction,
+  RetryRequestFunction,
+  HandleErrorResult,
+  HandleErrorOptions
 } from './interface'
+import {
+  eventToBuffer,
+  getRequestHeaders,
+  getRequestToken,
+  sortStr
+} from './util'
+;('use strict')
 
 export const fc: FCFunction = ({
   accountId,
@@ -44,13 +48,15 @@ export const fc: FCFunction = ({
     ...args
   }
 
-  return { invoke: _.curry(invoke)(config), warmUp: _.curry(warmUp)(config) }
+  return { invoke: invoke(config), preheat: preheat(config) }
 }
 
-export const invoke: InvokeFunction = async (
-  { qualifier, endpoint, version, ...configArgs },
-  { serviceName, functionName, ...optionsArgs }
-) => {
+export const invoke: InvokeFunction = ({
+  qualifier,
+  endpoint,
+  version,
+  ...configArgs
+}) => async ({ serviceName, functionName, ...optionsArgs }) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
   const exec: ExecRequestFunction = async (retryNum, { config, options }) => {
@@ -66,13 +72,13 @@ export const invoke: InvokeFunction = async (
       if (isRetry) {
         retry--
 
-        return exec(retry, { config, options })
+        return R.curry(exec)(retry)({ config, options })
       }
 
       throw error
     }
 
-    return error ? retry(retryNum, error) : result
+    return error ? R.curry(retry)(retryNum)(error) : result
   }
 
   const result = await exec(3, {
@@ -83,7 +89,7 @@ export const invoke: InvokeFunction = async (
   return response(result)
 }
 
-export const errorData: ErrorDataFunction = (
+export const handleError: HandleErrorFunction = (
   { serviceName, functionName, requestId, env },
   error
 ) => {
@@ -102,7 +108,7 @@ export const errorData: ErrorDataFunction = (
 
   const apis = !isProdEnv
     ? result.apis
-      ? _.concat(result.apis as ErrorDataOptions[], currentApis)
+      ? (result.apis as HandleErrorOptions[]).concat(currentApis)
       : currentApis
     : []
 
@@ -119,27 +125,33 @@ export const errorData: ErrorDataFunction = (
 }
 
 export const response: ResponseFunction = ({ data, status, ...args }) => {
-  const sort = _.sort((a: string, b: string) => a.localeCompare(b))
-  const isAliCloudGatewayData =
-    _.is(Object, data) &&
-    _.equals(
-      sort(_.keys(data)),
-      sort(['statusCode', 'isBase64Encoded', 'headers', 'body'])
-    )
+  const aliCloudGateway = [
+    'statusCode',
+    'isBase64Encoded',
+    'headers',
+    'body'
+  ].sort(sortStr)
 
-  const aliCloudGatewayData: AliCloudGatewayDataFunction = (data) => {
-    const { statusCode, headers, body } = _.startsWith(
-      'application/json',
-      data.headers['content-type']
-    )
-      ? Object.assign(data, { body: JSON.parse(data.body as string) })
-      : data
+  const isAliCloudGatewayData =
+    R.is(Object)(data) &&
+    Object.keys(data as Record<string, unknown>)
+      .sort(sortStr)
+      .toString() === aliCloudGateway.toString()
+
+  const aliCloudGatewayData: AliCloudGatewayDataFunction = ({
+    statusCode,
+    headers,
+    body
+  }) => {
+    const data = headers['content-type'].startsWith('application/json')
+      ? JSON.parse(body as string)
+      : body
 
     if (statusCode >= 400) {
-      throw body
+      throw data
     }
 
-    return { status: statusCode, headers, data: body }
+    return { status: statusCode, headers, data }
   }
 
   return isAliCloudGatewayData
@@ -147,18 +159,18 @@ export const response: ResponseFunction = ({ data, status, ...args }) => {
     : { data, status, ...args }
 }
 
-export const warmUp: WarmUpFunction = async (
-  config,
-  { serviceName, functionNames }
-) => {
+export const preheat: PreheatFunction = (config) => async ({
+  serviceName,
+  functionNames
+}) => {
   const exec = ((serviceName: string) => async (key: string) =>
-    invoke(config, {
+    invoke(config)({
       serviceName,
       functionName: key,
       event: { httpMethod: 'OPTIONS', headers: { 'x-warm-up': 'warmUp' } }
-    }).catch((error: ErrorDataResult) => error))(serviceName)
+    }).catch((error) => error as HandleErrorResult))(serviceName)
 
-  return Promise.all(_.map(exec)(functionNames))
+  return Promise.all(functionNames.map(exec))
 }
 
 export const request: RequestFunction = async (
@@ -167,8 +179,14 @@ export const request: RequestFunction = async (
 ) => {
   const method = 'POST'
   const buffer = eventToBuffer(event)
-  const headers = requestHeaders({ content: buffer, host, accountId, isAsync })
-  const token = requestToken({
+  const headers = getRequestHeaders({
+    content: buffer,
+    host,
+    accountId,
+    isAsync
+  })
+
+  const token = getRequestToken({
     accessId,
     accessSecretKey,
     method,
@@ -176,14 +194,14 @@ export const request: RequestFunction = async (
     headers
   })
 
-  const handleError: HandleRequestErrorFunction = (error) => {
+  const handleRequestError: HandleRequestErrorFunction = (error) => {
     const responseError = error.response as Record<
       string,
       Record<string, unknown>
     >
 
     if (responseError) {
-      throw errorData(
+      throw handleError(
         {
           serviceName,
           functionName,
@@ -194,7 +212,7 @@ export const request: RequestFunction = async (
       )
     }
 
-    throw errorData({ serviceName, functionName, env: qualifier }, error)
+    throw handleError({ serviceName, functionName, env: qualifier }, error)
   }
 
   return axios
@@ -206,5 +224,5 @@ export const request: RequestFunction = async (
       headers: Object.assign(headers, { authorization: token })
     })
     .then((result) => (result as unknown) as RequestResult)
-    .catch((error) => handleError(error))
+    .catch((error) => handleRequestError(error))
 }

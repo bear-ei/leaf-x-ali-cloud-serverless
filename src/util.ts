@@ -1,18 +1,16 @@
-'use strict'
-
-import * as _ from 'ramda'
-import {
-  CanonicalHeadersFunction,
-  EventToBufferFunction,
-  RequestSignFunction,
-  MD5Function,
-  RequestHeadersFunction,
-  RequestTokenFunction,
-  SignStrFunction,
-  HeadersStrFunction,
-  FilterCanonicalHeadersFunction
-} from './interface/util'
 import * as crypto from 'crypto'
+import * as R from 'ramda'
+import {
+  EventToBufferFunction,
+  GetCanonicalHeadersFunction,
+  GetRequestHeadersFunction,
+  GetRequestSignFunction,
+  GetRequestTokenFunction,
+  MD5Function,
+  GetSignStrFunction,
+  SortStrFunction
+} from './interface/util'
+;('use strict')
 
 export const eventToBuffer: EventToBufferFunction = ({
   httpMethod,
@@ -22,7 +20,7 @@ export const eventToBuffer: EventToBufferFunction = ({
   body = {},
   headers = {}
 }) =>
-  _.compose(
+  R.compose(
     Buffer.from,
     JSON.stringify
   )({
@@ -30,11 +28,11 @@ export const eventToBuffer: EventToBufferFunction = ({
     isBase64Encoded,
     queryParameters,
     pathParameters,
-    body: JSON.stringify(body),
+    body: R.toString(body),
     headers
   })
 
-export const requestHeaders: RequestHeadersFunction = ({
+export const getRequestHeaders: GetRequestHeadersFunction = ({
   content,
   host,
   accountId,
@@ -46,39 +44,41 @@ export const requestHeaders: RequestHeadersFunction = ({
   'user-agent': `Node.js(${process.version}) OS(${process.platform}/${process.arch})`,
   'x-fc-account-id': accountId,
   'content-type': 'application/octet-stream; charset=utf-8',
-  'content-length': content.length.toString(),
+  'content-length': R.toString(content.length),
   'content-md5': md5(content),
   ...(isAsync ? { 'x-fc-invocation-type': 'Async' } : undefined)
 })
 
-export const requestToken: RequestTokenFunction = ({
+export const getRequestToken: GetRequestTokenFunction = ({
   accessId,
   accessSecretKey,
   ...args
-}) => {
-  const sign = _.curry(generateSign)(accessSecretKey)
+}) =>
+  `FC ${accessId}:${R.compose(
+    getRequestSign(accessSecretKey),
+    getSignStr
+  )(args)}`
 
-  return `FC ${accessId}:${_.compose(sign, signStr)(args)}`
-}
-
-export const signStr: SignStrFunction = ({ method, url, headers }) => {
+export const getSignStr: GetSignStrFunction = ({ method, url, headers }) => {
   const contentMD5 = headers['content-md5']
   const contentType = headers['content-type']
   const date = headers['date']
-  const signHeaders = canonicalHeaders({ headers, prefix: 'x-fc-' })
+  const signHeaders = getCanonicalHeaders({ headers, prefix: 'x-fc-' })
   const pathUnescaped = decodeURIComponent(new URL(url).pathname)
 
-  return [
+  return R.join('\n', [
     method,
     contentMD5,
     contentType,
     date,
     signHeaders,
     pathUnescaped
-  ].join('/n')
+  ])
 }
 
-export const generateSign: RequestSignFunction = (accessSecretKey, signStr) => {
+export const getRequestSign: GetRequestSignFunction = (accessSecretKey) => (
+  signStr
+) => {
   const buffer = crypto
     .createHmac('sha256', accessSecretKey)
     .update(signStr, 'utf8')
@@ -87,48 +87,42 @@ export const generateSign: RequestSignFunction = (accessSecretKey, signStr) => {
   return Buffer.from(buffer).toString('base64')
 }
 
-export const canonicalHeaders: CanonicalHeadersFunction = ({
+export const getCanonicalHeaders: GetCanonicalHeadersFunction = ({
   headers,
   prefix
 }) => {
-  const headersStr = _.curry(
-    ((headers, key) => `${key}:${headers[key]}`) as HeadersStrFunction
+  const joinHeadersStr = R.curry(
+    (headers: Record<string, string>, key: string) => `${key}:${headers[key]}`
   )(headers)
 
-  const canonical = _.curry((({ headers, prefix }, key: string) => {
-    const lowerKey = key.toLowerCase()
+  const getCanonical = R.curry(
+    (
+      { headers, prefix }: { headers: Record<string, string>; prefix: string },
+      key
+    ) => {
+      const lowerKey = R.toLower(key)
 
-    return _.startsWith(prefix, lowerKey) ? { [lowerKey]: headers[key] } : {}
-  }) as FilterCanonicalHeadersFunction)({ headers, prefix })
+      return R.startsWith(prefix)(lowerKey) ? { [lowerKey]: headers[key] } : {}
+    }
+  )({ headers, prefix })
 
-  const canonicalHeaders =
-    // Object.keys(headers)
-    //   .map(canonical)
-    //   .reduce((a, b) => Object.assign(a, b), {})
+  const canonicalHeaders = R.compose(
+    R.reduce((a, b) => Object.assign(a, b), {}),
+    R.map(getCanonical),
+    R.keys
+  )
 
-    _.compose(
-      _.reduce((a, b) => Object.assign(a, b), {}),
-      _.map(canonical),
-      _.keys
-    )
+  const canonicalHeadersStr = R.compose(
+    R.join('\n'),
+    R.map(joinHeadersStr),
+    R.sort(sortStr),
+    R.keys
+  )
 
-  const canonicalHeadersStr =
-    // `${Object.keys(headers)
-    //   .sort((a, b) => a.localeCompare(b))
-    //   .map(headersStr)
-    //   .join('\n')}`
-
-    _.compose(
-      _.join('\n'),
-      _.map(headersStr),
-      _.sort((a, b) => a.localeCompare(b)),
-      _.keys
-    )
-
-  console.info(_.compose(canonicalHeadersStr, canonicalHeaders)(headers))
-
-  return _.compose(canonicalHeadersStr, canonicalHeaders)(headers)
+  return R.compose(canonicalHeadersStr, canonicalHeaders)(headers)
 }
 
 export const md5: MD5Function = (data) =>
-  crypto.createHash('md5').update(data).digest('hex').toUpperCase()
+  R.toUpper(crypto.createHash('md5').update(data).digest('hex'))
+
+export const sortStr: SortStrFunction = (a, b) => a.localeCompare(b)

@@ -3,12 +3,11 @@
 import * as crypto from 'crypto'
 
 /**
- * Event options.
+ * 事件选项
  */
 export interface EventOptions {
   /**
-   * Http method.
-   *
+   * http 方法
    */
   httpMethod:
     | 'GET'
@@ -34,188 +33,188 @@ export interface EventOptions {
     | undefined
 
   /**
-   * Whether base64 encoding.
+   * 是否Base64编码
    */
   isBase64Encoded?: boolean
 
   /**
-   * Query parameters.
+   * 查询参数
    */
   queryParameters?: Record<string, unknown>
 
   /**
-   * Path parameters.
+   * 路径参数
    */
   pathParameters?: Record<string, string>
 
   /**
-   * Body data.
+   * 实体
    */
   body?: Record<string, unknown>
 
   /**
-   * Request headers.
+   * 事件请求头
    */
   headers?: Record<string, string>
 }
 
 /**
- * Request headers options.
+ * 获取请求头选项
  */
-export interface RequestHeadersOptions {
+export interface GetRequestHeadersOptions {
   /**
-   * Request content.
+   * 请求内容
    */
   content: Buffer
 
   /**
-   * Request host.
+   * 请求host
    */
   host: string
 
   /**
-   * Ali cloud account id.
+   * 阿里云账号id
    */
   accountId: string
 
   /**
-   * Whether to Invoking asynchronously.
+   * 是否异步调
    */
   isAsync?: boolean
 }
 
 /**
- * Generate request headers.
+ * 获取请求头
  */
-export interface RequestHeadersFunction {
-  (options: RequestHeadersOptions): Record<string, string>
+export interface GetRequestHeadersFunction {
+  (options: GetRequestHeadersOptions): Record<string, string>
 }
 
 /**
- * Request token options.
+ * 获取请求token选项
  */
-export interface RequestTokenOptions {
+export interface GetRequestTokenOptions {
   /**
-   * Access id.
+   * 阿里云访问id
    */
   accessId: string
 
   /**
-   * Access Key.
+   * 阿里云访问密钥
+   *
    */
   accessSecretKey: string
 
   /**
-   * Http method.
+   * http 方法
    */
   method: string
 
   /**
-   * Request url.
+   * 请求 url
    */
   url: string
 
   /**
-   * Response headers.
+   * 请求头
    */
   headers: Record<string, string>
 }
 
 /**
- * Generate request tokens.
+ * 获取请求token
  */
-export interface RequestTokenFunction {
-  (options: RequestTokenOptions): string
+export interface GetRequestTokenFunction {
+  (options: GetRequestTokenOptions): string
 }
 
 /**
- * Generating request signatures.
- *
- * @param accessSecretKey Access Key.
- * @param signStr Signature string.
+ * 请求签名
  */
-export interface RequestSignFunction {
-  (accessSecretKey: string, signStr: string): string
+export interface GetRequestSignFunction {
+  (accessSecretKey: string): (signStr: string) => string
 }
 
 /**
- * Signature string options.
+ * 获取签名字符串选项
  */
-export interface SignStrOptions {
+export interface GetSignStrOptions {
   /**
-   * Http method.
+   * http 方法
    */
   method: string
 
   /**
-   * Request url.
+   * 请求url
    */
   url: string
 
   /**
-   * Request headers.
+   * 请求头
    */
   headers: Record<string, string>
 }
 
 /**
- * Generate signature string.
+ * 获取请求签名字符串
  */
-export interface SignStrFunction {
-  (options: SignStrOptions): string
+export interface GetSignStrFunction {
+  (options: GetSignStrOptions): string
 }
 
 /**
- * Request event to buffer.
+ * 事件转Buffer
  */
 export interface EventToBufferFunction {
   (options: EventOptions): Buffer
 }
 
 /**
- * Canonical headers options.
+ * 获取规范请求头选项
  */
-export interface CanonicalHeadersOptions {
+export interface GetCanonicalHeadersOptions {
   /**
-   * Request headers.
+   * 请求头
    */
   headers: Record<string, string>
 
   /**
-   * Canonical request headers prefix.
+   * 规范请求头前缀
    */
   prefix: string
 }
 
 /**
- * Handle canonical request headers.
+ * 获取规范请求头选项
  */
-export interface CanonicalHeadersFunction {
-  (options: CanonicalHeadersOptions): string
+export interface GetCanonicalHeadersFunction {
+  (options: GetCanonicalHeadersOptions): string
 }
 
 /**
- * Generate MD5 encoding.
+ * md5
  */
 export interface MD5Function {
   (options: crypto.BinaryLike): string
 }
 
 /**
- * Handle request header strings.
- *
- * @param headers Request Headers.
- * @param key Request Headers key.
+ * 获取请求头字符串
  */
-export interface HeadersStrFunction {
+export interface GetHeadersStrFunction {
   (headers: Record<string, string>, key: string): string
 }
 
 /**
- * Filtering specification request headers.
- *
- * @param key Request Headers key.
+ * 检查数据类型是否为 Object
  */
-export interface FilterCanonicalHeadersFunction {
-  (options: CanonicalHeadersOptions, key: string): Record<string, string>
+export interface IsObjectFunction {
+  (data: unknown): boolean
+}
+
+/**
+ * 排序字符串
+ */
+export interface SortStrFunction {
+  (a: string, b: string): number
 }

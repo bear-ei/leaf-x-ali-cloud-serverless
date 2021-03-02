@@ -29,7 +29,7 @@ describe('test/util.test.ts', () => {
         pathParameters: {},
         headers: { 'x-service': 'service' }
       },
-      isAsync: true
+      isAsync: false
     }).catch((error) => console.info(error))
 
     // result

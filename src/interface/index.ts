@@ -57,7 +57,9 @@ export interface FCOptions {
  */
 export interface FCResult {
   invoke: (options: InvokeOptions) => Promise<InvokeResult>
-  warmUp: WarmUpFunction
+  preheat: (
+    options: PreheatOptions
+  ) => Promise<(HandleErrorResult | InvokeResult)[]>
 }
 
 /**
@@ -131,7 +133,7 @@ export interface InvokeResult {
  * Invoke the specified function.
  */
 export interface InvokeFunction {
-  (config: InvokeConfig, options: InvokeOptions): Promise<InvokeResult>
+  (config: InvokeConfig): (options: InvokeOptions) => Promise<InvokeResult>
 }
 
 /**
@@ -226,14 +228,14 @@ export interface ResponseFunction {
 }
 
 /**
- * Warm-up configuration.
+ * Preheat configuration.
  */
-export type WarmUpConfig = InvokeConfig
+export type PreheatConfig = InvokeConfig
 
 /**
- * Warm-up options.
+ * Preheat options.
  */
-export interface WarmUpOptions {
+export interface PreheatOptions {
   /**
    * Service name.
    */
@@ -246,19 +248,19 @@ export interface WarmUpOptions {
 }
 
 /**
- * Warm-up functions.
+ * Preheat functions.
  * Reduce cold starts by running functions in a minimal access manner.
  */
-export interface WarmUpFunction {
-  (config: WarmUpConfig, options: WarmUpOptions): Promise<
-    (ErrorDataResult | InvokeResult)[]
-  >
+export interface PreheatFunction {
+  (config: PreheatConfig): (
+    options: PreheatOptions
+  ) => Promise<(HandleErrorResult | InvokeResult)[]>
 }
 
 /**
  * Generate error data options.
  */
-export interface ErrorDataOptions {
+export interface HandleErrorOptions {
   /**
    * Service name.
    */
@@ -283,7 +285,7 @@ export interface ErrorDataOptions {
 /**
  * Generate error data results.
  */
-export interface ErrorDataResult extends ErrorDataOptions {
+export interface HandleErrorResult extends HandleErrorOptions {
   /**
    * Response status code.
    */
@@ -302,7 +304,7 @@ export interface ErrorDataResult extends ErrorDataOptions {
   /**
    * Invoke chain information.
    */
-  apis?: ErrorDataOptions[]
+  apis?: HandleErrorOptions[]
 
   /**
    * Error details.
@@ -311,10 +313,13 @@ export interface ErrorDataResult extends ErrorDataOptions {
 }
 
 /**
- * Generate error data.
+ * Handle error data.
  */
-export interface ErrorDataFunction {
-  (options: ErrorDataOptions, error: Record<string, unknown>): ErrorDataResult
+export interface HandleErrorFunction {
+  (
+    options: HandleErrorOptions,
+    error: Record<string, unknown>
+  ): HandleErrorResult
 }
 
 /**

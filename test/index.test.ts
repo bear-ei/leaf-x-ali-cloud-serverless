@@ -1,19 +1,17 @@
-// 'use strict'
-
-// import * as _ from 'ramda'
-// import * as sinon from 'sinon'
 // import * as assert from 'assert'
-// import axios from 'axios'
 // import * as client from '../src'
+// import * as sinon from 'sinon'
 // import * as util from '../src/util'
+// import axios from 'axios'
 // import {
-//   ErrorDataResult,
+//   HandleErrorResult,
 //   InvokeOptions,
 //   InvokeResult,
 //   RequestOptions
 // } from 'src/interface'
+// ;('use strict')
 
-// const { fc, invoke, request, errorData, response, warmUp } = client
+// const { fc, invoke, request, handleError, response, preheat } = client
 
 // describe('test/util.test.ts', () => {
 //   it('Should be the result of fc.', async () => {
@@ -25,8 +23,8 @@
 //         region: 'shanghai'
 //       })
 
-//       assert(_.is(Object, result.invoke))
-//       assert(_.is(Object, result.warmUp))
+//       assert(typeof result.invoke === 'function')
+//       assert(typeof result.preheat === 'function')
 //     }
 
 //     const inputOptions = () => {
@@ -40,8 +38,8 @@
 //         secure: true
 //       })
 
-//       assert(_.is(Object, result.invoke))
-//       assert(_.is(Object, result.warmUp))
+//       assert(typeof result.invoke === 'function')
+//       assert(typeof result.preheat === 'function')
 //     }
 
 //     defaultOptions()
@@ -105,9 +103,9 @@
 
 //       sinon.stub(client, 'response').returns(response)
 
-//       const result = await invoke(config, options)
+//       const result = await invoke(config)(options)
 
-//       assert(_.equals(response, result))
+//       assert(JSON.stringify(response) === JSON.stringify(result))
 //     }
 
 //     const errorResponse = async () => {
@@ -115,9 +113,9 @@
 //       sinon.stub(client, 'request').rejects(error)
 
 //       try {
-//         await invoke(config, options)
+//         await invoke(config)(options)
 //       } catch (err) {
-//         assert(_.equals(error, err))
+//         assert(JSON.stringify(error) === JSON.stringify(err))
 //       }
 //     }
 
@@ -178,9 +176,9 @@
 
 //     const mock = () => {
 //       sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
-//       sinon.stub(util, 'requestToken').returns('token')
+//       sinon.stub(util, 'getRequestToken').returns('token')
 //       sinon
-//         .stub(util, 'requestHeaders')
+//         .stub(util, 'getRequestHeaders')
 //         .returns({ 'content-type': 'application/json; charset=utf-8' })
 //     }
 
@@ -191,14 +189,14 @@
 
 //       const result = await request(config, options)
 
-//       assert(_.equals(result, response))
+//       assert(JSON.stringify(result), JSON.stringify(response))
 //     }
 
 //     const businessError = async () => {
 //       sinon.restore()
 //       mock()
 
-//       sinon.stub(client, 'errorData').returns(error)
+//       sinon.stub(client, 'handleError').returns(error)
 //       sinon.stub(axios, 'request').rejects({
 //         response: {
 //           status: 500,
@@ -218,7 +216,7 @@
 //       try {
 //         await request(config, options)
 //       } catch (err) {
-//         assert(_.equals(error, err))
+//         assert(JSON.stringify(error) === JSON.stringify(err))
 //       }
 //     }
 
@@ -226,13 +224,13 @@
 //       sinon.restore()
 //       mock()
 
-//       sinon.stub(client, 'errorData').returns(error)
+//       sinon.stub(client, 'handleError').returns(error)
 //       sinon.stub(axios, 'request').rejects({ code: 400 })
 
 //       try {
 //         await request(config, options)
 //       } catch (err) {
-//         assert(_.equals(error, err))
+//         assert(JSON.stringify(error) === JSON.stringify(err))
 //       }
 //     }
 
@@ -249,7 +247,7 @@
 //     }
 
 //     const businessError = () => {
-//       const result = errorData(
+//       const result = handleError(
 //         { env: 'DEV', ...options },
 //         {
 //           status: 401,
@@ -273,12 +271,15 @@
 //       assert(result.serviceName === 'snowflake')
 //       assert(result.functionName === 'snowflakeIndex')
 //       assert(result.env === 'DEV')
-//       assert(_.is(Object, result.details))
-//       assert(_.is(Array, result.apis))
+//       assert(util.isObject(result.details))
+//       assert(Array.isArray(result.apis))
 //     }
 
 //     const prodServiceError = () => {
-//       const result = errorData({ env: 'PROD', ...options }, { error: 'error' })
+//       const result = handleError(
+//         { env: 'PROD', ...options },
+//         { error: 'error' }
+//       )
 
 //       assert(result.message === 'snowflake snowflakeIndex invoke failed.')
 //       assert(result.status === 500)
@@ -287,11 +288,11 @@
 //       assert(result.functionName === 'snowflakeIndex')
 //       assert(result.env === 'PROD')
 
-//       assert(_.is(Array, result.apis))
+//       assert(Array.isArray(result.apis))
 //     }
 
 //     const devServiceError = () => {
-//       const result = errorData({ env: 'DEV', ...options }, { error: 'error' })
+//       const result = handleError({ env: 'DEV', ...options }, { error: 'error' })
 
 //       assert(result.message === 'snowflake snowflakeIndex invoke failed.')
 //       assert(result.status === 500)
@@ -299,12 +300,12 @@
 //       assert(result.serviceName === 'snowflake')
 //       assert(result.functionName === 'snowflakeIndex')
 //       assert(result.env === 'DEV')
-//       assert(_.is(Object, result.details))
-//       assert(_.is(Array, result.apis))
+//       assert(util.isObject(result.details))
+//       assert(Array.isArray(result.apis))
 //     }
 
 //     const generateInvokeChain = () => {
-//       const result = errorData(
+//       const result = handleError(
 //         { env: 'DEV', ...options },
 //         {
 //           status: 401,
@@ -320,8 +321,8 @@
 //       assert(result.serviceName === 'snowflake')
 //       assert(result.functionName === 'snowflakeIndex')
 //       assert(result.env === 'DEV')
-//       assert(_.is(Object, result.details))
-//       assert(_.is(Array, result.apis))
+//       assert(util.isObject(result.details))
+//       assert(Array.isArray(result.apis))
 //     }
 
 //     businessError()
@@ -344,7 +345,7 @@
 //       })
 
 //       assert(
-//         _.equals(result, {
+//         assert.deepStrictEqual(result, {
 //           status: 200,
 //           data: { message: 'ok' },
 //           headers: { 'content-type': 'application/json; charset=utf-8' }
@@ -369,7 +370,13 @@
 //           headers: { 'content-type': 'application/json; charset=utf-8' }
 //         })
 //       } catch (err) {
-//         assert(_.equals(err, { status: 400, code: 400000, message: `error.` }))
+//         assert(
+//           assert.deepStrictEqual(err, {
+//             status: 400,
+//             code: 400000,
+//             message: `error.`
+//           })
+//         )
 //       }
 //     }
 
@@ -386,7 +393,7 @@
 //       })
 
 //       assert(
-//         _.equals(result, {
+//         assert.deepStrictEqual(result, {
 //           status: 200,
 //           data: '',
 //           headers: { 'content-type': 'text/plain; charset=utf-8' }
@@ -402,10 +409,10 @@
 //       })
 
 //       assert(
-//         _.equals(result, {
+//         assert.deepStrictEqual(result, {
 //           status: 200,
 //           data: '',
-//           headers: { 'content-type': 'application/json; charset=utf-8' }
+//           headers: { 'content-type': 'text/plain; charset=utf-8' }
 //         })
 //       )
 //     }
@@ -441,14 +448,13 @@
 //         headers: { 'content-type': 'application/json; charset=utf-8' }
 //       })
 
-//       const result = await warmUp(config, options)
+//       const result = await preheat(config)(options)
 
-//       assert(_.length(result) !== 0)
+//       assert(result.length !== 0)
 //       assert(
-//         _.equals(
-//           _.map(({ status }: InvokeResult) => status)(result as InvokeResult[]),
-//           [200, 200]
-//         )
+//         (result as InvokeResult[])
+//           .map(({ status }: InvokeResult) => status)
+//           .toString() === [200, 200].toString()
 //       )
 //     }
 
@@ -464,16 +470,13 @@
 //         },
 //         headers: { 'content-type': 'application/json; charset=utf-8' }
 //       })
-//       const result = await warmUp(config, options)
+//       const result = await preheat(config)(options)
 
-//       assert(_.length(result) !== 0)
+//       assert(result.length !== 0)
 //       assert(
-//         _.equals(
-//           _.map(({ status }: ErrorDataResult) => status)(
-//             result as ErrorDataResult[]
-//           ),
-//           [400, 400]
-//         )
+//         (result as HandleErrorResult[])
+//           .map(({ status }: HandleErrorResult) => status)
+//           .toString() === [400, 400].toString()
 //       )
 //     }
 
