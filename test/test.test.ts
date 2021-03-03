@@ -1,8 +1,8 @@
-'use strict'
-
-import * as sinon from 'sinon'
-// import axios from 'axios'
 import * as client from '../src'
+import * as sinon from 'sinon'
+;('use strict')
+
+// import axios from 'axios'
 
 const { fc } = client
 

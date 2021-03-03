@@ -15,8 +15,8 @@ import {
   ResponseFunction,
   RetryRequestFunction
 } from './interface'
-import { isObject } from 'lodash/fp'
 import { eventToBuffer, getRequestHeaders, getRequestToken } from './util'
+import { isObject } from 'lodash/fp'
 ;('use strict')
 
 export const fc: FCFunction = ({
