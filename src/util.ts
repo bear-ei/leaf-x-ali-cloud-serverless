@@ -1,15 +1,14 @@
 import * as crypto from 'crypto'
-import * as R from 'ramda'
 import {
   EventToBufferFunction,
   GetCanonicalHeadersFunction,
   GetRequestHeadersFunction,
   GetRequestSignFunction,
   GetRequestTokenFunction,
-  MD5Function,
   GetSignStrFunction,
-  SortStrFunction
+  MD5Function
 } from './interface/util'
+import { flow } from 'lodash/fp'
 ;('use strict')
 
 export const eventToBuffer: EventToBufferFunction = ({
@@ -20,15 +19,15 @@ export const eventToBuffer: EventToBufferFunction = ({
   body = {},
   headers = {}
 }) =>
-  R.compose(
-    Buffer.from,
-    JSON.stringify
+  flow(
+    JSON.stringify,
+    Buffer.from
   )({
     httpMethod,
     isBase64Encoded,
     queryParameters,
     pathParameters,
-    body: R.toString(body),
+    body: JSON.stringify(body),
     headers
   })
 
@@ -40,11 +39,11 @@ export const getRequestHeaders: GetRequestHeadersFunction = ({
 }) => ({
   accept: 'application/json',
   date: new Date().toUTCString(),
-  host: host as string,
+  host,
   'user-agent': `Node.js(${process.version}) OS(${process.platform}/${process.arch})`,
   'x-fc-account-id': accountId,
   'content-type': 'application/octet-stream; charset=utf-8',
-  'content-length': R.toString(content.length),
+  'content-length': content.length.toString(),
   'content-md5': md5(content),
   ...(isAsync ? { 'x-fc-invocation-type': 'Async' } : undefined)
 })
@@ -54,10 +53,7 @@ export const getRequestToken: GetRequestTokenFunction = ({
   accessSecretKey,
   ...args
 }) =>
-  `FC ${accessId}:${R.compose(
-    getRequestSign(accessSecretKey),
-    getSignStr
-  )(args)}`
+  `FC ${accessId}:${flow(getSignStr, getRequestSign(accessSecretKey))(args)}`
 
 export const getSignStr: GetSignStrFunction = ({ method, url, headers }) => {
   const contentMD5 = headers['content-md5']
@@ -66,14 +62,14 @@ export const getSignStr: GetSignStrFunction = ({ method, url, headers }) => {
   const signHeaders = getCanonicalHeaders({ headers, prefix: 'x-fc-' })
   const pathUnescaped = decodeURIComponent(new URL(url).pathname)
 
-  return R.join('\n', [
+  return [
     method,
     contentMD5,
     contentType,
     date,
     signHeaders,
     pathUnescaped
-  ])
+  ].join('\n')
 }
 
 export const getRequestSign: GetRequestSignFunction = (accessSecretKey) => (
@@ -91,38 +87,25 @@ export const getCanonicalHeaders: GetCanonicalHeadersFunction = ({
   headers,
   prefix
 }) => {
-  const joinHeadersStr = R.curry(
-    (headers: Record<string, string>, key: string) => `${key}:${headers[key]}`
-  )(headers)
+  const joinHeadersStr = ((headers) => (key: string) =>
+    `${key}:${headers[key]}`)(headers)
 
-  const getCanonical = R.curry(
-    (
-      { headers, prefix }: { headers: Record<string, string>; prefix: string },
-      key
-    ) => {
-      const lowerKey = R.toLower(key)
+  const getCanonical = (({ headers, prefix }) => (key: string) => {
+    const lowerKey = key.toLowerCase()
 
-      return R.startsWith(prefix)(lowerKey) ? { [lowerKey]: headers[key] } : {}
-    }
-  )({ headers, prefix })
+    return lowerKey.startsWith(prefix) ? { [lowerKey]: headers[key] } : {}
+  })({ headers, prefix })
 
-  const canonicalHeaders = R.compose(
-    R.reduce((a, b) => Object.assign(a, b), {}),
-    R.map(getCanonical),
-    R.keys
-  )
+  const canonicalHeaders = (headers: Record<string, string>) =>
+    Object.keys(headers)
+      .map(getCanonical)
+      .reduce((a, b) => Object.assign(a, b), {})
 
-  const canonicalHeadersStr = R.compose(
-    R.join('\n'),
-    R.map(joinHeadersStr),
-    R.sort(sortStr),
-    R.keys
-  )
+  const canonicalHeadersStr = (headers: Record<string, string>) =>
+    Object.keys(headers).sort().map(joinHeadersStr).join('\n')
 
-  return R.compose(canonicalHeadersStr, canonicalHeaders)(headers)
+  return flow(canonicalHeaders, canonicalHeadersStr)(headers)
 }
 
 export const md5: MD5Function = (data) =>
-  R.toUpper(crypto.createHash('md5').update(data).digest('hex'))
-
-export const sortStr: SortStrFunction = (a, b) => a.localeCompare(b)
+  crypto.createHash('md5').update(data).digest('hex').toLocaleUpperCase()

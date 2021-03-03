@@ -1,4 +1,3 @@
-import * as R from 'ramda'
 import axios from 'axios'
 import {
   AliCloudGatewayDataFunction,
@@ -6,22 +5,18 @@ import {
   ExecRequestFunction,
   FCFunction,
   HandleErrorFunction,
+  HandleErrorOptions,
+  HandleErrorResult,
   HandleRequestErrorFunction,
   InvokeFunction,
   PreheatFunction,
   RequestFunction,
   RequestResult,
   ResponseFunction,
-  RetryRequestFunction,
-  HandleErrorResult,
-  HandleErrorOptions
+  RetryRequestFunction
 } from './interface'
-import {
-  eventToBuffer,
-  getRequestHeaders,
-  getRequestToken,
-  sortStr
-} from './util'
+import { isObject } from 'lodash/fp'
+import { eventToBuffer, getRequestHeaders, getRequestToken } from './util'
 ;('use strict')
 
 export const fc: FCFunction = ({
@@ -72,13 +67,13 @@ export const invoke: InvokeFunction = ({
       if (isRetry) {
         retry--
 
-        return R.curry(exec)(retry)({ config, options })
+        return exec(retry, { config, options })
       }
 
       throw error
     }
 
-    return error ? R.curry(retry)(retryNum)(error) : result
+    return error ? retry(retryNum, error) : result
   }
 
   const result = await exec(3, {
@@ -95,22 +90,22 @@ export const handleError: HandleErrorFunction = (
 ) => {
   const status = (error.status as number) ?? 500
   const code = error.code ? (error.code as number) : Number(`${status}000`)
-  const isProdEnv = env === 'PROD' || env === 'PRE'
-  const result = isProdEnv
-    ? { code }
-    : !error.status && !error.code
-    ? { details: error }
-    : error
+  //   const isProdEnv = env === 'PROD' || env === 'PRE'
+  const result = !error.status && !error.code ? { details: error } : error
 
   const currentApis = [{ serviceName, functionName, requestId, env }]
   const message = (error.message ??
     `${serviceName} ${functionName} invoke failed.`) as string
 
-  const apis = !isProdEnv
-    ? result.apis
-      ? (result.apis as HandleErrorOptions[]).concat(currentApis)
-      : currentApis
-    : []
+  //   const apis = !isProdEnv
+  //     ? result.apis
+  //       ? (result.apis as HandleErrorOptions[]).concat(currentApis)
+  //       : currentApis
+  //     : []
+
+  const apis = result.apis
+    ? (result.apis as HandleErrorOptions[]).concat(currentApis)
+    : currentApis
 
   return Object.assign({}, result, {
     status,
@@ -125,18 +120,10 @@ export const handleError: HandleErrorFunction = (
 }
 
 export const response: ResponseFunction = ({ data, status, ...args }) => {
-  const aliCloudGateway = [
-    'statusCode',
-    'isBase64Encoded',
-    'headers',
-    'body'
-  ].sort(sortStr)
-
   const isAliCloudGatewayData =
-    R.is(Object)(data) &&
-    Object.keys(data as Record<string, unknown>)
-      .sort(sortStr)
-      .toString() === aliCloudGateway.toString()
+    isObject(data) &&
+    Object.keys(data).sort().join() ===
+      ['statusCode', 'isBase64Encoded', 'headers', 'body'].sort().join()
 
   const aliCloudGatewayData: AliCloudGatewayDataFunction = ({
     statusCode,

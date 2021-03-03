@@ -14,9 +14,10 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "ramda": "^0.27.1"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.168",
     "@types/mocha": "^8.0.4",
     "@types/node": "^14.14.10",
     "@types/power-assert": "^1.5.3",

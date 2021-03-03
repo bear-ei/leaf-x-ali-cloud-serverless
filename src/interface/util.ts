@@ -1,13 +1,12 @@
-'use strict'
-
 import * as crypto from 'crypto'
+;('use strict')
 
 /**
- * 事件选项
+ * AliCloud gateway event options.
  */
 export interface EventOptions {
   /**
-   * http 方法
+   * http method
    */
   httpMethod:
     | 'GET'
@@ -33,42 +32,42 @@ export interface EventOptions {
     | undefined
 
   /**
-   * 是否Base64编码
+   * Base64 encoding or not.
    */
   isBase64Encoded?: boolean
 
   /**
-   * 查询参数
+   * Query parameters.
    */
   queryParameters?: Record<string, unknown>
 
   /**
-   * 路径参数
+   * Path parameters.
    */
   pathParameters?: Record<string, string>
 
   /**
-   * 实体
+   * Entities.
    */
   body?: Record<string, unknown>
 
   /**
-   * 事件请求头
+   * Request header.
    */
   headers?: Record<string, string>
 }
 
 /**
- * 获取请求头选项
+ * Get request header options.
  */
-export interface GetRequestHeadersOptions {
+export interface GetRequestHeaderOptions {
   /**
-   * 请求内容
+   * Content of request.
    */
   content: Buffer
 
   /**
-   * 请求host
+   * Request host.
    */
   host: string
 
@@ -87,7 +86,7 @@ export interface GetRequestHeadersOptions {
  * 获取请求头
  */
 export interface GetRequestHeadersFunction {
-  (options: GetRequestHeadersOptions): Record<string, string>
+  (options: GetRequestHeaderOptions): Record<string, string>
 }
 
 /**
@@ -203,18 +202,4 @@ export interface MD5Function {
  */
 export interface GetHeadersStrFunction {
   (headers: Record<string, string>, key: string): string
-}
-
-/**
- * 检查数据类型是否为 Object
- */
-export interface IsObjectFunction {
-  (data: unknown): boolean
-}
-
-/**
- * 排序字符串
- */
-export interface SortStrFunction {
-  (a: string, b: string): number
 }
