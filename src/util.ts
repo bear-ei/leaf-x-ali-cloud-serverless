@@ -1,14 +1,14 @@
 import * as crypto from 'crypto'
+import { flow } from 'lodash/fp'
 import {
   EventToBufferFunction,
   GetCanonicalHeadersFunction,
-  GetRequestHeadersFunction,
+  GetRequestHeaderFunction,
   GetRequestSignFunction,
   GetRequestTokenFunction,
   GetSignStrFunction,
   MD5Function
 } from './interface/util'
-import { flow } from 'lodash/fp'
 ;('use strict')
 
 export const eventToBuffer: EventToBufferFunction = ({
@@ -31,7 +31,7 @@ export const eventToBuffer: EventToBufferFunction = ({
     headers
   })
 
-export const getRequestHeaders: GetRequestHeadersFunction = ({
+export const getRequestHeaders: GetRequestHeaderFunction = ({
   content,
   host,
   accountId,

@@ -72,133 +72,133 @@ export interface GetRequestHeaderOptions {
   host: string
 
   /**
-   * 阿里云账号id
+   * Ali cloud account id.
    */
   accountId: string
 
   /**
-   * 是否异步调
+   * Asynchronous request or not.
    */
   isAsync?: boolean
 }
 
 /**
- * 获取请求头
+ * Get request headers.
  */
-export interface GetRequestHeadersFunction {
+export interface GetRequestHeaderFunction {
   (options: GetRequestHeaderOptions): Record<string, string>
 }
 
 /**
- * 获取请求token选项
+ * Get request token options
  */
 export interface GetRequestTokenOptions {
   /**
-   * 阿里云访问id
+   * Ali cloud access id.
    */
   accessId: string
 
   /**
-   * 阿里云访问密钥
+   * Ali cloud access Key.
    *
    */
   accessSecretKey: string
 
   /**
-   * http 方法
+   * http method.
    */
   method: string
 
   /**
-   * 请求 url
+   * Request url.
    */
   url: string
 
   /**
-   * 请求头
+   * Request headers
    */
   headers: Record<string, string>
 }
 
 /**
- * 获取请求token
+ * Get request token.
  */
 export interface GetRequestTokenFunction {
   (options: GetRequestTokenOptions): string
 }
 
 /**
- * 请求签名
+ * Request a signature.
  */
 export interface GetRequestSignFunction {
   (accessSecretKey: string): (signStr: string) => string
 }
 
 /**
- * 获取签名字符串选项
+ * Get signature string options.
  */
 export interface GetSignStrOptions {
   /**
-   * http 方法
+   * http method.
    */
   method: string
 
   /**
-   * 请求url
+   * Request url.
    */
   url: string
 
   /**
-   * 请求头
+   * Request Headers.
    */
   headers: Record<string, string>
 }
 
 /**
- * 获取请求签名字符串
+ * Get request signature string.
  */
 export interface GetSignStrFunction {
   (options: GetSignStrOptions): string
 }
 
 /**
- * 事件转Buffer
+ * Event to buffer.
  */
 export interface EventToBufferFunction {
   (options: EventOptions): Buffer
 }
 
 /**
- * 获取规范请求头选项
+ * Get specification request header options.
  */
-export interface GetCanonicalHeadersOptions {
+export interface GetCanonicalHeaderOptions {
   /**
-   * 请求头
+   * Request Headers.
    */
   headers: Record<string, string>
 
   /**
-   * 规范请求头前缀
+   * specification  request header prefix.
    */
   prefix: string
 }
 
 /**
- * 获取规范请求头选项
+ * Get specification request headers.
  */
 export interface GetCanonicalHeadersFunction {
-  (options: GetCanonicalHeadersOptions): string
+  (options: GetCanonicalHeaderOptions): string
 }
 
 /**
- * md5
+ * md5.
  */
 export interface MD5Function {
   (options: crypto.BinaryLike): string
 }
 
 /**
- * 获取请求头字符串
+ * Get request header string.
  */
 export interface GetHeadersStrFunction {
   (headers: Record<string, string>, key: string): string

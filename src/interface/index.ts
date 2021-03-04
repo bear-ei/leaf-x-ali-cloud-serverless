@@ -6,70 +6,71 @@ import { EventOptions } from './util'
  */
 export interface FCOptions {
   /**
-   * AliCloud account id.
+   * Ali cloud account id.
    */
   accountId: string
 
   /**
-   * Access id.
+   * Ali cloud access id.
    */
   accessId: string
 
   /**
-   * Access Key.
+   * Ali cloud access Key.
    */
   accessSecretKey: string
 
   /**
-   * Request region.
+   * Function calculation region.
    */
   region: string
 
   /**
-   * Request timeout time, in milliseconds. Default value 30000.
+   * Request timeout time in milliseconds. Default value 3000.
    */
   timeout?: number
 
   /**
-   * Version alias, default value LATEST.
+   * Function to calculate aliases, default value LATEST.
    */
   qualifier?: string
 
   /**
-   * Whether to request via intranet, default value true.
+   * Whether to access via intranet, default value true.
    */
   internal?: boolean
 
   /**
-   * Whether to enable protection, enable protection will use https. default value false.
+   * If or not access protection is enabled, HTTPS will be used if enabled, otherwise HTTP will be used.
+   * Default value false.
    */
   secure?: boolean
 
   /**
-   * AliCloud api version, default value 2016-08-15.
+   * Function calculate api version,default value 2016-08-15.
    */
   version?: string
 }
 
 /**
- * FC Results.
+ * Result of function calculation.
  */
 export interface FCResult {
   invoke: (options: InvokeOptions) => Promise<InvokeResult>
-  preheat: (
-    options: PreheatOptions
+  warmUp: (
+    options: warmUpOptions
   ) => Promise<(HandleErrorResult | InvokeResult)[]>
 }
 
 /**
- * Get FC method.
+ * Get the function calculation method.
  */
 export interface FCFunction {
   (options: FCOptions): FCResult
 }
 
 /**
- * Invoke options.
+ * Invoke function options.
  */
 export interface InvokeOptions {
   /**
@@ -83,27 +84,27 @@ export interface InvokeOptions {
   functionName: string
 
   /**
-   * Request events.
+   * Invoke events.
    */
   event: EventOptions
 
   /**
-   * Whether to request asynchronously.
+   * Whether to invoke asynchronously or not, default value false.
    */
   isAsync?: boolean
 }
 
 /**
- * Invoke configuration.
+ * Invoke the configuration.
  */
 export interface InvokeConfig extends RequestConfig {
   /**
-   * Request endpoint.
+   * Invoke endpoints.
    */
   endpoint: string
 
   /**
-   * AliCloud api version, default value 2016-08-15.
+   * Function calculate api version.
    */
   version: string
 }
@@ -129,7 +130,7 @@ export interface InvokeResult {
 }
 
 /**
- * Invoke the specified function.
+ * Invoke a function to calculate.
  */
 export interface InvokeFunction {
   (config: InvokeConfig): (options: InvokeOptions) => Promise<InvokeResult>
@@ -145,27 +146,27 @@ export interface RequestConfig {
   host: string
 
   /**
-   * AliCloud account id.
+   * Ali cloud account id.
    */
   accountId: string
 
   /**
-   * Access id.
+   * Ali cloud access id.
    */
   accessId: string
 
   /**
-   * Access Key.
+   * Ali cloud Access Key.
    */
   accessSecretKey: string
 
   /**
-   * Request timeout time, in milliseconds.
+   * Request timeout time in milliseconds.
    */
   timeout: number
 
   /**
-   * Version Alias.
+   * Function calculate api version.
    */
   qualifier: string
 }
@@ -227,14 +228,14 @@ export interface ResponseFunction {
 }
 
 /**
- * Preheat configuration.
+ * warmUp configuration.
  */
-export type PreheatConfig = InvokeConfig
+export type warmUpConfig = InvokeConfig
 
 /**
- * Preheat options.
+ * warmUp options.
  */
-export interface PreheatOptions {
+export interface warmUpOptions {
   /**
    * Service name.
    */
@@ -247,17 +248,17 @@ export interface PreheatOptions {
 }
 
 /**
- * Preheat functions.
+ * warmUp functions.
  * Reduce cold starts by running functions in a minimal access manner.
  */
-export interface PreheatFunction {
-  (config: PreheatConfig): (
-    options: PreheatOptions
+export interface warmUpFunction {
+  (config: warmUpConfig): (
+    options: warmUpOptions
   ) => Promise<(HandleErrorResult | InvokeResult)[]>
 }
 
 /**
- * Generate error data options.
+ * Handle error data options.
  */
 export interface HandleErrorOptions {
   /**
@@ -282,7 +283,7 @@ export interface HandleErrorOptions {
 }
 
 /**
- * Generate error data results.
+ * Handle error data results.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
@@ -322,17 +323,16 @@ export interface HandleErrorFunction {
 }
 
 /**
- * AliCloud Gateway options.
+ * Ali cloud Gateway options.
  */
 export interface AliCloudGatewayOptions {
   /**
    * Response status code.
-   *
    */
   statusCode: number
 
   /**
-   * Whether base64 encoding.
+   * Base64 encoding or not.
    */
   isBase64Encoded: boolean
 
@@ -348,9 +348,9 @@ export interface AliCloudGatewayOptions {
 }
 
 /**
- * Handle AliCloud gateway responses.
+ * Handle Ali cloud gateway responses.
  */
-export interface AliCloudGatewayDataFunction {
+export interface AliCloudGatewayResponseFunction {
   (options: AliCloudGatewayOptions): ResponseResult | never
 }
 
@@ -383,12 +383,17 @@ export interface RetryRequestFunction {
     | never
 }
 
+export interface HandleRequestErrorOptions {
+  serviceName: string
+  functionName: string
+  qualifier: string
+}
+
 /**
  * Handle request errors.
- *
- * @export
- * @interface HandleRequestErrorFunction
  */
 export interface HandleRequestErrorFunction {
-  (error: Record<string, unknown>): never
+  (options: HandleRequestErrorOptions): (
+    error: Record<string, unknown>
+  ) => never
 }

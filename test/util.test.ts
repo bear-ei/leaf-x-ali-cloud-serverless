@@ -1,136 +1,143 @@
-// 'use strict'
+'use strict'
 
-// import * as _ from 'ramda'
-// import * as sinon from 'sinon'
-// import * as assert from 'assert'
-// import * as util from '../src/util'
-// const {
-//   eventToBuffer,
-//   requestHeaders,
-//   requestToken,
-//   signStr,
-//   generateSign,
-//   canonicalHeaders,
-//   md5
-// } = util
+import * as sinon from 'sinon'
+import * as assert from 'assert'
+import * as util from '../src/util'
+import { isBuffer } from 'lodash/fp'
+const {
+  eventToBuffer,
+  getRequestHeaders,
+  getRequestToken,
+  getSignStr,
+  getRequestSign,
+  getCanonicalHeaders,
+  md5
+} = util
 
-// describe('test/util.test.ts', () => {
-//   it('Should be the result of eventToBuffer.', async () => {
-//     const result = eventToBuffer({ httpMethod: 'POST' })
+describe('test/util.test.ts', () => {
+  it('Should be the result of eventToBuffer.', async () => {
+    const result = eventToBuffer({ httpMethod: 'POST' })
 
-//     assert(_.is(Buffer, result))
-//   })
+    assert(isBuffer(result))
+  })
 
-//   it('Should be the result of requestHeaders.', async () => {
-//     sinon.stub(util, 'md5').returns('sign')
+  it('Should be the result of getRequestHeaders.', async () => {
+    sinon.stub(util, 'md5').returns('sign')
 
-//     const asyncResult = () => {
-//       const result = requestHeaders({
-//         content: Buffer.from('test'),
-//         host: 'test.test-internal.fc.aliyuncs.com',
-//         accountId: 'test'
-//       })
+    const asyncResult = () => {
+      const result = getRequestHeaders({
+        content: Buffer.from('test'),
+        host: 'test.test-internal.fc.aliyuncs.com',
+        accountId: 'test'
+      })
 
-//       assert(
-//         _.equals(_.keys(result), [
-//           'accept',
-//           'date',
-//           'host',
-//           'user-agent',
-//           'x-fc-account-id',
-//           'content-type',
-//           'content-length',
-//           'content-md5'
-//         ])
-//       )
-//     }
+      assert(
+        Object.keys(result).sort().toString() ===
+          [
+            'accept',
+            'date',
+            'host',
+            'user-agent',
+            'x-fc-account-id',
+            'content-type',
+            'content-length',
+            'content-md5'
+          ]
+            .sort()
+            .toString()
+      )
+    }
 
-//     const syncResult = () => {
-//       const result = requestHeaders({
-//         content: Buffer.from('test'),
-//         host: 'test.test-internal.fc.aliyuncs.com',
-//         accountId: 'test',
-//         isAsync: true
-//       })
+    const syncResult = () => {
+      const result = getRequestHeaders({
+        content: Buffer.from('test'),
+        host: 'test.test-internal.fc.aliyuncs.com',
+        accountId: 'test',
+        isAsync: true
+      })
 
-//       assert(
-//         _.equals(_.keys(result), [
-//           'accept',
-//           'date',
-//           'host',
-//           'user-agent',
-//           'x-fc-account-id',
-//           'content-type',
-//           'content-length',
-//           'content-md5',
-//           'x-fc-invocation-type'
-//         ])
-//       )
-//     }
+      assert(
+        Object.keys(result).sort().toString() ===
+          [
+            'accept',
+            'date',
+            'host',
+            'user-agent',
+            'x-fc-account-id',
+            'content-type',
+            'content-length',
+            'content-md5',
+            'x-fc-invocation-type'
+          ]
+            .sort()
+            .toString()
+      )
+    }
 
-//     asyncResult()
-//     syncResult()
-//   })
+    asyncResult()
+    syncResult()
+  })
 
-//   it('Should be the result of requestToken.', async () => {
-//     sinon.stub(util, 'generateSign').returns('sign')
+  it('Should be the result of getRequestToken.', async () => {
+    sinon.stub(util, 'getSignStr').returns('sign')
+    sinon.stub(util, 'getRequestSign').returns((sign: string) => sign)
 
-//     const result = requestToken({
-//       accessId: 'test',
-//       accessSecretKey: 'test',
-//       method: 'POST',
-//       url: 'https://test.test-internal.fc.aliyuncs.com/test',
-//       headers: { 'x-fc-token': 'test', 'x-fc-warm-up': 'warmUp' }
-//     })
+    const result = getRequestToken({
+      accessId: 'test',
+      accessSecretKey: 'test',
+      method: 'POST',
+      url: 'https://test.test-internal.fc.aliyuncs.com/test',
+      headers: { 'x-fc-token': 'test', 'x-fc-warm-up': 'warmUp' }
+    })
 
-//     assert(_.is(String, result))
-//     assert(result === 'FC test:sign')
-//   })
+    assert(typeof result === 'string')
+    assert(result === 'FC test:sign')
+  })
 
-//   it('Should be the result of signStr.', async () => {
-//     sinon.stub(util, 'canonicalHeaders').returns('x-fc-token:test\n')
+  it('Should be the result of getSignStr.', async () => {
+    sinon.stub(util, 'getCanonicalHeaders').returns('x-fc-token:test\n')
 
-//     const result = signStr({
-//       method: 'POST',
-//       url: 'https://test.test-internal.fc.aliyuncs.com/test',
-//       headers: {
-//         'x-fc-token': 'test',
-//         'content-md5': 'md5',
-//         'content-type': 'application/json; charset=utf-8',
-//         date: 'Fri, 26 Feb 2021 03:01:43 GMT'
-//       }
-//     })
+    const result = getSignStr({
+      method: 'POST',
+      url: 'https://test.test-internal.fc.aliyuncs.com/test',
+      headers: {
+        'x-fc-token': 'test',
+        'content-md5': 'md5',
+        'content-type': 'application/json; charset=utf-8',
+        date: 'Fri, 26 Feb 2021 03:01:43 GMT'
+      }
+    })
 
-//     assert(_.is(String, result))
-//     assert(
-//       result ===
-//         'POST\nmd5\napplication/json; charset=utf-8\nFri, 26 Feb 2021 03:01:43 GMT\nx-fc-token:test\n\n/test'
-//     )
-//   })
+    assert(typeof result === 'string')
+    assert(
+      result ===
+        'POST\nmd5\napplication/json; charset=utf-8\nFri, 26 Feb 2021 03:01:43 GMT\nx-fc-token:test\n\n/test'
+    )
+  })
 
-//   it('Should be the result of generateSign.', async () => {
-//     const result = generateSign('test', 'test')
+  it('Should be the result of getRequestSign.', async () => {
+    const result = getRequestSign('test')('test')
 
-//     assert(_.is(String, result))
-//   })
+    assert(typeof result === 'string')
+  })
 
-//   it('Should be the result of canonicalHeaders.', async () => {
-//     const result = canonicalHeaders({
-//       headers: {
-//         'x-fc-token': 'test',
-//         'x-fc-warm-up': 'warmUp',
-//         'x-token': 'test'
-//       },
-//       prefix: 'x-fc'
-//     })
+  it('Should be the result of getCanonicalHeaders.', async () => {
+    const result = getCanonicalHeaders({
+      headers: {
+        'x-fc-token': 'test',
+        'x-fc-warm-up': 'warmUp',
+        'x-token': 'test'
+      },
+      prefix: 'x-fc'
+    })
 
-//     assert(_.is(String, result))
-//     assert(result === 'x-fc-token:test\nx-fc-warm-up:warmUp')
-//   })
+    assert(typeof result === 'string')
+    assert(result === 'x-fc-token:test\nx-fc-warm-up:warmUp')
+  })
 
-//   it('Should be the result of md5.', async () => {
-//     const result = md5(Buffer.from('test'))
+  it('Should be the result of md5.', async () => {
+    const result = md5(Buffer.from('test'))
 
-//     assert(_.is(String, result))
-//   })
-// })
+    assert(typeof result === 'string')
+  })
+})

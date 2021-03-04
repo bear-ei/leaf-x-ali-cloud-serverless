@@ -1,486 +1,443 @@
-// import * as assert from 'assert'
-// import * as client from '../src'
-// import * as sinon from 'sinon'
-// import * as util from '../src/util'
-// import axios from 'axios'
-// import {
-//   HandleErrorResult,
-//   InvokeOptions,
-//   InvokeResult,
-//   RequestOptions
-// } from 'src/interface'
-// ;('use strict')
+import * as assert from 'assert'
+import axios from 'axios'
+import { isObject } from 'lodash/fp'
+import * as sinon from 'sinon'
+import {
+  HandleErrorResult,
+  InvokeOptions,
+  InvokeResult,
+  RequestOptions
+} from 'src/interface'
+import * as client from '../src'
+import * as util from '../src/util'
+;('use strict')
 
-// const { fc, invoke, request, handleError, response, preheat } = client
+const { fc, invoke, request, handleError, response, warmUp } = client
 
-// describe('test/util.test.ts', () => {
-//   it('Should be the result of fc.', async () => {
-//     const defaultOptions = () => {
-//       const result = fc({
-//         accessId: 'test',
-//         accountId: 'test',
-//         accessSecretKey: 'test',
-//         region: 'shanghai'
-//       })
+describe('test/util.test.ts', () => {
+  it('Should be the result of fc.', async () => {
+    const defaultOptions = () => {
+      const result = fc({
+        accessId: 'test',
+        accountId: 'test',
+        accessSecretKey: 'test',
+        region: 'shanghai'
+      })
 
-//       assert(typeof result.invoke === 'function')
-//       assert(typeof result.preheat === 'function')
-//     }
+      assert(typeof result.invoke === 'function')
+      assert(typeof result.warmUp === 'function')
+    }
 
-//     const inputOptions = () => {
-//       const result = fc({
-//         accessId: 'test',
-//         accountId: 'test',
-//         accessSecretKey: 'test',
-//         region: 'shanghai',
-//         timeout: 3000,
-//         internal: false,
-//         secure: true
-//       })
+    const inputOptions = () => {
+      const result = fc({
+        accessId: 'test',
+        accountId: 'test',
+        accessSecretKey: 'test',
+        region: 'shanghai',
+        timeout: 3000,
+        internal: false,
+        secure: true
+      })
 
-//       assert(typeof result.invoke === 'function')
-//       assert(typeof result.preheat === 'function')
-//     }
+      assert(typeof result.invoke === 'function')
+      assert(typeof result.warmUp === 'function')
+    }
 
-//     defaultOptions()
-//     inputOptions()
-//   })
+    defaultOptions()
+    inputOptions()
+  })
 
-//   it('Should be the result of invoke.', async () => {
-//     const config = {
-//       accountId: 'test',
-//       host: 'test.shanghai.fc.aliyuncs.com',
-//       timeout: 3000,
-//       qualifier: 'LATEST',
-//       version: '2016-08-15',
-//       endpoint: 'http://test.shanghai.fc.aliyuncs.com',
-//       accessId: 'test',
-//       accessSecretKey: 'test'
-//     }
+  it('Should be the result of invoke.', async () => {
+    const config = {
+      accountId: 'test',
+      host: 'test.shanghai.fc.aliyuncs.com',
+      timeout: 3000,
+      qualifier: 'LATEST',
+      version: '2016-08-15',
+      endpoint: 'http://test.shanghai.fc.aliyuncs.com',
+      accessId: 'test',
+      accessSecretKey: 'test'
+    }
 
-//     const options = ({
-//       serviceName: 'test',
-//       functionName: 'test',
-//       event: {
-//         httpMethod: 'POST',
-//         isBase64Encoded: false,
-//         queryParameters: {},
-//         pathParameters: {},
-//         body: {},
-//         headers: {}
-//       },
-//       isAsync: false
-//     } as unknown) as InvokeOptions
+    const options = ({
+      serviceName: 'test',
+      functionName: 'test',
+      event: {
+        httpMethod: 'POST',
+        isBase64Encoded: false,
+        queryParameters: {},
+        pathParameters: {},
+        body: {},
+        headers: {}
+      },
+      isAsync: false
+    } as unknown) as InvokeOptions
 
-//     const response = {
-//       status: 200,
-//       data: {
-//         statusCode: 200,
-//         isBase64Encoded: false,
-//         headers: { 'content-type': 'application/json; charset=utf-8' },
-//         body: { message: 'ok' }
-//       },
-//       headers: { 'content-type': 'application/json; charset=utf-8' }
-//     }
+    const response = {
+      status: 200,
+      data: {
+        statusCode: 200,
+        isBase64Encoded: false,
+        headers: { 'content-type': 'application/json; charset=utf-8' },
+        body: { message: 'ok' }
+      },
+      headers: { 'content-type': 'application/json; charset=utf-8' }
+    }
 
-//     const error = {
-//       status: 500,
-//       data: 'error',
-//       headers: { 'content-type': 'application/json; charset=utf-8' }
-//     }
+    const error = {
+      status: 500,
+      data: 'error',
+      headers: { 'content-type': 'application/json; charset=utf-8' }
+    }
 
-//     const correctResponse = async () => {
-//       sinon.stub(client, 'request').resolves({
-//         status: 200,
-//         data: {
-//           statusCode: 200,
-//           isBase64Encoded: false,
-//           headers: { 'content-type': 'application/json; charset=utf-8' },
-//           body: JSON.stringify({ message: 'ok' })
-//         },
-//         headers: { 'content-type': 'application/json; charset=utf-8' }
-//       })
+    const correctResponse = async () => {
+      sinon.stub(client, 'request').resolves({
+        status: 200,
+        data: {
+          statusCode: 200,
+          isBase64Encoded: false,
+          headers: { 'content-type': 'application/json; charset=utf-8' },
+          body: JSON.stringify({ message: 'ok' })
+        },
+        headers: { 'content-type': 'application/json; charset=utf-8' }
+      })
 
-//       sinon.stub(client, 'response').returns(response)
+      sinon.stub(client, 'response').returns(response)
 
-//       const result = await invoke(config)(options)
+      const result = await invoke(config)(options)
 
-//       assert(JSON.stringify(response) === JSON.stringify(result))
-//     }
+      assert(JSON.stringify(response) === JSON.stringify(result))
+    }
 
-//     const errorResponse = async () => {
-//       sinon.restore()
-//       sinon.stub(client, 'request').rejects(error)
+    const errorResponse = async () => {
+      sinon.restore()
+      sinon.stub(client, 'request').rejects(error)
 
-//       try {
-//         await invoke(config)(options)
-//       } catch (err) {
-//         assert(JSON.stringify(error) === JSON.stringify(err))
-//       }
-//     }
+      try {
+        await invoke(config)(options)
+      } catch (err) {
+        assert(JSON.stringify(error) === JSON.stringify(err))
+      }
+    }
 
-//     await correctResponse()
-//     await errorResponse()
-//   })
+    await correctResponse()
+    await errorResponse()
+  })
 
-//   it('Should be the result of request.', async () => {
-//     const config = {
-//       host: 'test.shanghai.fc.aliyuncs.com',
-//       accountId: 'test',
-//       accessId: 'test',
-//       accessSecretKey: 'test',
-//       timeout: 3000,
-//       qualifier: 'LATEST'
-//     }
+  it('Should be the result of handleError.', async () => {
+    const options = {
+      serviceName: 'snowflake',
+      functionName: 'snowflakeIndex',
+      requestId: '6cd98939-314c-4404-befc-d18e3b854ce7'
+    }
 
-//     const options = ({
-//       url: 'http://test.shanghai.fc.aliyuncs.com',
-//       event: {
-//         pathParameters: {},
-//         queryParameters: {},
-//         httpMethod: 'GET'
-//       },
-//       isAsync: false,
-//       serviceName: 'test',
-//       functionName: 'test'
-//     } as unknown) as RequestOptions
+    const businessError = () => {
+      const result = handleError(
+        { env: 'DEV', ...options },
+        {
+          status: 401,
+          code: 401000,
+          message: 'Unauthorized',
+          details: { message: '401' },
+          apis: [
+            {
+              serviceName: 'snowflake',
+              functionName: 'snowflakeIndex',
+              requestId: '6cd98939-314c-4404-befc-d18e3b854ce7',
+              env: 'DEV'
+            }
+          ]
+        }
+      )
 
-//     const response = {
-//       status: 200,
-//       data: {
-//         statusCode: 200,
-//         isBase64Encoded: false,
-//         headers: { 'content-type': 'application/json; charset=utf-8' },
-//         body: JSON.stringify({ message: 'ok' })
-//       },
-//       headers: { 'content-type': 'application/json; charset=utf-8' }
-//     }
+      assert(result.status === 401)
+      assert(result.code === 401000)
+      assert(result.message === 'Unauthorized')
+      assert(result.serviceName === 'snowflake')
+      assert(result.functionName === 'snowflakeIndex')
+      assert(result.env === 'DEV')
+      assert(isObject(result.details))
+      assert(Array.isArray(result.apis))
+    }
 
-//     const error = {
-//       status: 500,
-//       code: 500000,
-//       serviceName: 'test',
-//       functionName: 'test',
-//       requestId: '2ea48872-4f8a-4577-9afc-3b8969e960cd',
-//       message: 'test test invoke failed.',
-//       env: 'LATEST',
-//       apis: [
-//         {
-//           serviceName: 'test',
-//           functionName: 'test',
-//           requestId: '2ea48872-4f8a-4577-9afc-3b8969e960cd',
-//           env: 'LATEST'
-//         }
-//       ]
-//     }
+    const serviceError = () => {
+      const result = handleError({ env: 'DEV', ...options }, { error: 'error' })
 
-//     const mock = () => {
-//       sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
-//       sinon.stub(util, 'getRequestToken').returns('token')
-//       sinon
-//         .stub(util, 'getRequestHeaders')
-//         .returns({ 'content-type': 'application/json; charset=utf-8' })
-//     }
+      assert(result.message === 'snowflake snowflakeIndex invoke failed.')
+      assert(result.status === 500)
+      assert(result.code === 500000)
+      assert(result.serviceName === 'snowflake')
+      assert(result.functionName === 'snowflakeIndex')
+      assert(result.env === 'DEV')
+      assert(isObject(result.details))
+      assert(Array.isArray(result.apis))
+    }
 
-//     const correctResponse = async () => {
-//       mock()
+    businessError()
+    serviceError()
+  })
 
-//       sinon.stub(axios, 'request').resolves(response)
+  it('Should be the result of response.', async () => {
+    const correctResponse = () => {
+      const result = response({
+        status: 200,
+        data: {
+          statusCode: 200,
+          isBase64Encoded: false,
+          headers: { 'content-type': 'application/json; charset=utf-8' },
+          body: JSON.stringify({ message: 'ok' })
+        },
+        headers: { 'content-type': 'application/json; charset=utf-8' }
+      })
 
-//       const result = await request(config, options)
+      assert(result.status === 200)
+      assert(JSON.stringify(result.data) === JSON.stringify({ message: 'ok' }))
+      assert(
+        JSON.stringify(result.headers) ===
+          JSON.stringify({ 'content-type': 'application/json; charset=utf-8' })
+      )
+    }
 
-//       assert(JSON.stringify(result), JSON.stringify(response))
-//     }
+    const errorResponse = () => {
+      try {
+        response({
+          status: 400,
+          data: {
+            statusCode: 400,
+            isBase64Encoded: false,
+            headers: { 'content-type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({
+              status: 400,
+              code: 400000,
+              message: `error.`
+            })
+          },
+          headers: { 'content-type': 'application/json; charset=utf-8' }
+        })
+      } catch (err) {
+        assert(err.status === 400)
+        assert(err.code === 400000)
+        assert(err.message === 'error.')
+      }
+    }
 
-//     const businessError = async () => {
-//       sinon.restore()
-//       mock()
+    const isAliCloudGatewayData = () => {
+      const result = response({
+        status: 200,
+        data: {
+          statusCode: 200,
+          isBase64Encoded: false,
+          headers: { 'content-type': 'text/plain; charset=utf-8' },
+          body: ''
+        },
+        headers: { 'content-type': 'text/plain; charset=utf-8' }
+      })
 
-//       sinon.stub(client, 'handleError').returns(error)
-//       sinon.stub(axios, 'request').rejects({
-//         response: {
-//           status: 500,
-//           data: {
-//             statusCode: 500,
-//             isBase64Encoded: false,
-//             headers: { 'content-type': 'application/json; charset=utf-8' },
-//             body: JSON.stringify({ message: 'error' })
-//           },
-//           headers: {
-//             'content-type': 'application/json; charset=utf-8',
-//             'x-fc-request-id': '2ea48872-4f8a-4577-9afc-3b8969e960cd'
-//           }
-//         }
-//       })
+      assert(result.status === 200)
+      assert(result.data === '1')
+      assert(
+        JSON.stringify(result.headers) ===
+          JSON.stringify({ 'content-type': 'text/plain; charset=utf-8' })
+      )
+    }
 
-//       try {
-//         await request(config, options)
-//       } catch (err) {
-//         assert(JSON.stringify(error) === JSON.stringify(err))
-//       }
-//     }
+    const isAliCloudGatewayJsonData = () => {
+      const result = response({
+        status: 202,
+        data: '',
+        headers: { 'content-type': 'application/json; charset=utf-8' }
+      })
 
-//     const serviceError = async () => {
-//       sinon.restore()
-//       mock()
+      assert(result.status === 202)
+      assert(result.data === '')
+      assert(
+        JSON.stringify(result.headers) ===
+          JSON.stringify({ 'content-type': 'application/json; charset=utf-8' })
+      )
+    }
 
-//       sinon.stub(client, 'handleError').returns(error)
-//       sinon.stub(axios, 'request').rejects({ code: 400 })
+    correctResponse()
+    errorResponse()
+    isAliCloudGatewayData()
+    isAliCloudGatewayJsonData()
+  })
 
-//       try {
-//         await request(config, options)
-//       } catch (err) {
-//         assert(JSON.stringify(error) === JSON.stringify(err))
-//       }
-//     }
+  it('Should be the result of warmUp.', async () => {
+    const config = {
+      accountId: 'test',
+      host: 'test.shanghai.fc.aliyuncs.com',
+      timeout: 3000,
+      qualifier: 'LATEST',
+      version: '2016-08-15',
+      endpoint: 'http://test.shanghai.fc.aliyuncs.com',
+      accessId: 'test',
+      accessSecretKey: 'test'
+    }
 
-//     await correctResponse()
-//     await businessError()
-//     await serviceError()
-//   })
+    const options = { serviceName: 'test', functionNames: ['test1', 'test2'] }
+    const correctResponse = async () => {
+      sinon.stub(client, 'invoke').returns(async () => ({
+        status: 200,
+        data: {
+          statusCode: 201,
+          isBase64Encoded: false,
+          headers: { 'content-type': 'application/json; charset=utf-8' },
+          body: JSON.stringify({ message: 'ok' })
+        },
+        headers: { 'content-type': 'application/json; charset=utf-8' }
+      }))
 
-//   it('Should be the result of errorData.', async () => {
-//     const options = {
-//       serviceName: 'snowflake',
-//       functionName: 'snowflakeIndex',
-//       requestId: '6cd98939-314c-4404-befc-d18e3b854ce7'
-//     }
+      const result = await warmUp(config)(options)
 
-//     const businessError = () => {
-//       const result = handleError(
-//         { env: 'DEV', ...options },
-//         {
-//           status: 401,
-//           code: 401000,
-//           message: 'Unauthorized',
-//           details: { message: '401' },
-//           apis: [
-//             {
-//               serviceName: 'snowflake',
-//               functionName: 'snowflakeIndex',
-//               requestId: '6cd98939-314c-4404-befc-d18e3b854ce7',
-//               env: 'DEV'
-//             }
-//           ]
-//         }
-//       )
+      assert(result.length !== 0)
+      assert(
+        (result as InvokeResult[])
+          .map(({ status }: InvokeResult) => status)
+          .toString() === [200, 200].toString()
+      )
+    }
 
-//       assert(result.status === 401)
-//       assert(result.code === 401000)
-//       assert(result.message === 'Unauthorized')
-//       assert(result.serviceName === 'snowflake')
-//       assert(result.functionName === 'snowflakeIndex')
-//       assert(result.env === 'DEV')
-//       assert(util.isObject(result.details))
-//       assert(Array.isArray(result.apis))
-//     }
+    const businessErrorResponse = async () => {
+      sinon.restore()
+      sinon.stub(client, 'invoke').returns(async () => {
+        throw {
+          status: 400,
+          data: {
+            statusCode: 400,
+            isBase64Encoded: false,
+            headers: { 'content-type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({ message: 'error' })
+          },
+          headers: { 'content-type': 'application/json; charset=utf-8' }
+        }
+      })
+      const result = await warmUp(config)(options)
 
-//     const prodServiceError = () => {
-//       const result = handleError(
-//         { env: 'PROD', ...options },
-//         { error: 'error' }
-//       )
+      assert(result.length !== 0)
+      assert(
+        (result as HandleErrorResult[])
+          .map(({ status }: HandleErrorResult) => status)
+          .toString() === [400, 400].toString()
+      )
+    }
 
-//       assert(result.message === 'snowflake snowflakeIndex invoke failed.')
-//       assert(result.status === 500)
-//       assert(result.code === 500000)
-//       assert(result.serviceName === 'snowflake')
-//       assert(result.functionName === 'snowflakeIndex')
-//       assert(result.env === 'PROD')
+    await correctResponse()
+    await businessErrorResponse()
+  })
 
-//       assert(Array.isArray(result.apis))
-//     }
+  it('Should be the result of request.', async () => {
+    const config = {
+      host: 'test.shanghai.fc.aliyuncs.com',
+      accountId: 'test',
+      accessId: 'test',
+      accessSecretKey: 'test',
+      timeout: 3000,
+      qualifier: 'LATEST'
+    }
 
-//     const devServiceError = () => {
-//       const result = handleError({ env: 'DEV', ...options }, { error: 'error' })
+    const options = ({
+      url: 'http://test.shanghai.fc.aliyuncs.com',
+      event: {
+        pathParameters: {},
+        queryParameters: {},
+        httpMethod: 'GET'
+      },
+      isAsync: false,
+      serviceName: 'test',
+      functionName: 'test'
+    } as unknown) as RequestOptions
 
-//       assert(result.message === 'snowflake snowflakeIndex invoke failed.')
-//       assert(result.status === 500)
-//       assert(result.code === 500000)
-//       assert(result.serviceName === 'snowflake')
-//       assert(result.functionName === 'snowflakeIndex')
-//       assert(result.env === 'DEV')
-//       assert(util.isObject(result.details))
-//       assert(Array.isArray(result.apis))
-//     }
+    const response = {
+      status: 200,
+      data: {
+        statusCode: 200,
+        isBase64Encoded: false,
+        headers: { 'content-type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({ message: 'ok' })
+      },
+      headers: { 'content-type': 'application/json; charset=utf-8' }
+    }
 
-//     const generateInvokeChain = () => {
-//       const result = handleError(
-//         { env: 'DEV', ...options },
-//         {
-//           status: 401,
-//           code: 401000,
-//           message: 'Unauthorized',
-//           details: { message: '401' }
-//         }
-//       )
+    const error = {
+      status: 500,
+      code: 500000,
+      serviceName: 'test',
+      functionName: 'test',
+      requestId: '2ea48872-4f8a-4577-9afc-3b8969e960cd',
+      message: 'test test invoke failed.',
+      env: 'LATEST',
+      apis: [
+        {
+          serviceName: 'test',
+          functionName: 'test',
+          requestId: '2ea48872-4f8a-4577-9afc-3b8969e960cd',
+          env: 'LATEST'
+        }
+      ]
+    }
 
-//       assert(result.status === 401)
-//       assert(result.code === 401000)
-//       assert(result.message === 'Unauthorized')
-//       assert(result.serviceName === 'snowflake')
-//       assert(result.functionName === 'snowflakeIndex')
-//       assert(result.env === 'DEV')
-//       assert(util.isObject(result.details))
-//       assert(Array.isArray(result.apis))
-//     }
+    const mock = () => {
+      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
+      sinon.stub(util, 'getRequestToken').returns('token')
+      sinon
+        .stub(util, 'getRequestHeaders')
+        .returns({ 'content-type': 'application/json; charset=utf-8' })
+    }
 
-//     businessError()
-//     prodServiceError()
-//     devServiceError()
-//     generateInvokeChain()
-//   })
+    const correctResponse = async () => {
+      mock()
 
-//   it('Should be the result of response.', async () => {
-//     const correctResponse = () => {
-//       const result = response({
-//         status: 200,
-//         data: {
-//           statusCode: 200,
-//           isBase64Encoded: false,
-//           headers: { 'content-type': 'application/json; charset=utf-8' },
-//           body: JSON.stringify({ message: 'ok' })
-//         },
-//         headers: { 'content-type': 'application/json; charset=utf-8' }
-//       })
+      sinon.stub(axios, 'request').resolves(response)
 
-//       assert(
-//         assert.deepStrictEqual(result, {
-//           status: 200,
-//           data: { message: 'ok' },
-//           headers: { 'content-type': 'application/json; charset=utf-8' }
-//         })
-//       )
-//     }
+      const result = await request(config, options)
 
-//     const errorResponse = () => {
-//       try {
-//         response({
-//           status: 400,
-//           data: {
-//             statusCode: 400,
-//             isBase64Encoded: false,
-//             headers: { 'content-type': 'application/json; charset=utf-8' },
-//             body: JSON.stringify({
-//               status: 400,
-//               code: 400000,
-//               message: `error.`
-//             })
-//           },
-//           headers: { 'content-type': 'application/json; charset=utf-8' }
-//         })
-//       } catch (err) {
-//         assert(
-//           assert.deepStrictEqual(err, {
-//             status: 400,
-//             code: 400000,
-//             message: `error.`
-//           })
-//         )
-//       }
-//     }
+      assert(JSON.stringify(result), JSON.stringify(response))
+    }
 
-//     const isAliCloudGatewayData = () => {
-//       const result = response({
-//         status: 200,
-//         data: {
-//           statusCode: 200,
-//           isBase64Encoded: false,
-//           headers: { 'content-type': 'text/plain; charset=utf-8' },
-//           body: ''
-//         },
-//         headers: { 'content-type': 'application/json; charset=utf-8' }
-//       })
+    const businessError = async () => {
+      sinon.restore()
+      mock()
 
-//       assert(
-//         assert.deepStrictEqual(result, {
-//           status: 200,
-//           data: '',
-//           headers: { 'content-type': 'text/plain; charset=utf-8' }
-//         })
-//       )
-//     }
+      sinon.stub(client, 'handleError').returns(error)
+      sinon.stub(axios, 'request').rejects({
+        response: {
+          status: 500,
+          data: {
+            statusCode: 500,
+            isBase64Encoded: false,
+            headers: { 'content-type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({ message: 'error' })
+          },
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
+            'x-fc-request-id': '2ea48872-4f8a-4577-9afc-3b8969e960cd'
+          }
+        }
+      })
 
-//     const isAliCloudGatewayJsonData = () => {
-//       const result = response({
-//         status: 200,
-//         data: '',
-//         headers: { 'content-type': 'application/json; charset=utf-8' }
-//       })
+      try {
+        await request(config, options)
+      } catch (err) {
+        assert(JSON.stringify(error) === JSON.stringify(err))
+      }
+    }
 
-//       assert(
-//         assert.deepStrictEqual(result, {
-//           status: 200,
-//           data: '',
-//           headers: { 'content-type': 'text/plain; charset=utf-8' }
-//         })
-//       )
-//     }
+    const serviceError = async () => {
+      sinon.restore()
+      mock()
 
-//     correctResponse()
-//     errorResponse()
-//     isAliCloudGatewayData()
-//     isAliCloudGatewayJsonData()
-//   })
+      sinon.stub(client, 'handleError').returns(error)
+      sinon.stub(axios, 'request').rejects({ code: 400 })
 
-//   it('Should be the result of warmUp.', async () => {
-//     const config = {
-//       accountId: 'test',
-//       host: 'test.shanghai.fc.aliyuncs.com',
-//       timeout: 3000,
-//       qualifier: 'LATEST',
-//       version: '2016-08-15',
-//       endpoint: 'http://test.shanghai.fc.aliyuncs.com',
-//       accessId: 'test',
-//       accessSecretKey: 'test'
-//     }
+      try {
+        await request(config, options)
+      } catch (err) {
+        assert(JSON.stringify(error) === JSON.stringify(err))
+      }
+    }
 
-//     const options = { serviceName: 'test', functionNames: ['test1', 'test2'] }
-//     const correctResponse = async () => {
-//       sinon.stub(client, 'invoke').resolves({
-//         status: 200,
-//         data: {
-//           statusCode: 201,
-//           isBase64Encoded: false,
-//           headers: { 'content-type': 'application/json; charset=utf-8' },
-//           body: JSON.stringify({ message: 'ok' })
-//         },
-//         headers: { 'content-type': 'application/json; charset=utf-8' }
-//       })
-
-//       const result = await preheat(config)(options)
-
-//       assert(result.length !== 0)
-//       assert(
-//         (result as InvokeResult[])
-//           .map(({ status }: InvokeResult) => status)
-//           .toString() === [200, 200].toString()
-//       )
-//     }
-
-//     const businessErrorResponse = async () => {
-//       sinon.restore()
-//       sinon.stub(client, 'invoke').rejects({
-//         status: 400,
-//         data: {
-//           statusCode: 400,
-//           isBase64Encoded: false,
-//           headers: { 'content-type': 'application/json; charset=utf-8' },
-//           body: JSON.stringify({ message: 'error' })
-//         },
-//         headers: { 'content-type': 'application/json; charset=utf-8' }
-//       })
-//       const result = await preheat(config)(options)
-
-//       assert(result.length !== 0)
-//       assert(
-//         (result as HandleErrorResult[])
-//           .map(({ status }: HandleErrorResult) => status)
-//           .toString() === [400, 400].toString()
-//       )
-//     }
-
-//     await correctResponse()
-//     await businessErrorResponse()
-//   })
-// })
+    await correctResponse()
+    await businessError()
+    await serviceError()
+  })
+})

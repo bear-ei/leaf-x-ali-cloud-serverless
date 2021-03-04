@@ -1,22 +1,21 @@
 import axios from 'axios'
+import { isObject } from 'lodash/fp'
 import {
-  AliCloudGatewayDataFunction,
   AliCloudGatewayOptions,
+  AliCloudGatewayResponseFunction,
   ExecRequestFunction,
   FCFunction,
   HandleErrorFunction,
-  HandleErrorOptions,
   HandleErrorResult,
   HandleRequestErrorFunction,
   InvokeFunction,
-  PreheatFunction,
   RequestFunction,
   RequestResult,
   ResponseFunction,
-  RetryRequestFunction
+  RetryRequestFunction,
+  warmUpFunction
 } from './interface'
 import { eventToBuffer, getRequestHeaders, getRequestToken } from './util'
-import { isObject } from 'lodash/fp'
 ;('use strict')
 
 export const fc: FCFunction = ({
@@ -43,7 +42,7 @@ export const fc: FCFunction = ({
     ...args
   }
 
-  return { invoke: invoke(config), preheat: preheat(config) }
+  return { invoke: invoke(config), warmUp: warmUp(config) }
 }
 
 export const invoke: InvokeFunction = ({
@@ -57,9 +56,9 @@ export const invoke: InvokeFunction = ({
   const exec: ExecRequestFunction = async (retryNum, { config, options }) => {
     let error!: Record<string, Record<string, unknown>>
 
-    const result = (await request(config, options)
+    const result = await request(config, options)
       .then((result) => result)
-      .catch((err) => (error = err))) as RequestResult
+      .catch((err) => (error = err))
 
     const retry: RetryRequestFunction = (retry, error) => {
       const isRetry = retry > 0 && ((error.status as unknown) as number) >= 500
@@ -88,23 +87,15 @@ export const handleError: HandleErrorFunction = (
   { serviceName, functionName, requestId, env },
   error
 ) => {
-  const status = (error.status as number) ?? 500
-  const code = error.code ? (error.code as number) : Number(`${status}000`)
-  //   const isProdEnv = env === 'PROD' || env === 'PRE'
+  const status = (error.status ?? 500) as number
+  const code = (error.code ? error.code : Number(`${status}000`)) as number
   const result = !error.status && !error.code ? { details: error } : error
-
   const currentApis = [{ serviceName, functionName, requestId, env }]
   const message = (error.message ??
     `${serviceName} ${functionName} invoke failed.`) as string
 
-  //   const apis = !isProdEnv
-  //     ? result.apis
-  //       ? (result.apis as HandleErrorOptions[]).concat(currentApis)
-  //       : currentApis
-  //     : []
-
-  const apis = result.apis
-    ? (result.apis as HandleErrorOptions[]).concat(currentApis)
+  const apis = Array.isArray(result.apis)
+    ? result.apis.concat(currentApis)
     : currentApis
 
   return Object.assign({}, result, {
@@ -125,7 +116,7 @@ export const response: ResponseFunction = ({ data, status, ...args }) => {
     Object.keys(data).sort().join() ===
       ['statusCode', 'isBase64Encoded', 'headers', 'body'].sort().join()
 
-  const aliCloudGatewayData: AliCloudGatewayDataFunction = ({
+  const aliCloudGatewayData: AliCloudGatewayResponseFunction = ({
     statusCode,
     headers,
     body
@@ -146,7 +137,7 @@ export const response: ResponseFunction = ({ data, status, ...args }) => {
     : { data, status, ...args }
 }
 
-export const preheat: PreheatFunction = (config) => async ({
+export const warmUp: warmUpFunction = (config) => async ({
   serviceName,
   functionNames
 }) => {
@@ -181,35 +172,41 @@ export const request: RequestFunction = async (
     headers
   })
 
-  const handleRequestError: HandleRequestErrorFunction = (error) => {
-    const responseError = error.response as Record<
-      string,
-      Record<string, unknown>
-    >
-
-    if (responseError) {
-      throw handleError(
-        {
-          serviceName,
-          functionName,
-          requestId: responseError.headers['x-fc-request-id'] as string,
-          env: qualifier
-        },
-        responseError.data
-      )
-    }
-
-    throw handleError({ serviceName, functionName, env: qualifier }, error)
-  }
-
-  return axios
+  return (axios
     .request({
       url,
       method,
       data: buffer,
       timeout,
-      headers: Object.assign(headers, { authorization: token })
+      headers: Object.assign({}, headers, { authorization: token })
     })
-    .then((result) => (result as unknown) as RequestResult)
-    .catch((error) => handleRequestError(error))
+    .then((result) => result)
+    .catch((error) =>
+      handleRequestError({ serviceName, functionName, qualifier })(error)
+    ) as unknown) as RequestResult
+}
+
+export const handleRequestError: HandleRequestErrorFunction = ({
+  serviceName,
+  functionName,
+  qualifier
+}) => (error) => {
+  const responseError = error.response as Record<
+    string,
+    Record<string, unknown>
+  >
+
+  if (responseError) {
+    throw handleError(
+      {
+        serviceName,
+        functionName,
+        requestId: responseError.headers['x-fc-request-id'] as string,
+        env: qualifier
+      },
+      responseError.data
+    )
+  }
+
+  throw handleError({ serviceName, functionName, env: qualifier }, error)
 }
