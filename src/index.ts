@@ -15,7 +15,7 @@ import {
   RetryRequestFunction,
   warmUpFunction
 } from './interface'
-import { eventToBuffer, getRequestHeaders, getRequestToken } from './util'
+import { eventToBuffer, getHeaders, getToken } from './util'
 ;('use strict')
 
 export const fc: FCFunction = ({
@@ -60,13 +60,14 @@ export const invoke: InvokeFunction = ({
       .then((result) => result)
       .catch((err) => (error = err))
 
-    const retry: RetryRequestFunction = (retry, error) => {
-      const isRetry = retry > 0 && ((error.status as unknown) as number) >= 500
+    const retry: RetryRequestFunction = (retryNum, error) => {
+      const isRetry =
+        retryNum > 0 && ((error.status as unknown) as number) >= 500
 
       if (isRetry) {
-        retry--
+        retryNum--
 
-        return exec(retry, { config, options })
+        return exec(retryNum, { config, options })
       }
 
       throw error
@@ -111,12 +112,12 @@ export const handleError: HandleErrorFunction = (
 }
 
 export const response: ResponseFunction = ({ data, status, ...args }) => {
-  const isAliCloudGatewayData =
+  const isGatewayData =
     isObject(data) &&
     Object.keys(data).sort().join() ===
       ['statusCode', 'isBase64Encoded', 'headers', 'body'].sort().join()
 
-  const aliCloudGatewayData: AliCloudGatewayResponseFunction = ({
+  const gatewayData: AliCloudGatewayResponseFunction = ({
     statusCode,
     headers,
     body
@@ -132,15 +133,15 @@ export const response: ResponseFunction = ({ data, status, ...args }) => {
     return { status: statusCode, headers, data }
   }
 
-  return isAliCloudGatewayData
-    ? aliCloudGatewayData(data as AliCloudGatewayOptions)
+  return isGatewayData
+    ? gatewayData(data as AliCloudGatewayOptions)
     : { data, status, ...args }
 }
 
-export const warmUp: warmUpFunction = (config) => async ({
+export const warmUp: warmUpFunction = (config) => async (
   serviceName,
   functionNames
-}) => {
+) => {
   const exec = ((serviceName: string) => async (key: string) =>
     invoke(config)({
       serviceName,
@@ -157,14 +158,14 @@ export const request: RequestFunction = async (
 ) => {
   const method = 'POST'
   const buffer = eventToBuffer(event)
-  const headers = getRequestHeaders({
+  const headers = getHeaders({
     content: buffer,
     host,
     accountId,
     isAsync
   })
 
-  const token = getRequestToken({
+  const token = getToken({
     accessId,
     accessSecretKey,
     method,
@@ -172,11 +173,10 @@ export const request: RequestFunction = async (
     headers
   })
 
-  const handleRequestError: HandleRequestErrorFunction = ({
-    serviceName,
-    functionName,
-    qualifier
-  }) => (error) => {
+  const handleRequestError: HandleRequestErrorFunction = (
+    { serviceName, functionName, qualifier },
+    error
+  ) => {
     const responseError = error.response as Record<
       string,
       Record<string, unknown>
@@ -207,6 +207,6 @@ export const request: RequestFunction = async (
     })
     .then((result) => result)
     .catch((error) =>
-      handleRequestError({ serviceName, functionName, qualifier })(error)
+      handleRequestError({ serviceName, functionName, qualifier }, error)
     ) as unknown) as RequestResult
 }

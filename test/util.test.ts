@@ -6,11 +6,11 @@ import * as util from '../src/util'
 
 const {
   eventToBuffer,
-  getRequestHeaders,
-  getRequestToken,
+  getHeaders,
+  getToken,
   getSignStr,
-  getRequestSign,
-  getCanonicalHeaders,
+  getSign,
+  getCanonicalHeaderStr,
   md5
 } = util
 
@@ -21,11 +21,11 @@ describe('test/util.test.ts', () => {
     assert(Buffer.isBuffer(result))
   })
 
-  it('Should be the result of getRequestHeaders.', async () => {
+  it('Should be the result of getHeaders.', async () => {
     sinon.stub(util, 'md5').returns('sign')
 
     const asyncResult = () => {
-      const result = getRequestHeaders({
+      const result = getHeaders({
         content: Buffer.from('test'),
         host: 'test.test-internal.fc.aliyuncs.com',
         accountId: 'test'
@@ -49,7 +49,7 @@ describe('test/util.test.ts', () => {
     }
 
     const syncResult = () => {
-      const result = getRequestHeaders({
+      const result = getHeaders({
         content: Buffer.from('test'),
         host: 'test.test-internal.fc.aliyuncs.com',
         accountId: 'test',
@@ -80,11 +80,11 @@ describe('test/util.test.ts', () => {
     sinon.restore()
   })
 
-  it('Should be the result of getRequestToken.', async () => {
+  it('Should be the result of getToken.', async () => {
     sinon.stub(util, 'getSignStr').returns('sign')
-    sinon.stub(util, 'getRequestSign').returns((sign: string) => sign)
+    sinon.stub(util, 'getSign').returns((sign: string) => sign)
 
-    const result = getRequestToken({
+    const result = getToken({
       accessId: 'test',
       accessSecretKey: 'test',
       method: 'POST',
@@ -99,7 +99,7 @@ describe('test/util.test.ts', () => {
   })
 
   it('Should be the result of getSignStr.', async () => {
-    sinon.stub(util, 'getCanonicalHeaders').returns('x-fc-token:test\n')
+    sinon.stub(util, 'getCanonicalHeaderStr').returns('x-fc-token:test\n')
 
     const result = getSignStr({
       method: 'POST',
@@ -121,21 +121,21 @@ describe('test/util.test.ts', () => {
     sinon.restore()
   })
 
-  it('Should be the result of getRequestSign.', async () => {
-    const result = getRequestSign('test')('test')
+  it('Should be the result of getSign.', async () => {
+    const result = getSign('test')('test')
 
     assert(typeof result === 'string')
   })
 
-  it('Should be the result of getCanonicalHeaders.', async () => {
-    const result = getCanonicalHeaders({
-      headers: {
+  it('Should be the result of getCanonicalHeaderStr.', async () => {
+    const result = getCanonicalHeaderStr(
+      {
         'x-fc-token': 'test',
         'x-fc-warm-up': 'warmUp',
         'x-token': 'test'
       },
-      prefix: 'x-fc'
-    })
+      'x-fc'
+    )
 
     assert(typeof result === 'string')
     assert(result === 'x-fc-token:test\nx-fc-warm-up:warmUp')

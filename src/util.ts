@@ -2,11 +2,11 @@ import * as crypto from 'crypto'
 import { flow } from 'lodash/fp'
 import {
   EventToBufferFunction,
-  GetCanonicalHeadersFunction,
-  GetRequestHeaderFunction,
-  GetRequestSignFunction,
-  GetRequestTokenFunction,
+  GetCanonicalHeaderStrFunction,
+  GetHeaderFunction,
+  GetSignFunction,
   GetSignStrFunction,
+  GetTokenFunction,
   MD5Function
 } from './interface/util'
 ;('use strict')
@@ -31,7 +31,7 @@ export const eventToBuffer: EventToBufferFunction = ({
     headers
   })
 
-export const getRequestHeaders: GetRequestHeaderFunction = ({
+export const getHeaders: GetHeaderFunction = ({
   content,
   host,
   accountId,
@@ -48,33 +48,27 @@ export const getRequestHeaders: GetRequestHeaderFunction = ({
   ...(isAsync ? { 'x-fc-invocation-type': 'Async' } : undefined)
 })
 
-export const getRequestToken: GetRequestTokenFunction = ({
+export const getToken: GetTokenFunction = ({
   accessId,
   accessSecretKey,
   ...args
-}) =>
-  `FC ${accessId}:${flow(getSignStr, getRequestSign(accessSecretKey))(args)}`
+}) => `FC ${accessId}:${flow(getSignStr, getSign(accessSecretKey))(args)}`
 
 export const getSignStr: GetSignStrFunction = ({ method, url, headers }) => {
-  const contentMD5 = headers['content-md5']
-  const contentType = headers['content-type']
-  const date = headers['date']
-  const signHeaders = getCanonicalHeaders({ headers, prefix: 'x-fc-' })
-  const pathUnescaped = decodeURIComponent(new URL(url).pathname)
+  const canonicalHeaderStr = getCanonicalHeaderStr(headers, 'x-fc-')
+  const pathName = decodeURIComponent(new URL(url).pathname)
 
   return [
     method,
-    contentMD5,
-    contentType,
-    date,
-    signHeaders,
-    pathUnescaped
+    headers['content-md5'],
+    headers['content-type'],
+    headers['date'],
+    canonicalHeaderStr,
+    pathName
   ].join('\n')
 }
 
-export const getRequestSign: GetRequestSignFunction = (accessSecretKey) => (
-  signStr
-) => {
+export const getSign: GetSignFunction = (accessSecretKey) => (signStr) => {
   const buffer = crypto
     .createHmac('sha256', accessSecretKey)
     .update(signStr, 'utf8')
@@ -83,29 +77,19 @@ export const getRequestSign: GetRequestSignFunction = (accessSecretKey) => (
   return Buffer.from(buffer).toString('base64')
 }
 
-export const getCanonicalHeaders: GetCanonicalHeadersFunction = ({
+export const getCanonicalHeaderStr: GetCanonicalHeaderStrFunction = (
   headers,
   prefix
-}) => {
+) => {
   const joinHeadersStr = ((headers) => (key: string) =>
     `${key}:${headers[key]}`)(headers)
 
-  const getCanonical = (({ headers, prefix }) => (key: string) => {
-    const lowerKey = key.toLowerCase()
-
-    return lowerKey.startsWith(prefix) ? { [lowerKey]: headers[key] } : {}
-  })({ headers, prefix })
-
-  const canonicalHeaders = (headers: Record<string, string>) =>
-    Object.keys(headers)
-      .map(getCanonical)
-      .reduce((a, b) => Object.assign(a, b), {})
-
-  const canonicalHeadersStr = (headers: Record<string, string>) =>
-    Object.keys(headers).sort().map(joinHeadersStr).join('\n')
-
-  return flow(canonicalHeaders, canonicalHeadersStr)(headers)
+  return Object.keys(headers)
+    .filter((key) => key.startsWith(prefix))
+    .sort()
+    .map(joinHeadersStr)
+    .join('\n')
 }
 
 export const md5: MD5Function = (data) =>
-  crypto.createHash('md5').update(data).digest('hex').toLocaleUpperCase()
+  crypto.createHash('md5').update(data).digest('hex')

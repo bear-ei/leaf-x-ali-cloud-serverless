@@ -224,7 +224,7 @@ describe('test/util.test.ts', () => {
       }
     }
 
-    const isAliCloudGatewayData = () => {
+    const isGatewayData = () => {
       const result = response({
         status: 200,
         data: {
@@ -261,7 +261,7 @@ describe('test/util.test.ts', () => {
 
     correctResponse()
     errorResponse()
-    isAliCloudGatewayData()
+    isGatewayData()
     isAliCloudGatewayJsonData()
   })
 
@@ -277,7 +277,6 @@ describe('test/util.test.ts', () => {
       accessSecretKey: 'test'
     }
 
-    const options = { serviceName: 'test', functionNames: ['test1', 'test2'] }
     const correctResponse = async () => {
       sinon.stub(client, 'invoke').returns(async () => ({
         status: 200,
@@ -290,7 +289,7 @@ describe('test/util.test.ts', () => {
         headers: { 'content-type': 'application/json; charset=utf-8' }
       }))
 
-      const result = await warmUp(config)(options)
+      const result = await warmUp(config)('test', ['test1', 'test2'])
 
       assert(result.length !== 0)
       assert(
@@ -315,7 +314,7 @@ describe('test/util.test.ts', () => {
           headers: { 'content-type': 'application/json; charset=utf-8' }
         }
       })
-      const result = await warmUp(config)(options)
+      const result = await warmUp(config)('test', ['test1', 'test2'])
 
       assert(result.length !== 0)
       assert(
@@ -384,9 +383,9 @@ describe('test/util.test.ts', () => {
 
     const mock = () => {
       sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
-      sinon.stub(util, 'getRequestToken').returns('token')
+      sinon.stub(util, 'getToken').returns('token')
       sinon
-        .stub(util, 'getRequestHeaders')
+        .stub(util, 'getHeaders')
         .returns({ 'content-type': 'application/json; charset=utf-8' })
     }
 

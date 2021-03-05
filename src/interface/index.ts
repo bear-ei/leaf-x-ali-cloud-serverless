@@ -58,7 +58,8 @@ export interface FCOptions {
 export interface FCResult {
   invoke: (options: InvokeOptions) => Promise<InvokeResult>
   warmUp: (
-    options: warmUpOptions
+    serviceName: string,
+    functionNames: string[]
   ) => Promise<(HandleErrorResult | InvokeResult)[]>
 }
 
@@ -233,27 +234,16 @@ export interface ResponseFunction {
 export type warmUpConfig = InvokeConfig
 
 /**
- * warmUp options.
- */
-export interface warmUpOptions {
-  /**
-   * Service name.
-   */
-  serviceName: string
-
-  /**
-   * Function names.
-   */
-  functionNames: string[]
-}
-
-/**
  * warmUp functions.
  * Reduce cold starts by running functions in a minimal access manner.
+ *
+ * @param serviceName Service name.
+ * @param functionNames Function names.
  */
 export interface warmUpFunction {
   (config: warmUpConfig): (
-    options: warmUpOptions
+    serviceName: string,
+    functionNames: string[]
   ) => Promise<(HandleErrorResult | InvokeResult)[]>
 }
 
@@ -393,7 +383,5 @@ export interface HandleRequestErrorOptions {
  * Handle request errors.
  */
 export interface HandleRequestErrorFunction {
-  (options: HandleRequestErrorOptions): (
-    error: Record<string, unknown>
-  ) => never
+  (options: HandleRequestErrorOptions, error: Record<string, unknown>): never
 }

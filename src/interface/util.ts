@@ -85,14 +85,14 @@ export interface GetRequestHeaderOptions {
 /**
  * Get request headers.
  */
-export interface GetRequestHeaderFunction {
+export interface GetHeaderFunction {
   (options: GetRequestHeaderOptions): Record<string, string>
 }
 
 /**
  * Get request token options
  */
-export interface GetRequestTokenOptions {
+export interface getTokenOptions {
   /**
    * Ali cloud access id.
    */
@@ -123,14 +123,14 @@ export interface GetRequestTokenOptions {
 /**
  * Get request token.
  */
-export interface GetRequestTokenFunction {
-  (options: GetRequestTokenOptions): string
+export interface GetTokenFunction {
+  (options: getTokenOptions): string
 }
 
 /**
  * Request a signature.
  */
-export interface GetRequestSignFunction {
+export interface GetSignFunction {
   (accessSecretKey: string): (signStr: string) => string
 }
 
@@ -169,25 +169,12 @@ export interface EventToBufferFunction {
 }
 
 /**
- * Get specification request header options.
+ * Get the canonical header string.
+ * @param headers   Request Headers.
+ * @param prefix    specification  request header prefix.
  */
-export interface GetCanonicalHeaderOptions {
-  /**
-   * Request Headers.
-   */
-  headers: Record<string, string>
-
-  /**
-   * specification  request header prefix.
-   */
-  prefix: string
-}
-
-/**
- * Get specification request headers.
- */
-export interface GetCanonicalHeadersFunction {
-  (options: GetCanonicalHeaderOptions): string
+export interface GetCanonicalHeaderStrFunction {
+  (headers: Record<string, string>, prefix: string): string
 }
 
 /**
