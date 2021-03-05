@@ -172,6 +172,31 @@ export const request: RequestFunction = async (
     headers
   })
 
+  const handleRequestError: HandleRequestErrorFunction = ({
+    serviceName,
+    functionName,
+    qualifier
+  }) => (error) => {
+    const responseError = error.response as Record<
+      string,
+      Record<string, unknown>
+    >
+
+    if (responseError) {
+      throw handleError(
+        {
+          serviceName,
+          functionName,
+          requestId: responseError.headers['x-fc-request-id'] as string,
+          env: qualifier
+        },
+        responseError.data
+      )
+    }
+
+    throw handleError({ serviceName, functionName, env: qualifier }, error)
+  }
+
   return (axios
     .request({
       url,
@@ -184,29 +209,4 @@ export const request: RequestFunction = async (
     .catch((error) =>
       handleRequestError({ serviceName, functionName, qualifier })(error)
     ) as unknown) as RequestResult
-}
-
-export const handleRequestError: HandleRequestErrorFunction = ({
-  serviceName,
-  functionName,
-  qualifier
-}) => (error) => {
-  const responseError = error.response as Record<
-    string,
-    Record<string, unknown>
-  >
-
-  if (responseError) {
-    throw handleError(
-      {
-        serviceName,
-        functionName,
-        requestId: responseError.headers['x-fc-request-id'] as string,
-        env: qualifier
-      },
-      responseError.data
-    )
-  }
-
-  throw handleError({ serviceName, functionName, env: qualifier }, error)
 }

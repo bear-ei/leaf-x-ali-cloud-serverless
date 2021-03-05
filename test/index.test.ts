@@ -107,10 +107,11 @@ describe('test/util.test.ts', () => {
       const result = await invoke(config)(options)
 
       assert(JSON.stringify(response) === JSON.stringify(result))
+
+      sinon.restore()
     }
 
     const errorResponse = async () => {
-      sinon.restore()
       sinon.stub(client, 'request').rejects(error)
 
       try {
@@ -118,6 +119,8 @@ describe('test/util.test.ts', () => {
       } catch (err) {
         assert(JSON.stringify(error) === JSON.stringify(err))
       }
+
+      sinon.restore()
     }
 
     await correctResponse()
@@ -234,7 +237,7 @@ describe('test/util.test.ts', () => {
       })
 
       assert(result.status === 200)
-      assert(result.data === '1')
+      assert(result.data === '')
       assert(
         JSON.stringify(result.headers) ===
           JSON.stringify({ 'content-type': 'text/plain; charset=utf-8' })
@@ -295,10 +298,11 @@ describe('test/util.test.ts', () => {
           .map(({ status }: InvokeResult) => status)
           .toString() === [200, 200].toString()
       )
+
+      sinon.restore()
     }
 
     const businessErrorResponse = async () => {
-      sinon.restore()
       sinon.stub(client, 'invoke').returns(async () => {
         throw {
           status: 400,
@@ -319,6 +323,8 @@ describe('test/util.test.ts', () => {
           .map(({ status }: HandleErrorResult) => status)
           .toString() === [400, 400].toString()
       )
+
+      sinon.restore()
     }
 
     await correctResponse()
@@ -392,10 +398,11 @@ describe('test/util.test.ts', () => {
       const result = await request(config, options)
 
       assert(JSON.stringify(result), JSON.stringify(response))
+
+      sinon.restore()
     }
 
     const businessError = async () => {
-      sinon.restore()
       mock()
 
       sinon.stub(client, 'handleError').returns(error)
@@ -420,10 +427,11 @@ describe('test/util.test.ts', () => {
       } catch (err) {
         assert(JSON.stringify(error) === JSON.stringify(err))
       }
+
+      sinon.restore()
     }
 
     const serviceError = async () => {
-      sinon.restore()
       mock()
 
       sinon.stub(client, 'handleError').returns(error)
@@ -434,6 +442,8 @@ describe('test/util.test.ts', () => {
       } catch (err) {
         assert(JSON.stringify(error) === JSON.stringify(err))
       }
+
+      sinon.restore()
     }
 
     await correctResponse()

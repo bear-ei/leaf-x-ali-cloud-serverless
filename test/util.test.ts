@@ -1,9 +1,9 @@
 'use strict'
 
-import * as sinon from 'sinon'
 import * as assert from 'assert'
+import * as sinon from 'sinon'
 import * as util from '../src/util'
-import { isBuffer } from 'lodash/fp'
+
 const {
   eventToBuffer,
   getRequestHeaders,
@@ -18,7 +18,7 @@ describe('test/util.test.ts', () => {
   it('Should be the result of eventToBuffer.', async () => {
     const result = eventToBuffer({ httpMethod: 'POST' })
 
-    assert(isBuffer(result))
+    assert(Buffer.isBuffer(result))
   })
 
   it('Should be the result of getRequestHeaders.', async () => {
@@ -76,6 +76,8 @@ describe('test/util.test.ts', () => {
 
     asyncResult()
     syncResult()
+
+    sinon.restore()
   })
 
   it('Should be the result of getRequestToken.', async () => {
@@ -92,6 +94,8 @@ describe('test/util.test.ts', () => {
 
     assert(typeof result === 'string')
     assert(result === 'FC test:sign')
+
+    sinon.restore()
   })
 
   it('Should be the result of getSignStr.', async () => {
@@ -113,6 +117,8 @@ describe('test/util.test.ts', () => {
       result ===
         'POST\nmd5\napplication/json; charset=utf-8\nFri, 26 Feb 2021 03:01:43 GMT\nx-fc-token:test\n\n/test'
     )
+
+    sinon.restore()
   })
 
   it('Should be the result of getRequestSign.', async () => {
