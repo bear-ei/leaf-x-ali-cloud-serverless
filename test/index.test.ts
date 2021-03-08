@@ -1,3 +1,5 @@
+'use strict'
+
 import * as assert from 'assert'
 import axios from 'axios'
 import { isObject } from 'lodash/fp'
@@ -10,12 +12,25 @@ import {
 } from 'src/interface'
 import * as client from '../src'
 import * as util from '../src/util'
-;('use strict')
 
 const { fc, invoke, request, handleError, response, warmUp } = client
 
-describe('test/util.test.ts', () => {
+describe('test/index.test.ts', () => {
   it('Should be the result of fc.', async () => {
+    sinon.stub(client, 'invoke').returns(async () => ({
+      data: 'Test',
+      status: 200,
+      headers: { test: 'Test' }
+    }))
+
+    sinon.stub(client, 'warmUp').returns(async () => [
+      {
+        data: 'Test',
+        status: 200,
+        headers: { test: 'Test' }
+      }
+    ])
+
     const defaultOptions = () => {
       const result = fc({
         accessId: 'test',
@@ -45,6 +60,8 @@ describe('test/util.test.ts', () => {
 
     defaultOptions()
     inputOptions()
+
+    sinon.restore()
   })
 
   it('Should be the result of invoke.', async () => {
@@ -328,6 +345,126 @@ describe('test/util.test.ts', () => {
 
     await correctResponse()
     await businessErrorResponse()
+  })
+
+  it('Should be the result of request.', async () => {
+    const config = {
+      host: 'test.shanghai.fc.aliyuncs.com',
+      accountId: 'test',
+      accessId: 'test',
+      accessSecretKey: 'test',
+      timeout: 3000,
+      qualifier: 'LATEST'
+    }
+
+    const options = ({
+      url: 'http://test.shanghai.fc.aliyuncs.com',
+      event: {
+        pathParameters: {},
+        queryParameters: {},
+        httpMethod: 'GET'
+      },
+      async: false,
+      serviceName: 'test',
+      functionName: 'test'
+    } as unknown) as RequestOptions
+
+    const response = {
+      status: 200,
+      data: {
+        statusCode: 200,
+        isBase64Encoded: false,
+        headers: { 'content-type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({ message: 'ok' })
+      },
+      headers: { 'content-type': 'application/json; charset=utf-8' }
+    }
+
+    const error = {
+      status: 500,
+      code: 500000,
+      serviceName: 'test',
+      functionName: 'test',
+      requestId: '2ea48872-4f8a-4577-9afc-3b8969e960cd',
+      message: 'test test invoke failed.',
+      env: 'LATEST',
+      apis: [
+        {
+          serviceName: 'test',
+          functionName: 'test',
+          requestId: '2ea48872-4f8a-4577-9afc-3b8969e960cd',
+          env: 'LATEST'
+        }
+      ]
+    }
+
+    const mock = () => {
+      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
+      sinon.stub(util, 'getToken').returns('token')
+      sinon
+        .stub(util, 'getHeaders')
+        .returns({ 'content-type': 'application/json; charset=utf-8' })
+    }
+
+    const correctResponse = async () => {
+      mock()
+
+      sinon.stub(axios, 'request').resolves(response)
+
+      const result = await request(config, options)
+
+      assert(JSON.stringify(result), JSON.stringify(response))
+
+      sinon.restore()
+    }
+
+    const businessError = async () => {
+      mock()
+
+      sinon.stub(client, 'handleError').returns(error)
+      sinon.stub(axios, 'request').rejects({
+        response: {
+          status: 500,
+          data: {
+            statusCode: 500,
+            isBase64Encoded: false,
+            headers: { 'content-type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({ message: 'error' })
+          },
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
+            'x-fc-request-id': '2ea48872-4f8a-4577-9afc-3b8969e960cd'
+          }
+        }
+      })
+
+      try {
+        await request(config, options)
+      } catch (err) {
+        assert(JSON.stringify(error) === JSON.stringify(err))
+      }
+
+      sinon.restore()
+    }
+
+    const serviceError = async () => {
+      mock()
+
+      sinon.stub(client, 'handleError').returns(error)
+      sinon.stub(axios, 'request').rejects({ code: 400 })
+
+      try {
+        await request(config, options)
+      } catch (err) {
+        assert(JSON.stringify(error) === JSON.stringify(err))
+      }
+
+      sinon.restore()
+    }
+
+    await correctResponse()
+    await businessError()
+    await serviceError()
   })
 
   it('Should be the result of request.', async () => {

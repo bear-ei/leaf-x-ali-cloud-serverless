@@ -128,14 +128,11 @@ describe('test/util.test.ts', () => {
   })
 
   it('Should be the result of getCanonicalHeaderString.', async () => {
-    const result = getCanonicalHeaderString(
-      {
-        'x-fc-token': 'test',
-        'x-fc-warm-up': 'warmUp',
-        'x-token': 'test'
-      },
-      'x-fc'
-    )
+    const result = getCanonicalHeaderString('x-fc', {
+      'x-fc-token': 'test',
+      'x-fc-warm-up': 'warmUp',
+      'x-token': 'test'
+    })
 
     assert(typeof result === 'string')
     assert(result === 'x-fc-token:test\nx-fc-warm-up:warmUp')

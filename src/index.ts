@@ -1,3 +1,5 @@
+'use strict'
+
 import axios from 'axios'
 import { isObject } from 'lodash/fp'
 import {
@@ -16,7 +18,6 @@ import {
   warmUpFunction
 } from './interface'
 import { eventToBuffer, getHeaders, getToken } from './util'
-;('use strict')
 
 export const fc: FCFunction = ({
   accountId,

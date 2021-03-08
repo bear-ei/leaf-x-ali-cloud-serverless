@@ -1,5 +1,6 @@
+'use strict'
+
 import * as crypto from 'crypto'
-;('use strict')
 
 /**
  * Ali cloud gateway event options.
@@ -131,7 +132,7 @@ export interface GetTokenFunction {
  * Request a signature.
  */
 export interface GetSignFunction {
-  (accessSecretKey: string): (signStr: string) => string
+  (accessSecretKey: string): (signString: string) => string
 }
 
 /**
@@ -170,11 +171,12 @@ export interface EventToBufferFunction {
 
 /**
  * Get the canonical header string.
- * @param headers   Request headers.
+ *
  * @param prefix    Canonical request header prefix.
+ * @param headers   Request headers.
  */
 export interface GetCanonicalHeaderStringFunction {
-  (headers: Record<string, string>, prefix: string): string
+  (prefix: string, headers: Record<string, string>): string
 }
 
 /**

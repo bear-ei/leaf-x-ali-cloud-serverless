@@ -1,3 +1,5 @@
+'use strict'
+
 import * as crypto from 'crypto'
 import { flow } from 'lodash/fp'
 import {
@@ -9,7 +11,6 @@ import {
   GetTokenFunction,
   MD5Function
 } from './interface/util'
-;('use strict')
 
 export const eventToBuffer: EventToBufferFunction = ({
   httpMethod,
@@ -59,7 +60,7 @@ export const getSignString: GetSignStringFunction = ({
   url,
   headers
 }) => {
-  const canonicalHeaderStr = getCanonicalHeaderString(headers, 'x-fc-')
+  const canonicalHeaderStr = getCanonicalHeaderString('x-fc-', headers)
   const pathName = decodeURIComponent(new URL(url).pathname)
 
   return [
@@ -72,18 +73,18 @@ export const getSignString: GetSignStringFunction = ({
   ].join('\n')
 }
 
-export const getSign: GetSignFunction = (accessSecretKey) => (signStr) => {
+export const getSign: GetSignFunction = (accessSecretKey) => (signString) => {
   const buffer = crypto
     .createHmac('sha256', accessSecretKey)
-    .update(signStr, 'utf8')
+    .update(signString, 'utf8')
     .digest()
 
   return Buffer.from(buffer).toString('base64')
 }
 
 export const getCanonicalHeaderString: GetCanonicalHeaderStringFunction = (
-  headers,
-  prefix
+  prefix,
+  headers
 ) => {
   const joinHeaderString = ((headers) => (key: string) =>
     `${key}:${headers[key]}`)(headers)

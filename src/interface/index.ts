@@ -1,5 +1,6 @@
+'use strict'
+
 import { EventOptions } from './util'
-;('use strict')
 
 /**
  * Function calculation options.
