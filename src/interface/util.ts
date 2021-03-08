@@ -2,11 +2,11 @@ import * as crypto from 'crypto'
 ;('use strict')
 
 /**
- * AliCloud gateway event options.
+ * Ali cloud gateway event options.
  */
 export interface EventOptions {
   /**
-   * http method
+   * Http request method.
    */
   httpMethod:
     | 'GET'
@@ -60,7 +60,7 @@ export interface EventOptions {
 /**
  * Get request header options.
  */
-export interface GetRequestHeaderOptions {
+export interface GetHeaderOptions {
   /**
    * Content of request.
    */
@@ -79,14 +79,14 @@ export interface GetRequestHeaderOptions {
   /**
    * Asynchronous request or not.
    */
-  isAsync?: boolean
+  async?: boolean
 }
 
 /**
  * Get request headers.
  */
 export interface GetHeaderFunction {
-  (options: GetRequestHeaderOptions): Record<string, string>
+  (options: GetHeaderOptions): Record<string, string>
 }
 
 /**
@@ -99,13 +99,13 @@ export interface getTokenOptions {
   accessId: string
 
   /**
-   * Ali cloud access Key.
+   * Ali cloud access key.
    *
    */
   accessSecretKey: string
 
   /**
-   * http method.
+   * Http request method.
    */
   method: string
 
@@ -137,9 +137,9 @@ export interface GetSignFunction {
 /**
  * Get signature string options.
  */
-export interface GetSignStrOptions {
+export interface GetSignStringOptions {
   /**
-   * http method.
+   * Http request method.
    */
   method: string
 
@@ -149,7 +149,7 @@ export interface GetSignStrOptions {
   url: string
 
   /**
-   * Request Headers.
+   * Request headers.
    */
   headers: Record<string, string>
 }
@@ -157,8 +157,8 @@ export interface GetSignStrOptions {
 /**
  * Get request signature string.
  */
-export interface GetSignStrFunction {
-  (options: GetSignStrOptions): string
+export interface GetSignStringFunction {
+  (options: GetSignStringOptions): string
 }
 
 /**
@@ -170,10 +170,10 @@ export interface EventToBufferFunction {
 
 /**
  * Get the canonical header string.
- * @param headers   Request Headers.
- * @param prefix    specification  request header prefix.
+ * @param headers   Request headers.
+ * @param prefix    Canonical request header prefix.
  */
-export interface GetCanonicalHeaderStrFunction {
+export interface GetCanonicalHeaderStringFunction {
   (headers: Record<string, string>, prefix: string): string
 }
 
@@ -187,6 +187,6 @@ export interface MD5Function {
 /**
  * Get request header string.
  */
-export interface GetHeadersStrFunction {
+export interface GetHeadersStringFunction {
   (headers: Record<string, string>, key: string): string
 }

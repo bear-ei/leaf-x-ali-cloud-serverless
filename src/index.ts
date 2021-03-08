@@ -61,10 +61,9 @@ export const invoke: InvokeFunction = ({
       .catch((err) => (error = err))
 
     const retry: RetryRequestFunction = (retryNum, error) => {
-      const isRetry =
-        retryNum > 0 && ((error.status as unknown) as number) >= 500
+      const retry = retryNum > 0 && ((error.status as unknown) as number) >= 500
 
-      if (isRetry) {
+      if (retry) {
         retryNum--
 
         return exec(retryNum, { config, options })
@@ -112,7 +111,7 @@ export const handleError: HandleErrorFunction = (
 }
 
 export const response: ResponseFunction = ({ data, status, ...args }) => {
-  const isGatewayData =
+  const aliCloudGatewayData =
     isObject(data) &&
     Object.keys(data).sort().join() ===
       ['statusCode', 'isBase64Encoded', 'headers', 'body'].sort().join()
@@ -133,7 +132,7 @@ export const response: ResponseFunction = ({ data, status, ...args }) => {
     return { status: statusCode, headers, data }
   }
 
-  return isGatewayData
+  return aliCloudGatewayData
     ? gatewayData(data as AliCloudGatewayOptions)
     : { data, status, ...args }
 }
@@ -154,7 +153,7 @@ export const warmUp: warmUpFunction = (config) => async (
 
 export const request: RequestFunction = async (
   { host, accountId, accessId, accessSecretKey, timeout, qualifier },
-  { url, event, isAsync, serviceName, functionName }
+  { url, event, async, serviceName, functionName }
 ) => {
   const method = 'POST'
   const buffer = eventToBuffer(event)
@@ -162,7 +161,7 @@ export const request: RequestFunction = async (
     content: buffer,
     host,
     accountId,
-    isAsync
+    async
   })
 
   const token = getToken({

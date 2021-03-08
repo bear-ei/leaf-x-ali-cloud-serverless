@@ -2,10 +2,10 @@ import * as crypto from 'crypto'
 import { flow } from 'lodash/fp'
 import {
   EventToBufferFunction,
-  GetCanonicalHeaderStrFunction,
+  GetCanonicalHeaderStringFunction,
   GetHeaderFunction,
   GetSignFunction,
-  GetSignStrFunction,
+  GetSignStringFunction,
   GetTokenFunction,
   MD5Function
 } from './interface/util'
@@ -35,7 +35,7 @@ export const getHeaders: GetHeaderFunction = ({
   content,
   host,
   accountId,
-  isAsync
+  async
 }) => ({
   accept: 'application/json',
   date: new Date().toUTCString(),
@@ -45,17 +45,21 @@ export const getHeaders: GetHeaderFunction = ({
   'content-type': 'application/octet-stream; charset=utf-8',
   'content-length': content.length.toString(),
   'content-md5': md5(content),
-  ...(isAsync ? { 'x-fc-invocation-type': 'Async' } : undefined)
+  ...(async ? { 'x-fc-invocation-type': 'Async' } : undefined)
 })
 
 export const getToken: GetTokenFunction = ({
   accessId,
   accessSecretKey,
   ...args
-}) => `FC ${accessId}:${flow(getSignStr, getSign(accessSecretKey))(args)}`
+}) => `FC ${accessId}:${flow(getSignString, getSign(accessSecretKey))(args)}`
 
-export const getSignStr: GetSignStrFunction = ({ method, url, headers }) => {
-  const canonicalHeaderStr = getCanonicalHeaderStr(headers, 'x-fc-')
+export const getSignString: GetSignStringFunction = ({
+  method,
+  url,
+  headers
+}) => {
+  const canonicalHeaderStr = getCanonicalHeaderString(headers, 'x-fc-')
   const pathName = decodeURIComponent(new URL(url).pathname)
 
   return [
@@ -77,17 +81,17 @@ export const getSign: GetSignFunction = (accessSecretKey) => (signStr) => {
   return Buffer.from(buffer).toString('base64')
 }
 
-export const getCanonicalHeaderStr: GetCanonicalHeaderStrFunction = (
+export const getCanonicalHeaderString: GetCanonicalHeaderStringFunction = (
   headers,
   prefix
 ) => {
-  const joinHeadersStr = ((headers) => (key: string) =>
+  const joinHeaderString = ((headers) => (key: string) =>
     `${key}:${headers[key]}`)(headers)
 
   return Object.keys(headers)
     .filter((key) => key.startsWith(prefix))
     .sort()
-    .map(joinHeadersStr)
+    .map(joinHeaderString)
     .join('\n')
 }
 

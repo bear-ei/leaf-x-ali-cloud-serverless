@@ -70,7 +70,7 @@ describe('test/util.test.ts', () => {
         body: {},
         headers: {}
       },
-      isAsync: false
+      async: false
     } as unknown) as InvokeOptions
 
     const response = {
@@ -347,7 +347,7 @@ describe('test/util.test.ts', () => {
         queryParameters: {},
         httpMethod: 'GET'
       },
-      isAsync: false,
+      async: false,
       serviceName: 'test',
       functionName: 'test'
     } as unknown) as RequestOptions

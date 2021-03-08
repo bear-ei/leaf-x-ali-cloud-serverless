@@ -16,7 +16,7 @@ export interface FCOptions {
   accessId: string
 
   /**
-   * Ali cloud access Key.
+   * Ali cloud access key.
    */
   accessSecretKey: string
 
@@ -26,7 +26,7 @@ export interface FCOptions {
   region: string
 
   /**
-   * Request timeout time in milliseconds. Default value 3000.
+   * Request timeout time in milliseconds, default value 3000.
    */
   timeout?: number
 
@@ -92,7 +92,7 @@ export interface InvokeOptions {
   /**
    * Whether to invoke asynchronously or not, default value false.
    */
-  isAsync?: boolean
+  async?: boolean
 }
 
 /**
@@ -157,7 +157,7 @@ export interface RequestConfig {
   accessId: string
 
   /**
-   * Ali cloud Access Key.
+   * Ali cloud Access key.
    */
   accessSecretKey: string
 
@@ -183,7 +183,7 @@ export interface RequestOptions extends InvokeOptions {
 }
 
 /**
- * Request Results.
+ * Request results.
  */
 export interface RequestResult {
   /**
@@ -234,7 +234,7 @@ export interface ResponseFunction {
 export type warmUpConfig = InvokeConfig
 
 /**
- * warmUp functions.
+ * Warm-up functions.
  * Reduce cold starts by running functions in a minimal access manner.
  *
  * @param serviceName Service name.
@@ -313,7 +313,7 @@ export interface HandleErrorFunction {
 }
 
 /**
- * Ali cloud Gateway options.
+ * Ali cloud gateway options.
  */
 export interface AliCloudGatewayOptions {
   /**
