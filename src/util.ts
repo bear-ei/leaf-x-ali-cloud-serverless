@@ -13,12 +13,15 @@ import {
 } from './interface/util'
 
 export const eventToBuffer: EventToBufferFunction = ({
-  httpMethod,
+  httpMethod = 'GET',
   isBase64Encoded = false,
   queryParameters = {},
   pathParameters = {},
   body = {},
-  headers = {}
+  headers = {
+    'content-type': 'application/json; charset=utf-8',
+    accept: 'application/json; charset=utf-8'
+  }
 }) =>
   flow(
     JSON.stringify,
@@ -36,12 +39,12 @@ export const getHeaders: GetHeaderFunction = ({
   content,
   host,
   accountId,
-  async
+  async = false
 }) => ({
-  accept: 'application/json',
+  accept: 'application/json; charset=utf-8',
   date: new Date().toUTCString(),
   host,
-  'user-agent': `Node.js(${process.version}) OS(${process.platform}/${process.arch})`,
+  'user-agent': `Node.js/${process.version}`,
   'x-fc-account-id': accountId,
   'content-type': 'application/octet-stream; charset=utf-8',
   'content-length': content.length.toString(),
@@ -60,22 +63,22 @@ export const getSignString: GetSignStringFunction = ({
   url,
   headers
 }) => {
-  const canonicalHeaderStr = getCanonicalHeaderString('x-fc-', headers)
-  const pathName = decodeURIComponent(new URL(url).pathname)
+  const canonicalHeaderString = getCanonicalHeaderString('x-fc-', headers)
+  const pathname = decodeURIComponent(new URL(url).pathname)
 
   return [
     method,
     headers['content-md5'],
     headers['content-type'],
     headers['date'],
-    canonicalHeaderStr,
-    pathName
+    canonicalHeaderString,
+    pathname
   ].join('\n')
 }
 
-export const getSign: GetSignFunction = (accessSecretKey) => (signString) => {
+export const getSign: GetSignFunction = (secret) => (signString) => {
   const buffer = crypto
-    .createHmac('sha256', accessSecretKey)
+    .createHmac('sha256', secret)
     .update(signString, 'utf8')
     .digest()
 

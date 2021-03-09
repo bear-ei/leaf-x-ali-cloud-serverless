@@ -22,33 +22,35 @@ describe('test/util.test.ts', () => {
   })
 
   it('Should be the result of getHeaders.', async () => {
-    sinon.stub(util, 'md5').returns('sign')
+    const syncResult = () => {
+      sinon.stub(util, 'md5').returns('sign')
 
-    const asyncResult = () => {
       const result = getHeaders({
         content: Buffer.from('test'),
         host: 'test.test-internal.fc.aliyuncs.com',
         accountId: 'test'
       })
 
-      assert(
-        Object.keys(result).sort().toString() ===
-          [
-            'accept',
-            'date',
-            'host',
-            'user-agent',
-            'x-fc-account-id',
-            'content-type',
-            'content-length',
-            'content-md5'
-          ]
-            .sort()
-            .toString()
-      )
+      const keys = [
+        'accept',
+        'date',
+        'host',
+        'user-agent',
+        'x-fc-account-id',
+        'content-type',
+        'content-length',
+        'content-md5'
+      ]
+
+      assert(typeof result === 'object')
+      assert(Object.keys(result).sort().toString() === keys.sort().toString())
+
+      sinon.restore()
     }
 
-    const syncResult = () => {
+    const asyncResult = () => {
+      sinon.stub(util, 'md5').returns('sign')
+
       const result = getHeaders({
         content: Buffer.from('test'),
         host: 'test.test-internal.fc.aliyuncs.com',
@@ -56,28 +58,26 @@ describe('test/util.test.ts', () => {
         async: true
       })
 
-      assert(
-        Object.keys(result).sort().toString() ===
-          [
-            'accept',
-            'date',
-            'host',
-            'user-agent',
-            'x-fc-account-id',
-            'content-type',
-            'content-length',
-            'content-md5',
-            'x-fc-invocation-type'
-          ]
-            .sort()
-            .toString()
-      )
+      const keys = [
+        'accept',
+        'date',
+        'host',
+        'user-agent',
+        'x-fc-account-id',
+        'content-type',
+        'content-length',
+        'content-md5',
+        'x-fc-invocation-type'
+      ]
+
+      assert(typeof result === 'object')
+      assert(Object.keys(result).sort().toString() === keys.sort().toString())
+
+      sinon.restore()
     }
 
     asyncResult()
     syncResult()
-
-    sinon.restore()
   })
 
   it('Should be the result of getToken.', async () => {

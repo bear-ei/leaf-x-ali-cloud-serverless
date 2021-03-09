@@ -17,21 +17,21 @@ const { fc, invoke, request, handleError, response, warmUp } = client
 
 describe('test/index.test.ts', () => {
   it('Should be the result of fc.', async () => {
-    sinon.stub(client, 'invoke').returns(async () => ({
-      data: 'Test',
-      status: 200,
-      headers: { test: 'Test' }
-    }))
-
-    sinon.stub(client, 'warmUp').returns(async () => [
-      {
-        data: 'Test',
-        status: 200,
-        headers: { test: 'Test' }
-      }
-    ])
-
     const defaultOptions = () => {
+      sinon.stub(client, 'invoke').returns(async () => ({
+        data: 'test',
+        status: 200,
+        headers: { test: 'test' }
+      }))
+
+      sinon.stub(client, 'warmUp').returns(async () => [
+        {
+          data: 'test',
+          status: 200,
+          headers: { test: 'test' }
+        }
+      ])
+
       const result = fc({
         accessId: 'test',
         accountId: 'test',
@@ -41,9 +41,25 @@ describe('test/index.test.ts', () => {
 
       assert(typeof result.invoke === 'function')
       assert(typeof result.warmUp === 'function')
+
+      sinon.restore()
     }
 
     const inputOptions = () => {
+      sinon.stub(client, 'invoke').returns(async () => ({
+        data: 'test',
+        status: 200,
+        headers: { test: 'test' }
+      }))
+
+      sinon.stub(client, 'warmUp').returns(async () => [
+        {
+          data: 'test',
+          status: 200,
+          headers: { test: 'test' }
+        }
+      ])
+
       const result = fc({
         accessId: 'test',
         accountId: 'test',
@@ -56,12 +72,12 @@ describe('test/index.test.ts', () => {
 
       assert(typeof result.invoke === 'function')
       assert(typeof result.warmUp === 'function')
+
+      sinon.restore()
     }
 
     defaultOptions()
     inputOptions()
-
-    sinon.restore()
   })
 
   it('Should be the result of invoke.', async () => {
@@ -77,8 +93,6 @@ describe('test/index.test.ts', () => {
     }
 
     const options = ({
-      serviceName: 'test',
-      functionName: 'test',
       event: {
         httpMethod: 'POST',
         isBase64Encoded: false,
@@ -121,7 +135,7 @@ describe('test/index.test.ts', () => {
 
       sinon.stub(client, 'response').returns(response)
 
-      const result = await invoke(config)(options)
+      const result = await invoke(config)('test', 'test', options)
 
       assert(JSON.stringify(response) === JSON.stringify(result))
 
@@ -132,7 +146,7 @@ describe('test/index.test.ts', () => {
       sinon.stub(client, 'request').rejects(error)
 
       try {
-        await invoke(config)(options)
+        await invoke(config)('test', 'test', options)
       } catch (err) {
         assert(JSON.stringify(error) === JSON.stringify(err))
       }
@@ -331,6 +345,7 @@ describe('test/index.test.ts', () => {
           headers: { 'content-type': 'application/json; charset=utf-8' }
         }
       })
+
       const result = await warmUp(config)('test', ['test1', 'test2'])
 
       assert(result.length !== 0)
@@ -398,16 +413,12 @@ describe('test/index.test.ts', () => {
       ]
     }
 
-    const mock = () => {
+    const correctResponse = async () => {
       sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
       sinon.stub(util, 'getToken').returns('token')
       sinon
         .stub(util, 'getHeaders')
         .returns({ 'content-type': 'application/json; charset=utf-8' })
-    }
-
-    const correctResponse = async () => {
-      mock()
 
       sinon.stub(axios, 'request').resolves(response)
 
@@ -419,7 +430,11 @@ describe('test/index.test.ts', () => {
     }
 
     const businessError = async () => {
-      mock()
+      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
+      sinon.stub(util, 'getToken').returns('token')
+      sinon
+        .stub(util, 'getHeaders')
+        .returns({ 'content-type': 'application/json; charset=utf-8' })
 
       sinon.stub(client, 'handleError').returns(error)
       sinon.stub(axios, 'request').rejects({
@@ -448,7 +463,11 @@ describe('test/index.test.ts', () => {
     }
 
     const serviceError = async () => {
-      mock()
+      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
+      sinon.stub(util, 'getToken').returns('token')
+      sinon
+        .stub(util, 'getHeaders')
+        .returns({ 'content-type': 'application/json; charset=utf-8' })
 
       sinon.stub(client, 'handleError').returns(error)
       sinon.stub(axios, 'request').rejects({ code: 400 })
@@ -518,16 +537,12 @@ describe('test/index.test.ts', () => {
       ]
     }
 
-    const mock = () => {
+    const correctResponse = async () => {
       sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
       sinon.stub(util, 'getToken').returns('token')
       sinon
         .stub(util, 'getHeaders')
         .returns({ 'content-type': 'application/json; charset=utf-8' })
-    }
-
-    const correctResponse = async () => {
-      mock()
 
       sinon.stub(axios, 'request').resolves(response)
 
@@ -539,7 +554,11 @@ describe('test/index.test.ts', () => {
     }
 
     const businessError = async () => {
-      mock()
+      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
+      sinon.stub(util, 'getToken').returns('token')
+      sinon
+        .stub(util, 'getHeaders')
+        .returns({ 'content-type': 'application/json; charset=utf-8' })
 
       sinon.stub(client, 'handleError').returns(error)
       sinon.stub(axios, 'request').rejects({
@@ -568,7 +587,11 @@ describe('test/index.test.ts', () => {
     }
 
     const serviceError = async () => {
-      mock()
+      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
+      sinon.stub(util, 'getToken').returns('token')
+      sinon
+        .stub(util, 'getHeaders')
+        .returns({ 'content-type': 'application/json; charset=utf-8' })
 
       sinon.stub(client, 'handleError').returns(error)
       sinon.stub(axios, 'request').rejects({ code: 400 })

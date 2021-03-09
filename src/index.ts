@@ -51,7 +51,7 @@ export const invoke: InvokeFunction = ({
   endpoint,
   version,
   ...configArgs
-}) => async ({ serviceName, functionName, ...optionsArgs }) => {
+}) => async (serviceName, functionName, options) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
   const exec: ExecRequestFunction = async (retryNum, { config, options }) => {
@@ -78,7 +78,7 @@ export const invoke: InvokeFunction = ({
 
   const result = await exec(3, {
     config: { qualifier, ...configArgs },
-    options: { url, serviceName, functionName, ...optionsArgs }
+    options: { url, serviceName, functionName, ...options }
   })
 
   return response(result)
@@ -143,9 +143,7 @@ export const warmUp: warmUpFunction = (config) => async (
   functionNames
 ) => {
   const exec = ((serviceName: string) => async (key: string) =>
-    invoke(config)({
-      serviceName,
-      functionName: key,
+    invoke(config)(serviceName, key, {
       event: { httpMethod: 'OPTIONS', headers: { 'x-warm-up': 'warmUp' } }
     }).catch((error) => error as HandleErrorResult))(serviceName)
 

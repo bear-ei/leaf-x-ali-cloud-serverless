@@ -57,7 +57,12 @@ export interface FCOptions {
  * Result of function calculation.
  */
 export interface FCResult {
-  invoke: (options: InvokeOptions) => Promise<InvokeResult>
+  invoke: (
+    serviceName: string,
+    functionName: string,
+    options: InvokeOptions
+  ) => Promise<InvokeResult>
+
   warmUp: (
     serviceName: string,
     functionNames: string[]
@@ -75,16 +80,6 @@ export interface FCFunction {
  * Invoke function options.
  */
 export interface InvokeOptions {
-  /**
-   * Service name.
-   */
-  serviceName: string
-
-  /**
-   * Function name.
-   */
-  functionName: string
-
   /**
    * Invoke events.
    */
@@ -133,9 +128,16 @@ export interface InvokeResult {
 
 /**
  * Invoke a function to calculate.
+ *
+ * @param serviceName   Service name.
+ * @param functionName  Function name.
  */
 export interface InvokeFunction {
-  (config: InvokeConfig): (options: InvokeOptions) => Promise<InvokeResult>
+  (config: InvokeConfig): (
+    serviceName: string,
+    functionName: string,
+    options: InvokeOptions
+  ) => Promise<InvokeResult>
 }
 
 /**
@@ -177,6 +179,16 @@ export interface RequestConfig {
  *  Request options.
  */
 export interface RequestOptions extends InvokeOptions {
+  /**
+   * Service name.
+   */
+  serviceName: string
+
+  /**
+   * Function name.
+   */
+  functionName: string
+
   /**
    * Request url.
    */
@@ -258,7 +270,7 @@ export interface HandleErrorOptions {
   serviceName: string
 
   /**
-   * function name.
+   * Function name.
    */
   functionName: string
 
@@ -375,8 +387,19 @@ export interface RetryRequestFunction {
 }
 
 export interface HandleRequestErrorOptions {
+  /**
+   * Service name.
+   */
   serviceName: string
+
+  /**
+   * Function name.
+   */
   functionName: string
+
+  /**
+   * Function calculate api version.
+   */
   qualifier: string
 }
 

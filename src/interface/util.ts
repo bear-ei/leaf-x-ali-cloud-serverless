@@ -3,37 +3,26 @@
 import * as crypto from 'crypto'
 
 /**
- * Ali cloud gateway event options.
+ * Ali cloud Gateway event options.
  */
 export interface EventOptions {
   /**
-   * Http request method.
+   * Request method, default value GET.
    */
-  httpMethod:
+  httpMethod?:
     | 'GET'
     | 'POST'
-    | 'get'
-    | 'delete'
     | 'DELETE'
-    | 'head'
     | 'HEAD'
-    | 'options'
     | 'OPTIONS'
-    | 'post'
-    | 'put'
     | 'PUT'
-    | 'patch'
     | 'PATCH'
-    | 'purge'
     | 'PURGE'
-    | 'link'
     | 'LINK'
-    | 'unlink'
     | 'UNLINK'
-    | undefined
 
   /**
-   * Base64 encoding or not.
+   * Whether or not to Base64 encode the data.
    */
   isBase64Encoded?: boolean
 
@@ -48,7 +37,7 @@ export interface EventOptions {
   pathParameters?: Record<string, string>
 
   /**
-   * Entities.
+   * Request body.
    */
   body?: Record<string, unknown>
 
@@ -63,7 +52,7 @@ export interface EventOptions {
  */
 export interface GetHeaderOptions {
   /**
-   * Content of request.
+   * Request body buffer.
    */
   content: Buffer
 
@@ -78,20 +67,20 @@ export interface GetHeaderOptions {
   accountId: string
 
   /**
-   * Asynchronous request or not.
+   * Whether to execute asynchronous requests.
    */
   async?: boolean
 }
 
 /**
- * Get request headers.
+ * Get the request header function.
  */
 export interface GetHeaderFunction {
   (options: GetHeaderOptions): Record<string, string>
 }
 
 /**
- * Get request token options
+ * Get request token options.
  */
 export interface getTokenOptions {
   /**
@@ -106,9 +95,9 @@ export interface getTokenOptions {
   accessSecretKey: string
 
   /**
-   * Http request method.
+   * Request method.
    */
-  method: string
+  method: EventOptions['httpMethod']
 
   /**
    * Request url.
@@ -116,33 +105,36 @@ export interface getTokenOptions {
   url: string
 
   /**
-   * Request headers
+   * Request header.
    */
   headers: Record<string, string>
 }
 
 /**
- * Get request token.
+ * Get the request token function.
  */
 export interface GetTokenFunction {
   (options: getTokenOptions): string
 }
 
 /**
- * Request a signature.
+ * Get the request signature function.
+ *
+ * @param accessSecretKey   Ali cloud access key.
+ * @param signString        Signature String.
  */
 export interface GetSignFunction {
   (accessSecretKey: string): (signString: string) => string
 }
 
 /**
- * Get signature string options.
+ * Get request signature string options.
  */
 export interface GetSignStringOptions {
   /**
-   * Http request method.
+   * Request method.
    */
-  method: string
+  method: EventOptions['httpMethod']
 
   /**
    * Request url.
@@ -150,45 +142,38 @@ export interface GetSignStringOptions {
   url: string
 
   /**
-   * Request headers.
+   * Request header.
    */
   headers: Record<string, string>
 }
 
 /**
- * Get request signature string.
+ * Get request signature string function.
  */
 export interface GetSignStringFunction {
   (options: GetSignStringOptions): string
 }
 
 /**
- * Event to buffer.
+ * Ali cloud gateway event to Buffer function.
  */
 export interface EventToBufferFunction {
   (options: EventOptions): Buffer
 }
 
 /**
- * Get the canonical header string.
+ * Get the canonical request header string function.
  *
  * @param prefix    Canonical request header prefix.
- * @param headers   Request headers.
+ * @param headers   Request header.
  */
 export interface GetCanonicalHeaderStringFunction {
   (prefix: string, headers: Record<string, string>): string
 }
 
 /**
- * md5.
+ * Md5 function.
  */
 export interface MD5Function {
   (options: crypto.BinaryLike): string
-}
-
-/**
- * Get request header string.
- */
-export interface GetHeadersStringFunction {
-  (headers: Record<string, string>, key: string): string
 }
