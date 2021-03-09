@@ -4,18 +4,19 @@ import axios from 'axios'
 import { isObject } from 'lodash/fp'
 import {
   AliCloudGatewayOptions,
-  AliCloudGatewayResponseFunction,
-  ExecRequestFunction,
   FCFunction,
   HandleErrorFunction,
   HandleErrorResult,
-  HandleRequestErrorFunction,
+  HandleRequestErrorOptions,
   InvokeFunction,
+  InvokeResult,
+  RequestConfig,
   RequestFunction,
+  RequestOptions,
   RequestResult,
   ResponseFunction,
-  RetryRequestFunction,
-  warmUpFunction
+  ResponseResult,
+  WarmUpFunction
 } from './interface'
 import { eventToBuffer, getHeaders, getToken } from './util'
 
@@ -50,34 +51,41 @@ export const invoke: InvokeFunction = ({
   qualifier,
   endpoint,
   version,
-  ...configArgs
+  ...args
 }) => async (serviceName, functionName, options) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
-  const exec: ExecRequestFunction = async (retryNum, { config, options }) => {
+  const exec = async (
+    retryNumber: number,
+    { config, options }: { config: RequestConfig; options: RequestOptions }
+  ): Promise<RequestResult> => {
     let error!: Record<string, Record<string, unknown>>
 
     const result = await request(config, options)
       .then((result) => result)
       .catch((err) => (error = err))
 
-    const retry: RetryRequestFunction = (retryNum, error) => {
-      const retry = retryNum > 0 && ((error.status as unknown) as number) >= 500
+    const retry = (
+      retryNumber: number,
+      error: Record<string, Record<string, unknown>>
+    ): Promise<RequestResult> | never => {
+      const retry =
+        retryNumber > 0 && ((error.status as unknown) as number) >= 500
 
       if (retry) {
-        retryNum--
+        retryNumber--
 
-        return exec(retryNum, { config, options })
+        return exec(retryNumber, { config, options })
       }
 
       throw error
     }
 
-    return error ? retry(retryNum, error) : result
+    return error ? retry(retryNumber, error) : result
   }
 
   const result = await exec(3, {
-    config: { qualifier, ...configArgs },
+    config: { qualifier, ...args },
     options: { url, serviceName, functionName, ...options }
   })
 
@@ -112,16 +120,22 @@ export const handleError: HandleErrorFunction = (
 }
 
 export const response: ResponseFunction = ({ data, status, ...args }) => {
+  const aliCloudGatewayKeys = [
+    'statusCode',
+    'isBase64Encoded',
+    'headers',
+    'body'
+  ]
+
   const aliCloudGatewayData =
     isObject(data) &&
-    Object.keys(data).sort().join() ===
-      ['statusCode', 'isBase64Encoded', 'headers', 'body'].sort().join()
+    Object.keys(data).sort().join() === aliCloudGatewayKeys.sort().join()
 
-  const gatewayData: AliCloudGatewayResponseFunction = ({
+  const gatewayData = ({
     statusCode,
     headers,
     body
-  }) => {
+  }: AliCloudGatewayOptions): ResponseResult | never => {
     const data = headers['content-type'].startsWith('application/json')
       ? JSON.parse(body as string)
       : body
@@ -138,11 +152,13 @@ export const response: ResponseFunction = ({ data, status, ...args }) => {
     : { data, status, ...args }
 }
 
-export const warmUp: warmUpFunction = (config) => async (
+export const warmUp: WarmUpFunction = (config) => async (
   serviceName,
   functionNames
 ) => {
-  const exec = ((serviceName: string) => async (key: string) =>
+  const exec = ((serviceName: string) => async (
+    key: string
+  ): Promise<HandleErrorResult | InvokeResult> =>
     invoke(config)(serviceName, key, {
       event: { httpMethod: 'OPTIONS', headers: { 'x-warm-up': 'warmUp' } }
     }).catch((error) => error as HandleErrorResult))(serviceName)
@@ -171,14 +187,11 @@ export const request: RequestFunction = async (
     headers
   })
 
-  const handleRequestError: HandleRequestErrorFunction = (
-    { serviceName, functionName, qualifier },
-    error
-  ) => {
-    const responseError = error.response as Record<
-      string,
-      Record<string, unknown>
-    >
+  const handleRequestError = (
+    { serviceName, functionName, qualifier }: HandleRequestErrorOptions,
+    error: Record<string, Record<string, Record<string, unknown>>>
+  ): never => {
+    const responseError = error.response
 
     if (responseError) {
       throw handleError(
@@ -195,7 +208,7 @@ export const request: RequestFunction = async (
     throw handleError({ serviceName, functionName, env: qualifier }, error)
   }
 
-  return (axios
+  return axios
     .request({
       url,
       method,
@@ -203,8 +216,8 @@ export const request: RequestFunction = async (
       timeout,
       headers: Object.assign({}, headers, { authorization: token })
     })
-    .then((result) => result)
+    .then((result) => (result as unknown) as RequestResult)
     .catch((error) =>
       handleRequestError({ serviceName, functionName, qualifier }, error)
-    ) as unknown) as RequestResult
+    )
 }

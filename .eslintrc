@@ -11,5 +11,6 @@
   "rules": {
     "no-return-await": "warn",
     "no-console": "warn"
-  }
+  },
+  "autoFixOnSave": true
 }

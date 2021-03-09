@@ -16,7 +16,7 @@ const {
 
 describe('test/util.test.ts', () => {
   it('Should be the result of eventToBuffer.', async () => {
-    const result = eventToBuffer({ httpMethod: 'POST' })
+    const result = eventToBuffer({})
 
     assert(Buffer.isBuffer(result))
   })

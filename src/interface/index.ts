@@ -27,34 +27,34 @@ export interface FCOptions {
   region: string
 
   /**
-   * Request timeout time in milliseconds, default value 3000.
+   * Request timeout time, in milliseconds.
    */
   timeout?: number
 
   /**
-   * Function to calculate aliases, default value LATEST.
+   * Function to calculate version aliases.
    */
   qualifier?: string
 
   /**
-   * Whether to access via intranet, default value true.
+   * Whether the request is made through the intranet.
    */
   internal?: boolean
 
   /**
-   * If or not access protection is enabled, HTTPS will be used if enabled, otherwise HTTP will be used.
-   * Default value false.
+   * Whether protection is enabled, if so HTTPS requests will be used, otherwise
+   * HTTP requests will be used.
    */
   secure?: boolean
 
   /**
-   * Function calculate api version,default value 2016-08-15.
+   * Function to calculate the api version.
    */
   version?: string
 }
 
 /**
- * Result of function calculation.
+ * The function calculates the initialization result.
  */
 export interface FCResult {
   invoke: (
@@ -70,38 +70,38 @@ export interface FCResult {
 }
 
 /**
- * Get the function calculation method.
+ * Get function calculation method function.
  */
 export interface FCFunction {
   (options: FCOptions): FCResult
 }
 
 /**
- * Invoke function options.
+ * Function invoke options.
  */
 export interface InvokeOptions {
   /**
-   * Invoke events.
+   * Invoke the event.
    */
   event: EventOptions
 
   /**
-   * Whether to invoke asynchronously or not, default value false.
+   * Whether to execute asynchronous requests.
    */
   async?: boolean
 }
 
 /**
- * Invoke the configuration.
+ * Function invoke configuration.
  */
 export interface InvokeConfig extends RequestConfig {
   /**
-   * Invoke endpoints.
+   * Invoke the endpoint.
    */
   endpoint: string
 
   /**
-   * Function calculate api version.
+   * Function to calculate the api version.
    */
   version: string
 }
@@ -121,13 +121,13 @@ export interface InvokeResult {
   status: number
 
   /**
-   * Response headers
+   * Response header.
    */
   headers: Record<string, unknown>
 }
 
 /**
- * Invoke a function to calculate.
+ * Invoke the function to calculate the function.
  *
  * @param serviceName   Service name.
  * @param functionName  Function name.
@@ -160,17 +160,17 @@ export interface RequestConfig {
   accessId: string
 
   /**
-   * Ali cloud Access key.
+   * Ali cloud access key.
    */
   accessSecretKey: string
 
   /**
-   * Request timeout time in milliseconds.
+   * Request timeout time, in milliseconds.
    */
   timeout: number
 
   /**
-   * Function calculate api version.
+   * Function to calculate version aliases.
    */
   qualifier: string
 }
@@ -210,7 +210,7 @@ export interface RequestResult {
   data: unknown
 
   /**
-   * Response headers.
+   * Response header.
    */
   headers: Record<string, string>
 
@@ -218,7 +218,7 @@ export interface RequestResult {
 }
 
 /**
- * Execute remote requests.
+ * Request function.
  */
 export interface RequestFunction {
   (config: RequestConfig, options: RequestOptions): Promise<RequestResult>
@@ -235,25 +235,25 @@ export type ResponseOptions = RequestResult
 export type ResponseResult = InvokeResult
 
 /**
- * Handle response data.
+ * Response function.
  */
 export interface ResponseFunction {
   (options: ResponseOptions): ResponseResult
 }
 
 /**
- * warmUp configuration.
+ * Warm-up configuration.
  */
 export type warmUpConfig = InvokeConfig
 
 /**
- * Warm-up functions.
+ * Warm-up function.
  * Reduce cold starts by running functions in a minimal access manner.
  *
  * @param serviceName Service name.
  * @param functionNames Function names.
  */
-export interface warmUpFunction {
+export interface WarmUpFunction {
   (config: warmUpConfig): (
     serviceName: string,
     functionNames: string[]
@@ -261,7 +261,7 @@ export interface warmUpFunction {
 }
 
 /**
- * Handle error data options.
+ * Handle error options.
  */
 export interface HandleErrorOptions {
   /**
@@ -286,7 +286,7 @@ export interface HandleErrorOptions {
 }
 
 /**
- * Handle error data results.
+ * Handle error results.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
@@ -316,7 +316,7 @@ export interface HandleErrorResult extends HandleErrorOptions {
 }
 
 /**
- * Handle error data.
+ * Handle error function.
  */
 export interface HandleErrorFunction {
   (
@@ -335,57 +335,24 @@ export interface AliCloudGatewayOptions {
   statusCode: number
 
   /**
-   * Base64 encoding or not.
+   * Whether or not to Base64 encode the data.
    */
   isBase64Encoded: boolean
 
   /**
-   * Response headers.
+   * Response header.
    */
   headers: Record<string, string>
 
   /**
-   * Response data.
+   * Response body.
    */
   body: unknown
 }
 
 /**
- * Handle Ali cloud gateway responses.
+ * Handle response error options.
  */
-export interface AliCloudGatewayResponseFunction {
-  (options: AliCloudGatewayOptions): ResponseResult | never
-}
-
-/**
- * Execution request options.
- */
-export interface ExecRequestOptions {
-  config: RequestConfig
-  options: RequestOptions
-}
-
-/**
- * Execution request.
- *
- * @param retryNum Retry times.
- */
-export interface ExecRequestFunction {
-  (retryNum: number, options: ExecRequestOptions): Promise<RequestResult>
-}
-
-/**
- * Retry request.
- *
- * @param retry Retry times.
- * @param error Error.
- */
-export interface RetryRequestFunction {
-  (retry: number, error: Record<string, Record<string, unknown>>):
-    | Promise<RequestResult>
-    | never
-}
-
 export interface HandleRequestErrorOptions {
   /**
    * Service name.
@@ -398,14 +365,7 @@ export interface HandleRequestErrorOptions {
   functionName: string
 
   /**
-   * Function calculate api version.
+   * Function to calculate version aliases.
    */
   qualifier: string
-}
-
-/**
- * Handle request errors.
- */
-export interface HandleRequestErrorFunction {
-  (options: HandleRequestErrorOptions, error: Record<string, unknown>): never
 }

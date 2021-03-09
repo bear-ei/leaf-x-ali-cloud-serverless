@@ -255,7 +255,7 @@ describe('test/index.test.ts', () => {
       }
     }
 
-    const isGatewayData = () => {
+    const aliCloudGatewayData = () => {
       const result = response({
         status: 200,
         data: {
@@ -275,7 +275,7 @@ describe('test/index.test.ts', () => {
       )
     }
 
-    const isAliCloudGatewayJsonData = () => {
+    const aliCloudGatewayJsonData = () => {
       const result = response({
         status: 202,
         data: '',
@@ -292,8 +292,8 @@ describe('test/index.test.ts', () => {
 
     correctResponse()
     errorResponse()
-    isGatewayData()
-    isAliCloudGatewayJsonData()
+    aliCloudGatewayData()
+    aliCloudGatewayJsonData()
   })
 
   it('Should be the result of warmUp.', async () => {
@@ -424,131 +424,7 @@ describe('test/index.test.ts', () => {
 
       const result = await request(config, options)
 
-      assert(JSON.stringify(result), JSON.stringify(response))
-
-      sinon.restore()
-    }
-
-    const businessError = async () => {
-      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
-      sinon.stub(util, 'getToken').returns('token')
-      sinon
-        .stub(util, 'getHeaders')
-        .returns({ 'content-type': 'application/json; charset=utf-8' })
-
-      sinon.stub(client, 'handleError').returns(error)
-      sinon.stub(axios, 'request').rejects({
-        response: {
-          status: 500,
-          data: {
-            statusCode: 500,
-            isBase64Encoded: false,
-            headers: { 'content-type': 'application/json; charset=utf-8' },
-            body: JSON.stringify({ message: 'error' })
-          },
-          headers: {
-            'content-type': 'application/json; charset=utf-8',
-            'x-fc-request-id': '2ea48872-4f8a-4577-9afc-3b8969e960cd'
-          }
-        }
-      })
-
-      try {
-        await request(config, options)
-      } catch (err) {
-        assert(JSON.stringify(error) === JSON.stringify(err))
-      }
-
-      sinon.restore()
-    }
-
-    const serviceError = async () => {
-      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
-      sinon.stub(util, 'getToken').returns('token')
-      sinon
-        .stub(util, 'getHeaders')
-        .returns({ 'content-type': 'application/json; charset=utf-8' })
-
-      sinon.stub(client, 'handleError').returns(error)
-      sinon.stub(axios, 'request').rejects({ code: 400 })
-
-      try {
-        await request(config, options)
-      } catch (err) {
-        assert(JSON.stringify(error) === JSON.stringify(err))
-      }
-
-      sinon.restore()
-    }
-
-    await correctResponse()
-    await businessError()
-    await serviceError()
-  })
-
-  it('Should be the result of request.', async () => {
-    const config = {
-      host: 'test.shanghai.fc.aliyuncs.com',
-      accountId: 'test',
-      accessId: 'test',
-      accessSecretKey: 'test',
-      timeout: 3000,
-      qualifier: 'LATEST'
-    }
-
-    const options = ({
-      url: 'http://test.shanghai.fc.aliyuncs.com',
-      event: {
-        pathParameters: {},
-        queryParameters: {},
-        httpMethod: 'GET'
-      },
-      async: false,
-      serviceName: 'test',
-      functionName: 'test'
-    } as unknown) as RequestOptions
-
-    const response = {
-      status: 200,
-      data: {
-        statusCode: 200,
-        isBase64Encoded: false,
-        headers: { 'content-type': 'application/json; charset=utf-8' },
-        body: JSON.stringify({ message: 'ok' })
-      },
-      headers: { 'content-type': 'application/json; charset=utf-8' }
-    }
-
-    const error = {
-      status: 500,
-      code: 500000,
-      serviceName: 'test',
-      functionName: 'test',
-      requestId: '2ea48872-4f8a-4577-9afc-3b8969e960cd',
-      message: 'test test invoke failed.',
-      env: 'LATEST',
-      apis: [
-        {
-          serviceName: 'test',
-          functionName: 'test',
-          requestId: '2ea48872-4f8a-4577-9afc-3b8969e960cd',
-          env: 'LATEST'
-        }
-      ]
-    }
-
-    const correctResponse = async () => {
-      sinon.stub(util, 'eventToBuffer').returns(Buffer.from('test'))
-      sinon.stub(util, 'getToken').returns('token')
-      sinon
-        .stub(util, 'getHeaders')
-        .returns({ 'content-type': 'application/json; charset=utf-8' })
-
-      sinon.stub(axios, 'request').resolves(response)
-
-      const result = await request(config, options)
-
-      assert(JSON.stringify(result), JSON.stringify(response))
+      assert(JSON.stringify(result) === JSON.stringify(response))
 
       sinon.restore()
     }
