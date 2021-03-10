@@ -1,4 +1,4 @@
 'use strict'
 
-export * from './src/interface'
-export { snowflake } from './src'
+export { functionCalculation } from './src/functionCalculation'
+export * from './src/interface/functionCalculation'

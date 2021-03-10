@@ -57,6 +57,6 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .ts",
-    "test": "NODE_ENV=latest nyc mocha --require espower-typescript/guess test/*.test.ts"
+    "test": "nyc mocha --require espower-typescript/guess test/**/*.test.ts"
   }
 }
