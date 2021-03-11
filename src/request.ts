@@ -36,6 +36,14 @@ export const request: RequestFunction = async (
     })
     .then((result) => (result as unknown) as RequestResult)
     .catch((error) =>
-      handleRequestError({ serviceName, functionName, qualifier }, error)
+      handleRequestError(
+        {
+          serviceName,
+          functionName,
+          env: qualifier,
+          requestId: headers.requestId
+        },
+        error
+      )
     )
 }

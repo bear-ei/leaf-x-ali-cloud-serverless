@@ -1,7 +1,4 @@
-import {
-  HandleErrorFunction,
-  HandleRequestErrorOptions
-} from './interface/error'
+import { HandleErrorFunction, HandleErrorOptions } from './interface/error'
 
 export const handleError: HandleErrorFunction = (
   { serviceName, functionName, requestId, env },
@@ -9,7 +6,7 @@ export const handleError: HandleErrorFunction = (
 ) => {
   const status = (error.status ?? 500) as number
   const code = (error.code ? error.code : Number(`${status}000`)) as number
-  const result = !error.status && !error.code ? { details: error } : error
+  const result = !error.status && !error.code ? error : { details: error }
   const currentApis = [{ serviceName, functionName, requestId, env }]
   const message = (error.message ??
     `${serviceName} ${functionName} invoke failed.`) as string
@@ -31,7 +28,7 @@ export const handleError: HandleErrorFunction = (
 }
 
 export const handleRequestError = (
-  { serviceName, functionName, qualifier }: HandleRequestErrorOptions,
+  { serviceName, functionName, requestId, env }: HandleErrorOptions,
   error: Record<string, unknown>
 ): never => {
   const responseError = error.response as Record<string, unknown>
@@ -43,10 +40,10 @@ export const handleRequestError = (
     >['x-fc-request-id']
 
     throw handleError(
-      { serviceName, functionName, requestId, env: qualifier },
+      { serviceName, functionName, requestId, env },
       responseError.data as Record<string, unknown>
     )
   }
 
-  throw handleError({ serviceName, functionName, env: qualifier }, error)
+  throw handleError({ serviceName, functionName, requestId, env }, error)
 }

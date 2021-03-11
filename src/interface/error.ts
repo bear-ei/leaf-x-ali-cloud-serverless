@@ -15,7 +15,7 @@ export interface HandleErrorOptions {
   /**
    * Request id.
    */
-  requestId?: string
+  requestId: string
 
   /**
    * Running environment.
@@ -53,25 +53,30 @@ export interface HandleErrorResult extends HandleErrorOptions {
   details?: unknown
 }
 
-/**
- * Handle response error options.
- */
-export interface HandleRequestErrorOptions {
-  /**
-   * Service name.
-   */
-  serviceName: string
+// /**
+//  * Handle response error options.
+//  */
+// export interface HandleRequestErrorOptions {
+//   /**
+//    * Service name.
+//    */
+//   serviceName: string
 
-  /**
-   * Function name.
-   */
-  functionName: string
+//   /**
+//    * Function name.
+//    */
+//   functionName: string
 
-  /**
-   * Function version alias.
-   */
-  qualifier: string
-}
+//   /**
+//    * Function version alias.
+//    */
+//   qualifier: string
+
+//   /**
+//    * Request id.
+//    */
+//   requestId: string
+// }
 
 /**
  * Handle error function.
