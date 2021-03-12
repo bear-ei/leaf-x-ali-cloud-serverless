@@ -6,56 +6,171 @@ const { handleError, handleRequestError } = error
 
 describe('test/error.test.ts', () => {
   it('Should be the result of handleError.', async () => {
-    const result = handleError(
-      {
-        serviceName: 'test',
-        functionName: 'test',
-        requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
-        env: 'PROD'
-      },
-      {
-        status: 500,
-        message: 'Internal service error.'
-      }
-    )
+    const serviceError = () => {
+      const result = handleError(
+        {
+          serviceName: 'leaf-x@snowflake',
+          functionName: 'snowflake',
+          requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
+          env: 'PROD'
+        },
+        { message: 'Internal service error.' }
+      )
 
-    assert(typeof result === 'object')
-    assert(result.status === 500)
-    assert(result.code === 500000)
-    assert(result.serviceName === 'test')
-    assert(result.functionName === 'test')
-    assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
-    assert(result.message === 'Internal service error.')
-    assert(result.env === 'PROD')
-    assert(Array.isArray(result.apis))
-    assert(typeof result.details === 'object')
+      assert(typeof result === 'object')
+      assert(result.status === 500)
+      assert(result.code === 500000)
+      assert(result.serviceName === 'leaf-x@snowflake')
+      assert(result.functionName === 'snowflake')
+      assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
+      assert(result.message === 'Internal service error.')
+      assert(result.env === 'PROD')
+      assert(Array.isArray(result.apis))
+      assert(typeof result.details === 'object')
+    }
+
+    const businessError = () => {
+      const result = handleError(
+        {
+          serviceName: 'leaf-x@snowflake',
+          functionName: 'snowflake',
+          requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
+          env: 'PROD'
+        },
+        {
+          status: 422,
+          code: 422000,
+          apis: [
+            {
+              serviceName: 'leaf-x@pay',
+              functionName: 'pay',
+              requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a8',
+              env: 'PROD'
+            }
+          ]
+        }
+      )
+
+      assert(typeof result === 'object')
+      assert(result.status === 422)
+      assert(result.code === 422000)
+      assert(result.serviceName === 'leaf-x@snowflake')
+      assert(result.functionName === 'snowflake')
+      assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
+      assert(result.message === 'leaf-x@snowflake snowflake invoke failed.')
+      assert(result.env === 'PROD')
+      assert(Array.isArray(result.apis))
+    }
+
+    serviceError()
+    businessError()
   })
 
   it('Should be the result of handleRequestError.', async () => {
-    sinon.stub(error, 'handleError').returns({})
-
-    const result = handleRequestError(
-      {
-        serviceName: 'test',
-        functionName: 'test',
-        env: 'PROD',
-        requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7'
-      },
-      {
+    const serviceError = () => {
+      sinon.stub(error, 'handleError').returns({
+        details: { status: 500, message: 'Internal service error.' },
         status: 500,
-        message: 'Internal service error.'
-      }
-    )
+        code: 500000,
+        serviceName: 'leaf-x@snowflake',
+        functionName: 'snowflake',
+        requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
+        message: 'Internal service error.',
+        env: 'PROD',
+        apis: [
+          {
+            serviceName: 'leaf-x@snowflake',
+            functionName: 'snowflake',
+            requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
+            env: 'PROD'
+          }
+        ]
+      })
 
-    // assert(typeof result === 'object')
-    // assert(result.status === 500)
-    // assert(result.code === 500000)
-    // assert(result.serviceName === 'test')
-    // assert(result.functionName === 'test')
-    // assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
-    // assert(result.message === 'Internal service error.')
-    // assert(result.env === 'PROD')
-    // assert(Array.isArray(result.apis))
-    // assert(typeof result.details === 'object')
+      try {
+        handleRequestError(
+          {
+            serviceName: 'leaf-x@snowflake',
+            functionName: 'snowflake',
+            env: 'PROD',
+            requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7'
+          },
+          {
+            status: 500,
+            message: 'Internal service error.'
+          }
+        )
+      } catch (error) {
+        sinon.restore()
+
+        assert(typeof error === 'object')
+        assert(error.status === 500)
+        assert(error.code === 500000)
+        assert(error.serviceName === 'leaf-x@snowflake')
+        assert(error.functionName === 'snowflake')
+        assert(error.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
+        assert(error.message === 'Internal service error.')
+        assert(error.env === 'PROD')
+        assert(Array.isArray(error.apis))
+        assert(typeof error.details === 'object')
+      }
+    }
+
+    const responseError = () => {
+      sinon.stub(error, 'handleError').returns({
+        details: { status: 400, message: 'Bad Request.' },
+        status: 400,
+        code: 400000,
+        serviceName: 'leaf-x@snowflake',
+        functionName: 'snowflake',
+        requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
+        message: 'Bad Request.',
+        env: 'PROD',
+        apis: [
+          {
+            serviceName: 'leaf-x@snowflake',
+            functionName: 'snowflake',
+            requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
+            env: 'PROD'
+          }
+        ]
+      })
+
+      try {
+        handleRequestError(
+          {
+            serviceName: 'leaf-x@snowflake',
+            functionName: 'snowflake',
+            env: 'PROD',
+            requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7'
+          },
+          {
+            response: {
+              headers: {
+                'x-fc-request-id': 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7'
+              },
+              status: 400,
+              message: 'Bad Request.'
+            }
+          }
+        )
+      } catch (error) {
+        sinon.restore()
+
+        assert(typeof error === 'object')
+        assert(error.status === 400)
+        assert(error.code === 400000)
+        assert(error.serviceName === 'leaf-x@snowflake')
+        assert(error.functionName === 'snowflake')
+        assert(error.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
+        assert(error.message === 'Bad Request.')
+        assert(error.env === 'PROD')
+        assert(Array.isArray(error.apis))
+        assert(typeof error.details === 'object')
+      }
+    }
+
+    serviceError()
+    responseError()
   })
 })

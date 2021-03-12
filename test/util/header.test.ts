@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import * as sinon from 'sinon'
+import * as md5 from '../../src/util/crypto'
 import { getCanonicalHeaderString, getHeaders } from '../../src/util/header'
-import * as md5 from '../../src/util/md5'
 
 describe('test/header.test.ts', () => {
   it('Should be the result of getHeaders.', async () => {
@@ -11,11 +11,14 @@ describe('test/header.test.ts', () => {
       const content = Buffer.from(
         JSON.stringify({ data: 'This is a request.' })
       )
+
       const result = getHeaders({
         content: Buffer.from(JSON.stringify({ data: 'This is a request.' })),
         host: 'https://github.com/',
         accountId: '1787993'
       })
+
+      sinon.restore()
 
       assert(typeof result === 'object')
       assert(result['accept'] === 'application/json; charset=utf-8')
@@ -28,8 +31,6 @@ describe('test/header.test.ts', () => {
       assert(
         result['content-type'] === 'application/octet-stream; charset=utf-8'
       )
-
-      sinon.restore()
     }
 
     const asyncHeader = () => {
@@ -38,12 +39,15 @@ describe('test/header.test.ts', () => {
       const content = Buffer.from(
         JSON.stringify({ data: 'This is a request.' })
       )
+
       const result = getHeaders({
         content: Buffer.from(JSON.stringify({ data: 'This is a request.' })),
         host: 'https://github.com/',
         accountId: '1787993',
         async: true
       })
+
+      sinon.restore()
 
       assert(typeof result === 'object')
       assert(result['accept'] === 'application/json; charset=utf-8')
@@ -57,8 +61,6 @@ describe('test/header.test.ts', () => {
       assert(
         result['content-type'] === 'application/octet-stream; charset=utf-8'
       )
-
-      sinon.restore()
     }
 
     syncHeader()
@@ -79,6 +81,8 @@ describe('test/header.test.ts', () => {
       'content-md5': '27edad507277349711d0d95e97036819',
       'x-fc-invocation-type': 'Async'
     })
+
+    sinon.restore()
 
     assert(typeof result === 'string')
     assert(

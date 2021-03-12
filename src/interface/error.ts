@@ -53,31 +53,6 @@ export interface HandleErrorResult extends HandleErrorOptions {
   details?: unknown
 }
 
-// /**
-//  * Handle response error options.
-//  */
-// export interface HandleRequestErrorOptions {
-//   /**
-//    * Service name.
-//    */
-//   serviceName: string
-
-//   /**
-//    * Function name.
-//    */
-//   functionName: string
-
-//   /**
-//    * Function version alias.
-//    */
-//   qualifier: string
-
-//   /**
-//    * Request id.
-//    */
-//   requestId: string
-// }
-
 /**
  * Handle error function.
  */

@@ -25,15 +25,24 @@ export const response: ResponseFunction = ({ data, status, ...args }) => {
 export const aliCloudGatewayResponse = ({
   statusCode,
   headers,
-  body
+  body,
+  isBase64Encoded
 }: AliCloudGatewayResponse): ResponseResult | never => {
-  const data = headers['content-type'].startsWith('application/json')
-    ? JSON.parse(body as string)
+  const data = isBase64Encoded
+    ? Buffer.from(body as string, 'base64').toString()
     : body
 
-  if (statusCode >= 400) {
-    throw data
+  const result = {
+    status: statusCode,
+    headers,
+    data: headers['content-type'].startsWith('application/json')
+      ? JSON.parse(data as string)
+      : data
   }
 
-  return { status: statusCode, headers, data }
+  if (statusCode >= 400) {
+    throw result
+  }
+
+  return result
 }

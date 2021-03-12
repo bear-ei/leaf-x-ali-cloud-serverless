@@ -1,4 +1,3 @@
-import { HandleErrorResult } from './interface/error'
 import { ExecWarmUpFunction, InitWarmUpFunction } from './interface/warmUp'
 import { initInvoke } from './invoke'
 
@@ -10,9 +9,7 @@ export const initWarmUp: InitWarmUpFunction = (config) => async (
   const exec = (((serviceName) => async (functionName) =>
     invoke(serviceName, functionName, {
       event: { httpMethod: 'OPTIONS', headers: { 'x-warm-up': 'warmUp' } }
-    }).catch((error) => error as HandleErrorResult)) as ExecWarmUpFunction)(
-    serviceName
-  )
+    }).catch((error) => error)) as ExecWarmUpFunction)(serviceName)
 
   return Promise.all(functionNames.map(exec))
 }

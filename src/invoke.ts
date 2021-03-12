@@ -3,6 +3,7 @@ import {
   InitInvokeFunction,
   RetryInvokeFunction
 } from './interface/invoke'
+import { RequestResult } from './interface/request'
 import { request } from './request'
 import { response } from './response'
 
@@ -45,5 +46,5 @@ export const exec: ExecInvokeFunction = async (
     throw error
   }
 
-  return error ? retry(retryNumber, error) : result
+  return error ? retry(retryNumber, error) : (result as RequestResult)
 }

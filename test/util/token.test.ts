@@ -20,10 +20,10 @@ describe('test/token.test.ts', () => {
       headers: { 'content-type': 'application/octet-stream; charset=utf-8' }
     })
 
+    sinon.restore()
+
     assert(typeof result === 'string')
     assert(result === 'FC 123456:27edad507277349711d0d95e97036819')
-
-    sinon.restore()
   })
 
   it('Should be the result of getSignString.', async () => {
@@ -43,6 +43,8 @@ describe('test/token.test.ts', () => {
       }
     })
 
+    sinon.restore()
+
     assert(typeof result === 'string')
     assert(
       result ===
@@ -55,8 +57,6 @@ describe('test/token.test.ts', () => {
           new URL('https://github.com/').pathname
         ].join('\n')
     )
-
-    sinon.restore()
   })
 
   it('Should be the result of getSign.', async () => {

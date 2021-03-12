@@ -6,13 +6,13 @@ export const handleError: HandleErrorFunction = (
 ) => {
   const status = (error.status ?? 500) as number
   const code = (error.code ? error.code : Number(`${status}000`)) as number
-  const result = !error.status && !error.code ? error : { details: error }
+  const result = error.status && error.code ? error : { details: error }
   const currentApis = [{ serviceName, functionName, requestId, env }]
   const message = (error.message ??
     `${serviceName} ${functionName} invoke failed.`) as string
 
   const apis = Array.isArray(result.apis)
-    ? result.apis.concat(currentApis)
+    ? currentApis.concat(result.apis)
     : currentApis
 
   return Object.assign({}, result, {

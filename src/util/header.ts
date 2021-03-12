@@ -3,7 +3,7 @@ import {
   GetHeaderFunction,
   SpliceHeaderStringFunction
 } from '../interface/util/header'
-import { md5 } from './md5'
+import { md5 } from './crypto'
 
 export const getHeaders: GetHeaderFunction = ({
   content,
