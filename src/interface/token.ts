@@ -1,4 +1,4 @@
-import { EventOptions } from './eventToBuffer'
+import { HttpMethod } from './event'
 
 /**
  * Get request token options.
@@ -18,7 +18,7 @@ export interface getTokenOptions {
   /**
    * Http request method.
    */
-  method: EventOptions['httpMethod']
+  method: HttpMethod
 
   /**
    * Request url.
@@ -45,7 +45,7 @@ export interface GetSignStringOptions {
   /**
    * Http request method.
    */
-  method: EventOptions['httpMethod']
+  method: HttpMethod
 
   /**
    * Request url.

@@ -25,7 +25,7 @@ describe('test/error.test.ts', () => {
       assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
       assert(result.message === 'Internal service error.')
       assert(result.env === 'PROD')
-      assert(Array.isArray(result.apis))
+      assert(Array.isArray(result.functions))
       assert(typeof result.details === 'object')
     }
 
@@ -40,7 +40,7 @@ describe('test/error.test.ts', () => {
         {
           status: 422,
           code: 422000,
-          apis: [
+          functions: [
             {
               serviceName: 'leaf-x@pay',
               functionName: 'pay',
@@ -59,7 +59,7 @@ describe('test/error.test.ts', () => {
       assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
       assert(result.message === 'leaf-x@snowflake snowflake invoke failed.')
       assert(result.env === 'PROD')
-      assert(Array.isArray(result.apis))
+      assert(Array.isArray(result.functions))
     }
 
     serviceError()
@@ -77,7 +77,7 @@ describe('test/error.test.ts', () => {
         requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
         message: 'Internal service error.',
         env: 'PROD',
-        apis: [
+        functions: [
           {
             serviceName: 'leaf-x@snowflake',
             functionName: 'snowflake',
@@ -111,7 +111,7 @@ describe('test/error.test.ts', () => {
         assert(error.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
         assert(error.message === 'Internal service error.')
         assert(error.env === 'PROD')
-        assert(Array.isArray(error.apis))
+        assert(Array.isArray(error.functions))
         assert(typeof error.details === 'object')
       }
     }
@@ -126,7 +126,7 @@ describe('test/error.test.ts', () => {
         requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
         message: 'Bad Request.',
         env: 'PROD',
-        apis: [
+        functions: [
           {
             serviceName: 'leaf-x@snowflake',
             functionName: 'snowflake',
@@ -165,7 +165,7 @@ describe('test/error.test.ts', () => {
         assert(error.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
         assert(error.message === 'Bad Request.')
         assert(error.env === 'PROD')
-        assert(Array.isArray(error.apis))
+        assert(Array.isArray(error.functions))
         assert(typeof error.details === 'object')
       }
     }

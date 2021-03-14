@@ -1,14 +1,18 @@
-import { RequestConfig, RequestOptions, RequestResult } from './request'
-import { EventOptions } from './util/eventToBuffer'
+import { HandleEventToBufferOptions } from './event'
+import {
+  ExecRequestConfig,
+  ExecRequestOptions,
+  ExecRequestResult
+} from './request'
 
 /**
- * Invoke function options.
+ * Invoke options.
  */
 export interface InvokeOptions {
   /**
    * Invoke the event.
    */
-  event: EventOptions
+  event: HandleEventToBufferOptions
 
   /**
    * If or not the request is asynchronous, default value false.
@@ -17,27 +21,27 @@ export interface InvokeOptions {
 }
 
 /**
- * Executes the invoke function options.
+ * Executes the invoke options.
  */
 export interface ExecInvokeOptions {
   /**
    * Request configuration.
    */
-  config: RequestConfig
+  config: ExecRequestConfig
 
   /**
    * Request options.
    */
-  options: RequestOptions
+  options: ExecRequestOptions
 }
 
 /**
- * Executes the invoke function.
+ * Executes the invoke.
  *
  * @param retryNumber Retry times.
  */
 export interface ExecInvokeFunction {
-  (retryNumber: number, options: ExecInvokeOptions): Promise<RequestResult>
+  (retryNumber: number, options: ExecInvokeOptions): Promise<ExecRequestResult>
 }
 
 /**
@@ -48,27 +52,27 @@ export interface ExecInvokeFunction {
  */
 export interface RetryInvokeFunction {
   (retryNumber: number, error: Record<string, unknown>):
-    | Promise<RequestResult>
+    | Promise<ExecRequestResult>
     | never
 }
 
 /**
- * Invoke function configuration.
+ * Invoke configuration.
  */
-export interface InvokeConfig extends RequestConfig {
+export interface InvokeConfig extends ExecRequestConfig {
   /**
    * Invoke the endpoint.
    */
   endpoint: string
 
   /**
-   * Function to calculate api version.
+   * Serverless api version.
    */
   version: string
 }
 
 /**
- * Invoke function results.
+ * Invoke result.
  */
 export interface InvokeResult {
   /**
@@ -82,13 +86,13 @@ export interface InvokeResult {
   status: number
 
   /**
-   * Response header.
+   * Response headers.
    */
   headers: Record<string, string>
 }
 
 /**
- * invoke function.
+ * Invoke.
  *
  * @param serviceName   Service name.
  * @param functionName  Function name.
@@ -102,7 +106,7 @@ export interface InvokeFunction {
 }
 
 /**
- * Initialize the invoke function..
+ * Initialize the invoke.
  */
 export interface InitInvokeFunction {
   (config: InvokeConfig): InvokeFunction

@@ -1,8 +1,8 @@
-import { FunctionCalculationFunction } from './interface/functionCalculation'
+import { ServerlessFunction } from './interface/serverless'
 import { initInvoke } from './invoke'
 import { initWarmUp } from './warmUp'
 
-export const functionCalculation: FunctionCalculationFunction = ({
+export const serverless: ServerlessFunction = ({
   accountId,
   region,
   timeout = 30000,

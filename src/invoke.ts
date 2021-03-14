@@ -3,9 +3,9 @@ import {
   InitInvokeFunction,
   RetryInvokeFunction
 } from './interface/invoke'
-import { RequestResult } from './interface/request'
-import { request } from './request'
-import { response } from './response'
+import { ExecRequestResult } from './interface/request'
+import { execRequest } from './request'
+import { handleResponse } from './response'
 
 export const initInvoke: InitInvokeFunction = ({
   qualifier,
@@ -15,36 +15,36 @@ export const initInvoke: InitInvokeFunction = ({
 }) => async (serviceName, functionName, { async = false, ...invokeArgs }) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
-  const result = await exec(3, {
+  const result = await execInvoke(3, {
     config: { qualifier, ...args },
     options: { url, serviceName, functionName, async, ...invokeArgs }
   })
 
-  return response(result)
+  return handleResponse(result)
 }
 
-export const exec: ExecInvokeFunction = async (
+export const execInvoke: ExecInvokeFunction = async (
   retryNumber,
   { config, options }
 ) => {
   let error!: Record<string, unknown>
 
-  const result = await request(config, options)
+  const result = await execRequest(config, options)
     .then((result) => result)
     .catch((err) => (error = err))
 
-  const retry: RetryInvokeFunction = (retryNumber, error) => {
+  const retryInvoke: RetryInvokeFunction = (retryNumber, error) => {
     const retry =
       retryNumber > 0 && ((error.status as unknown) as number) >= 500
 
     if (retry) {
       retryNumber--
 
-      return exec(retryNumber, { config, options })
+      return execInvoke(retryNumber, { config, options })
     }
 
     throw error
   }
 
-  return error ? retry(retryNumber, error) : (result as RequestResult)
+  return error ? retryInvoke(retryNumber, error) : (result as ExecRequestResult)
 }

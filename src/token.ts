@@ -4,8 +4,8 @@ import {
   GetSignFunction,
   GetSignStringFunction,
   GetTokenFunction
-} from 'src/interface/util/token'
-import { getCanonicalHeaderString } from './header'
+} from 'src/interface/token'
+import { getCanonicalHeadersString } from './headers'
 
 export const getToken: GetTokenFunction = ({
   accessId,
@@ -18,7 +18,7 @@ export const getSignString: GetSignStringFunction = ({
   url,
   headers
 }) => {
-  const canonicalHeaderString = getCanonicalHeaderString('x-fc-', headers)
+  const canonicalHeaderString = getCanonicalHeadersString('x-fc-', headers)
   const pathname = decodeURIComponent(new URL(url).pathname)
 
   return [

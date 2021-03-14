@@ -1,4 +1,4 @@
 'use strict'
 
-export { functionCalculation } from './src/functionCalculation'
-export * from './src/interface/functionCalculation'
+export * from './src/interface/serverless'
+export { serverless } from './src/serverless'

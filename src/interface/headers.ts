@@ -1,7 +1,7 @@
 /**
- * Get request header options.
+ * Get request headers options.
  */
-export interface GetHeaderOptions {
+export interface GetHeadersOptions {
   /**
    * Request body buffer.
    */
@@ -26,23 +26,23 @@ export interface GetHeaderOptions {
 /**
  * Get request headers.
  */
-export interface GetHeaderFunction {
-  (options: GetHeaderOptions): Record<string, string>
+export interface GetHeadersFunction {
+  (options: GetHeadersOptions): Record<string, string>
 }
 
 /**
- * Get the canonical header string.
+ * Get the canonical headers string.
  */
-export interface GetCanonicalHeaderStringFunction {
+export interface GetCanonicalHeadersStringFunction {
   (prefix: string, headers: Record<string, string>): string
 }
 
 /**
- * Splice request header string.
+ * Splice request headers string.
  *
  * @param headers   Request headers.
- * @param key       Request header key.
+ * @param key       Request headers key.
  */
-export interface SpliceHeaderStringFunction {
+export interface SpliceHeadersStringFunction {
   (headers: Record<string, string>): (key: string) => string
 }

@@ -1,9 +1,9 @@
 import { InvokeOptions } from './invoke'
 
 /**
- * Request configuration.
+ * Execute request configuration.
  */
-export interface RequestConfig {
+export interface ExecRequestConfig {
   /**
    * Request host.
    */
@@ -30,15 +30,15 @@ export interface RequestConfig {
   timeout: number
 
   /**
-   * Function version alias.
+   * Serverless version alias.
    */
   qualifier: string
 }
 
 /**
- *  Request options.
+ *  Execute request options.
  */
-export interface RequestOptions extends InvokeOptions {
+export interface ExecRequestOptions extends InvokeOptions {
   /**
    * Service name.
    */
@@ -56,9 +56,9 @@ export interface RequestOptions extends InvokeOptions {
 }
 
 /**
- * Request results.
+ * Execution request result.
  */
-export interface RequestResult {
+export interface ExecRequestResult {
   /**
    * Response status code.
    */
@@ -70,7 +70,7 @@ export interface RequestResult {
   data: unknown
 
   /**
-   * Response header.
+   * Response headers.
    */
   headers: Record<string, string>
 
@@ -78,8 +78,11 @@ export interface RequestResult {
 }
 
 /**
- * Request.
+ * Execute requests.
  */
-export interface RequestFunction {
-  (config: RequestConfig, options: RequestOptions): Promise<RequestResult>
+export interface ExecRequestFunction {
+  (
+    config: ExecRequestConfig,
+    options: ExecRequestOptions
+  ): Promise<ExecRequestResult>
 }

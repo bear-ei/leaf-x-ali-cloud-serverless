@@ -1,17 +1,18 @@
 import * as assert from 'assert'
 import axios from 'axios'
 import * as sinon from 'sinon'
-import { request } from '../src/request'
-import * as eventToBuffer from '../src/util/eventToBuffer'
-import * as header from '../src/util/header'
-import * as token from '../src/util/token'
+import * as event from '../src/event'
+import * as headers from '../src/headers'
+import { execRequest } from '../src/request'
+import * as token from '../src/token'
 
 describe('test/request.test.ts', () => {
-  it('Should be the result of request.', async () => {
+  it('Should be the result of execRequest.', async () => {
     const correctResponse = async () => {
-      sinon.stub(eventToBuffer, 'eventToBuffer').returns(Buffer.from('buffer'))
+      sinon.stub(event, 'handleEventToBuffer').returns(Buffer.from('buffer'))
+
       sinon
-        .stub(header, 'getHeaders')
+        .stub(headers, 'getHeaders')
         .returns({ 'x-fc-request-id': '7ed5b160-327c-96cb-af46-b3c0757dfc35' })
 
       sinon
@@ -20,7 +21,7 @@ describe('test/request.test.ts', () => {
 
       sinon.stub(axios, 'request').resolves({ status: 202, data: '' })
 
-      const result = await request(
+      const result = await execRequest(
         {
           host: 'github.com',
           accountId: '3546677',
@@ -35,7 +36,8 @@ describe('test/request.test.ts', () => {
           serviceName: 'leaf-x@snowflake',
           functionName: 'snowflake',
           event: {
-            queryParameters: { name: 'snowflake' }
+            type: 'ALI_ClOUD_GATEWAY',
+            data: { queryParameters: { name: 'snowflake' } }
           }
         }
       )
@@ -48,9 +50,10 @@ describe('test/request.test.ts', () => {
     }
 
     const errorResponse = async () => {
-      sinon.stub(eventToBuffer, 'eventToBuffer').returns(Buffer.from('buffer'))
+      sinon.stub(event, 'handleEventToBuffer').returns(Buffer.from('buffer'))
+
       sinon
-        .stub(header, 'getHeaders')
+        .stub(headers, 'getHeaders')
         .returns({ 'x-fc-request-id': '7ed5b160-327c-96cb-af46-b3c0757dfc35' })
 
       sinon
@@ -62,7 +65,7 @@ describe('test/request.test.ts', () => {
         .rejects({ status: 500, message: 'Service internal error.' })
 
       try {
-        await request(
+        await execRequest(
           {
             host: 'github.com',
             accountId: '3546677',
@@ -77,7 +80,8 @@ describe('test/request.test.ts', () => {
             serviceName: 'leaf-x@snowflake',
             functionName: 'snowflake',
             event: {
-              queryParameters: { name: 'snowflake' }
+              type: 'ALI_ClOUD_GATEWAY',
+              data: { queryParameters: { name: 'snowflake' } }
             }
           }
         )

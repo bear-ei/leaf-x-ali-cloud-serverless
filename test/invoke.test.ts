@@ -3,13 +3,16 @@ import * as sinon from 'sinon'
 import * as invoke from '../src/invoke'
 import * as request from '../src/request'
 import * as response from '../src/response'
-const { initInvoke, exec } = invoke
+const { initInvoke, execInvoke } = invoke
 
 describe('test/invoke.test.ts', () => {
   it('Should be the result of initInvoke.', async () => {
-    sinon.stub(invoke, 'exec').resolves({ status: 202, data: '', headers: {} })
     sinon
-      .stub(response, 'response')
+      .stub(invoke, 'execInvoke')
+      .resolves({ status: 202, data: '', headers: {} })
+
+    sinon
+      .stub(response, 'handleResponse')
       .returns({ status: 202, data: '', headers: {} })
 
     const result = await initInvoke({
@@ -23,7 +26,8 @@ describe('test/invoke.test.ts', () => {
       timeout: 3000
     })('leaf-x@snowflake', 'snowflake', {
       event: {
-        queryParameters: { name: 'snowflake' }
+        type: 'ALI_ClOUD_GATEWAY',
+        data: { queryParameters: { name: 'snowflake' } }
       }
     })
 
@@ -35,13 +39,13 @@ describe('test/invoke.test.ts', () => {
     assert(typeof result.headers === 'object')
   })
 
-  it('Should be the result of exec.', async () => {
+  it('Should be the result of execInvoke.', async () => {
     const correctResponse = async () => {
       sinon
-        .stub(request, 'request')
+        .stub(request, 'execRequest')
         .resolves({ status: 202, data: '', headers: {} })
 
-      const result = await exec(3, {
+      const result = await execInvoke(3, {
         config: {
           qualifier: 'PROD',
           host: 'github.com',
@@ -54,7 +58,10 @@ describe('test/invoke.test.ts', () => {
           url: 'https://github.com/',
           serviceName: 'leaf-x@snowflake',
           functionName: 'snowflake',
-          event: { queryParameters: { name: 'snowflake' } }
+          event: {
+            type: 'ALI_ClOUD_GATEWAY',
+            data: { queryParameters: { name: 'snowflake' } }
+          }
         }
       })
       sinon.restore()
@@ -66,13 +73,13 @@ describe('test/invoke.test.ts', () => {
     }
 
     const errorResponse = async () => {
-      sinon.stub(request, 'request').rejects({
+      sinon.stub(request, 'execRequest').rejects({
         status: 500,
         message: 'Service internal error.'
       })
 
       try {
-        await exec(3, {
+        await execInvoke(3, {
           config: {
             qualifier: 'PROD',
             host: 'github.com',
@@ -85,7 +92,10 @@ describe('test/invoke.test.ts', () => {
             url: 'https://github.com/',
             serviceName: 'leaf-x@snowflake',
             functionName: 'snowflake',
-            event: { queryParameters: { name: 'snowflake' } }
+            event: {
+              type: 'ALI_ClOUD_GATEWAY',
+              data: { queryParameters: { name: 'snowflake' } }
+            }
           }
         })
       } catch (error) {

@@ -2,11 +2,11 @@ import * as assert from 'assert'
 import * as sinon from 'sinon'
 import * as response from '../src/response'
 
-const { response: handleResponse, aliCloudGatewayResponse } = response
+const { handleResponse, handleAliCloudGatewayResponse } = response
 
 describe('test/response.test.ts', () => {
-  it('Should be the result of response.', async () => {
-    const correctResponse = () => {
+  it('Should be the result of handleResponse.', async () => {
+    const correct = () => {
       const result = handleResponse({
         status: 202,
         data: '',
@@ -19,8 +19,8 @@ describe('test/response.test.ts', () => {
       assert(typeof result.headers === 'object')
     }
 
-    const aliCloudGatewayResponse = () => {
-      sinon.stub(response, 'aliCloudGatewayResponse').returns({
+    const aliCloudGateway = () => {
+      sinon.stub(response, 'handleAliCloudGatewayResponse').returns({
         status: 202,
         data: '',
         headers: { 'x-fc-request-id': 'a663b016-f9dc-5220-a330-4c68e932be82' }
@@ -45,13 +45,13 @@ describe('test/response.test.ts', () => {
       assert(typeof result.headers === 'object')
     }
 
-    correctResponse()
-    aliCloudGatewayResponse()
+    correct()
+    aliCloudGateway()
   })
 
-  it('Should be the result of aliCloudGatewayResponse.', async () => {
-    const correctResponse = () => {
-      const result = aliCloudGatewayResponse({
+  it('Should be the result of handleAliCloudGatewayResponse.', async () => {
+    const correct = () => {
+      const result = handleAliCloudGatewayResponse({
         statusCode: 200,
         body: JSON.stringify({ message: 'json' }),
         isBase64Encoded: false,
@@ -66,8 +66,8 @@ describe('test/response.test.ts', () => {
       assert(typeof result.headers === 'object')
     }
 
-    const base64Response = () => {
-      const result = aliCloudGatewayResponse({
+    const base64 = () => {
+      const result = handleAliCloudGatewayResponse({
         statusCode: 200,
         body: Buffer.from('text').toString('base64'),
         isBase64Encoded: true,
@@ -82,9 +82,9 @@ describe('test/response.test.ts', () => {
       assert(typeof result.headers === 'object')
     }
 
-    const errorResponse = () => {
+    const error = () => {
       try {
-        aliCloudGatewayResponse({
+        handleAliCloudGatewayResponse({
           statusCode: 400,
           body: JSON.stringify({ message: 'Bad Request.' }),
           isBase64Encoded: false,
@@ -102,8 +102,8 @@ describe('test/response.test.ts', () => {
       }
     }
 
-    correctResponse()
-    base64Response()
-    errorResponse()
+    correct()
+    base64()
+    error()
   })
 })

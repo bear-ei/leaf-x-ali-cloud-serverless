@@ -6,7 +6,7 @@ import * as invoke from '../src/invoke'
 import { initWarmUp } from '../src/warmUp'
 
 describe('test/warmUp.test.ts', () => {
-  it('Should be the result of warmUp.', async () => {
+  it('Should be the result of execWarmUp.', async () => {
     const correctResponse = async () => {
       sinon.stub(invoke, 'initInvoke').returns(async () => ({
         data: '',
@@ -23,7 +23,10 @@ describe('test/warmUp.test.ts', () => {
         accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
         accessSecretKey: 'MTIzNTU1NTY3Nw==',
         timeout: 3000
-      })('leaf-x@snowflake', ['snowflake', 'snowflakeIndex'])
+      })('leaf-x@snowflake', [
+        { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflake' },
+        { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflakeIndex' }
+      ])
 
       sinon.restore()
 
@@ -55,7 +58,10 @@ describe('test/warmUp.test.ts', () => {
         accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
         accessSecretKey: 'MTIzNTU1NTY3Nw==',
         timeout: 3000
-      })('leaf-x@snowflake', ['snowflake', 'snowflakeIndex'])
+      })('leaf-x@snowflake', [
+        { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflake' },
+        { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflakeIndex' }
+      ])
 
       sinon.restore()
 

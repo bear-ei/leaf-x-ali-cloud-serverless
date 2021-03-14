@@ -2,12 +2,12 @@ import * as assert from 'assert'
 import * as sinon from 'sinon'
 import { HandleErrorResult } from 'src/interface/error'
 import { InvokeResult } from 'src/interface/invoke'
-import { functionCalculation } from '../src/functionCalculation'
 import * as invoke from '../src/invoke'
+import { serverless } from '../src/serverless'
 import * as warmUp from '../src/warmUp'
 
-describe('test/functionCalculation.test.ts', () => {
-  it('Should be the result of functionCalculation.', async () => {
+describe('test/serverless.test.ts', () => {
+  it('Should be the result of serverless.', async () => {
     const defaultOptions = () => {
       sinon
         .stub(invoke, 'initInvoke')
@@ -19,7 +19,7 @@ describe('test/functionCalculation.test.ts', () => {
           async () => ('' as unknown) as (InvokeResult | HandleErrorResult)[]
         )
 
-      const result = functionCalculation({
+      const result = serverless({
         accountId: '1234455',
         accessId: 'MTIzNDQ1NQ==',
         accessSecretKey: 'MTIzMjEz',
@@ -44,7 +44,7 @@ describe('test/functionCalculation.test.ts', () => {
           async () => ('' as unknown) as (InvokeResult | HandleErrorResult)[]
         )
 
-      const result = functionCalculation({
+      const result = serverless({
         accountId: '1234455',
         accessId: 'MTIzMjEzMTQ1NQ==',
         accessSecretKey: 'MTIzNTg5MA==',

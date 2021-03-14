@@ -1,11 +1,11 @@
+import * as crypto from 'crypto'
 import {
-  GetCanonicalHeaderStringFunction,
-  GetHeaderFunction,
-  SpliceHeaderStringFunction
-} from '../interface/util/header'
-import { md5 } from './crypto'
+  GetCanonicalHeadersStringFunction,
+  GetHeadersFunction,
+  SpliceHeadersStringFunction
+} from './interface/headers'
 
-export const getHeaders: GetHeaderFunction = ({
+export const getHeaders: GetHeadersFunction = ({
   content,
   host,
   accountId,
@@ -18,16 +18,16 @@ export const getHeaders: GetHeaderFunction = ({
   'x-fc-account-id': accountId,
   'content-type': 'application/octet-stream; charset=utf-8',
   'content-length': content.length.toString(),
-  'content-md5': md5(content),
+  'content-md5': crypto.createHash('md5').update(content).digest('hex'),
   ...(async ? { 'x-fc-invocation-type': 'Async' } : undefined)
 })
 
-export const getCanonicalHeaderString: GetCanonicalHeaderStringFunction = (
+export const getCanonicalHeadersString: GetCanonicalHeadersStringFunction = (
   prefix,
   headers
 ) => {
   const spliceHeaderString = (((headers) => (key) =>
-    `${key}:${headers[key]}`) as SpliceHeaderStringFunction)(headers)
+    `${key}:${headers[key]}`) as SpliceHeadersStringFunction)(headers)
 
   return Object.keys(headers)
     .filter((key) => key.startsWith(prefix))

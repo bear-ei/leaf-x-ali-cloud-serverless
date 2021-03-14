@@ -6,10 +6,13 @@ export const initWarmUp: InitWarmUpFunction = (config) => async (
   functionNames
 ) => {
   const invoke = initInvoke(config)
-  const exec = (((serviceName) => async (functionName) =>
+  const execWarmUp = (((serviceName) => async ({ functionName, type }) =>
     invoke(serviceName, functionName, {
-      event: { httpMethod: 'OPTIONS', headers: { 'x-warm-up': 'warmUp' } }
+      event: {
+        type,
+        data: { httpMethod: 'OPTIONS', headers: { 'x-warm-up': 'warmUp' } }
+      }
     }).catch((error) => error)) as ExecWarmUpFunction)(serviceName)
 
-  return Promise.all(functionNames.map(exec))
+  return Promise.all(functionNames.map(execWarmUp))
 }

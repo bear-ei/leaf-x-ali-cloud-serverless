@@ -1,10 +1,20 @@
 import {
-  AliCloudGatewayResponse,
-  ResponseFunction,
-  ResponseResult
+  HandleAliCloudGatewayResponseFunction,
+  HandleAliCloudGatewayResponseOptions,
+  HandleResponseFunction
 } from './interface/response'
 
-export const response: ResponseFunction = ({ data, status, ...args }) => {
+/**
+ * TODO:
+ *
+ * Add HTTP response support.
+ */
+export const handleResponse: HandleResponseFunction = ({
+  data,
+  status,
+  ...args
+}) => {
+  const response = { ALI_ClOUD_GATEWAY: handleAliCloudGatewayResponse }
   const aliCloudGatewayKeys = [
     'statusCode',
     'isBase64Encoded',
@@ -12,22 +22,24 @@ export const response: ResponseFunction = ({ data, status, ...args }) => {
     'body'
   ]
 
-  const aliCloudGatewayData =
+  const aliCloudGatewayResponse =
     typeof data === 'object' &&
     data !== null &&
     Object.keys(data).sort().join() === aliCloudGatewayKeys.sort().join()
 
-  return aliCloudGatewayData
-    ? aliCloudGatewayResponse(data as AliCloudGatewayResponse)
+  return aliCloudGatewayResponse
+    ? response['ALI_ClOUD_GATEWAY'](
+        data as HandleAliCloudGatewayResponseOptions
+      )
     : { data, status, ...args }
 }
 
-export const aliCloudGatewayResponse = ({
+export const handleAliCloudGatewayResponse: HandleAliCloudGatewayResponseFunction = ({
   statusCode,
   headers,
   body,
   isBase64Encoded
-}: AliCloudGatewayResponse): ResponseResult | never => {
+}) => {
   const data = isBase64Encoded
     ? Buffer.from(body as string, 'base64').toString()
     : body

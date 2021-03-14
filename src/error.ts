@@ -1,4 +1,7 @@
-import { HandleErrorFunction, HandleErrorOptions } from './interface/error'
+import {
+  HandleErrorFunction,
+  HandleRequestErrorFunction
+} from './interface/error'
 
 export const handleError: HandleErrorFunction = (
   { serviceName, functionName, requestId, env },
@@ -6,16 +9,16 @@ export const handleError: HandleErrorFunction = (
 ) => {
   const status = (error.status ?? 500) as number
   const code = (error.code ? error.code : Number(`${status}000`)) as number
-  const result = error.status && error.code ? error : { details: error }
+  const err = error.status && error.code ? error : { details: error }
   const currentApis = [{ serviceName, functionName, requestId, env }]
   const message = (error.message ??
     `${serviceName} ${functionName} invoke failed.`) as string
 
-  const apis = Array.isArray(result.apis)
-    ? currentApis.concat(result.apis)
+  const functions = Array.isArray(err.functions)
+    ? currentApis.concat(err.functions)
     : currentApis
 
-  return Object.assign({}, result, {
+  return Object.assign({}, err, {
     status,
     code,
     serviceName,
@@ -23,14 +26,14 @@ export const handleError: HandleErrorFunction = (
     requestId,
     message,
     env,
-    apis
+    functions
   })
 }
 
-export const handleRequestError = (
-  { serviceName, functionName, requestId, env }: HandleErrorOptions,
-  error: Record<string, unknown>
-): never => {
+export const handleRequestError: HandleRequestErrorFunction = (
+  { serviceName, functionName, requestId, env },
+  error
+) => {
   const responseError = error.response as Record<string, unknown>
 
   if (responseError) {

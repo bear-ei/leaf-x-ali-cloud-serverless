@@ -1,19 +1,29 @@
 import { HandleErrorResult } from './error'
+import { EventType } from './event'
 import { InvokeConfig, InvokeResult } from './invoke'
 
 /**
- * Warm-up configuration.
+ * Warm-up options.
  */
-export type warmUpConfig = InvokeConfig
+export interface WarmUpOptions {
+  /**
+   * Event type.
+   */
+  type: EventType
+
+  /**
+   * Function name.
+   */
+  functionName: string
+}
 
 /**
- * Warm-up function.
+ * Warm-up.
  *
  * @param serviceName       Service name.
- * @param functionNames     Function names.
  */
 export interface WarmUpFunction {
-  (serviceName: string, functionNames: string[]): Promise<
+  (serviceName: string, options: WarmUpOptions[]): Promise<
     (HandleErrorResult | InvokeResult)[]
   >
 }
@@ -23,17 +33,16 @@ export interface WarmUpFunction {
  * a minimal access manner.
  */
 export interface InitWarmUpFunction {
-  (config: warmUpConfig): WarmUpFunction
+  (config: InvokeConfig): WarmUpFunction
 }
 
 /**
  * Execute the warm-up.
  *
  * @param serviceName   Service name.
- * @param functionName  Function name.
  */
 export interface ExecWarmUpFunction {
   (serviceName: string): (
-    functionName: string
+    options: WarmUpOptions
   ) => Promise<HandleErrorResult | InvokeResult>
 }

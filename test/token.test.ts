@@ -1,12 +1,12 @@
 import * as assert from 'assert'
 import * as sinon from 'sinon'
-import * as header from '../../src/util/header'
-import * as token from '../../src/util/token'
+import * as headers from '../src/headers'
+import * as token from '../src/token'
 
 const { getToken, getSignString, getSign } = token
 
 describe('test/token.test.ts', () => {
-  it('Should be the result of token.', async () => {
+  it('Should be the result of getToken.', async () => {
     sinon.stub(token, 'getSignString').returns('sign\n')
     sinon
       .stub(token, 'getSign')
@@ -28,7 +28,7 @@ describe('test/token.test.ts', () => {
 
   it('Should be the result of getSignString.', async () => {
     sinon
-      .stub(header, 'getCanonicalHeaderString')
+      .stub(headers, 'getCanonicalHeadersString')
       .returns(
         ['x-fc-account-id:1787993', 'x-fc-invocation-type:Async'].join('\n')
       )

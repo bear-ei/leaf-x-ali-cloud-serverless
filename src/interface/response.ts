@@ -1,27 +1,17 @@
 import { InvokeResult } from './invoke'
-import { RequestResult } from './request'
+import { ExecRequestResult } from './request'
 
 /**
- * Response options.
+ * Handle response.
  */
-export type ResponseOptions = RequestResult
-
-/**
- * Response results.
- */
-export type ResponseResult = InvokeResult
-
-/**
- * Response.
- */
-export interface ResponseFunction {
-  (options: ResponseOptions): ResponseResult
+export interface HandleResponseFunction {
+  (options: ExecRequestResult): InvokeResult
 }
 
 /**
- * Ali cloud gateway options.
+ * Handle ali cloud gateway options.
  */
-export interface AliCloudGatewayResponse {
+export interface HandleAliCloudGatewayResponseOptions {
   /**
    * Response status code.
    */
@@ -43,6 +33,9 @@ export interface AliCloudGatewayResponse {
   body: unknown
 }
 
-export interface AliCloudGatewayData {
-  (options: AliCloudGatewayResponse): ResponseResult | never
+/**
+ * Handle ali cloud gateway responses.
+ */
+export interface HandleAliCloudGatewayResponseFunction {
+  (options: HandleAliCloudGatewayResponseOptions): InvokeResult | never
 }

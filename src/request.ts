@@ -1,16 +1,16 @@
 import axios from 'axios'
 import { handleRequestError } from './error'
-import { RequestFunction, RequestResult } from './interface/request'
-import { eventToBuffer } from './util/eventToBuffer'
-import { getHeaders } from './util/header'
-import { getToken } from './util/token'
+import { handleEventToBuffer } from './event'
+import { getHeaders } from './headers'
+import { ExecRequestFunction, ExecRequestResult } from './interface/request'
+import { getToken } from './token'
 
-export const request: RequestFunction = async (
+export const execRequest: ExecRequestFunction = async (
   { host, accountId, accessId, accessSecretKey, timeout, qualifier },
   { url, event, async, serviceName, functionName }
 ) => {
   const method = 'POST'
-  const buffer = eventToBuffer(event)
+  const buffer = handleEventToBuffer(event)
   const headers = getHeaders({
     content: buffer,
     host,
@@ -34,7 +34,7 @@ export const request: RequestFunction = async (
       timeout,
       headers: Object.assign({}, headers, { authorization: token })
     })
-    .then((result) => (result as unknown) as RequestResult)
+    .then((result) => (result as unknown) as ExecRequestResult)
     .catch((error) =>
       handleRequestError(
         {

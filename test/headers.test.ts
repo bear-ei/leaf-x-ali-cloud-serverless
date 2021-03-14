@@ -1,13 +1,9 @@
 import * as assert from 'assert'
-import * as sinon from 'sinon'
-import * as md5 from '../../src/util/crypto'
-import { getCanonicalHeaderString, getHeaders } from '../../src/util/header'
+import { getCanonicalHeadersString, getHeaders } from '../src/headers'
 
-describe('test/header.test.ts', () => {
+describe('test/headers.test.ts', () => {
   it('Should be the result of getHeaders.', async () => {
-    const syncHeader = () => {
-      sinon.stub(md5, 'md5').returns('27edad507277349711d0d95e97036819')
-
+    const syncHeaders = () => {
       const content = Buffer.from(
         JSON.stringify({ data: 'This is a request.' })
       )
@@ -18,8 +14,6 @@ describe('test/header.test.ts', () => {
         accountId: '1787993'
       })
 
-      sinon.restore()
-
       assert(typeof result === 'object')
       assert(result['accept'] === 'application/json; charset=utf-8')
       assert(typeof result['date'] === 'string')
@@ -27,15 +21,13 @@ describe('test/header.test.ts', () => {
       assert(result['user-agent'].startsWith('Node.js'))
       assert(result['x-fc-account-id'] === '1787993')
       assert(result['content-length'] === content.length.toString())
-      assert(result['content-md5'] === '27edad507277349711d0d95e97036819')
+      assert(result['content-md5'] === 'bf32ca0ebf019d8ba4f95145a5a96865')
       assert(
         result['content-type'] === 'application/octet-stream; charset=utf-8'
       )
     }
 
-    const asyncHeader = () => {
-      sinon.stub(md5, 'md5').returns('27edad507277349711d0d95e97036819')
-
+    const asyncHeaders = () => {
       const content = Buffer.from(
         JSON.stringify({ data: 'This is a request.' })
       )
@@ -47,8 +39,6 @@ describe('test/header.test.ts', () => {
         async: true
       })
 
-      sinon.restore()
-
       assert(typeof result === 'object')
       assert(result['accept'] === 'application/json; charset=utf-8')
       assert(typeof result['date'] === 'string')
@@ -56,21 +46,19 @@ describe('test/header.test.ts', () => {
       assert(result['user-agent'].startsWith('Node.js'))
       assert(result['x-fc-account-id'] === '1787993')
       assert(result['content-length'] === content.length.toString())
-      assert(result['content-md5'] === '27edad507277349711d0d95e97036819')
+      assert(result['content-md5'] === 'bf32ca0ebf019d8ba4f95145a5a96865')
       assert(result['x-fc-invocation-type'] === 'Async')
       assert(
         result['content-type'] === 'application/octet-stream; charset=utf-8'
       )
     }
 
-    syncHeader()
-    asyncHeader()
+    syncHeaders()
+    asyncHeaders()
   })
 
-  it('Should be the result of getCanonicalHeaderString.', async () => {
-    sinon.stub(md5, 'md5').returns('27edad507277349711d0d95e97036819')
-
-    const result = getCanonicalHeaderString('x-fc-', {
+  it('Should be the result of getCanonicalHeadersString.', async () => {
+    const result = getCanonicalHeadersString('x-fc-', {
       accept: 'application/json; charset=utf-8',
       date: new Date().toUTCString(),
       host: 'https://github.com/',
@@ -78,11 +66,9 @@ describe('test/header.test.ts', () => {
       'x-fc-account-id': '1787993',
       'content-type': 'application/octet-stream; charset=utf-8',
       'content-length': '255',
-      'content-md5': '27edad507277349711d0d95e97036819',
+      'content-md5': 'bf32ca0ebf019d8ba4f95145a5a96865',
       'x-fc-invocation-type': 'Async'
     })
-
-    sinon.restore()
 
     assert(typeof result === 'string')
     assert(

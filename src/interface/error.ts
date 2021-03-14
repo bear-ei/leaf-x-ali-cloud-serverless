@@ -1,5 +1,5 @@
 /**
- * Handle error options.
+ * Handle the error options.
  */
 export interface HandleErrorOptions {
   /**
@@ -24,7 +24,7 @@ export interface HandleErrorOptions {
 }
 
 /**
- * Handle error results.
+ * Handle error result.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
@@ -45,7 +45,7 @@ export interface HandleErrorResult extends HandleErrorOptions {
   /**
    * Invoke chain information.
    */
-  apis?: HandleErrorOptions[]
+  functions?: HandleErrorOptions[]
 
   /**
    * Error details.
@@ -54,11 +54,18 @@ export interface HandleErrorResult extends HandleErrorOptions {
 }
 
 /**
- * Handle error function.
+ * Handle error.
  */
 export interface HandleErrorFunction {
   (
     options: HandleErrorOptions,
     error: Record<string, unknown>
   ): HandleErrorResult
+}
+
+/**
+ * Handle request errors.
+ */
+export interface HandleRequestErrorFunction {
+  (options: HandleErrorOptions, error: Record<string, unknown>): never
 }
