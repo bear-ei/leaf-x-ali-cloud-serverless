@@ -5,12 +5,12 @@ import { HttpMethod } from './event'
  */
 export interface getTokenOptions {
   /**
-   * Ali cloud access id.
+   * AliCloud access id.
    */
   accessId: string
 
   /**
-   * Ali cloud access key.
+   * AliCloud access key.
    *
    */
   accessSecretKey: string
@@ -68,7 +68,7 @@ export interface GetSignStringFunction {
 /**
  * Get the signature.
  *
- * @param accessSecretKey   Ali cloud access key.
+ * @param accessSecretKey   AliCloud access key.
  * @param signString        Signature string.
  */
 export interface GetSignFunction {

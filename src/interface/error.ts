@@ -24,7 +24,7 @@ export interface HandleErrorOptions {
 }
 
 /**
- * Handle error result.
+ * Handle the error result.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
@@ -64,7 +64,7 @@ export interface HandleErrorFunction {
 }
 
 /**
- * Handle request errors.
+ * Handle request error.
  */
 export interface HandleRequestErrorFunction {
   (options: HandleErrorOptions, error: Record<string, unknown>): never

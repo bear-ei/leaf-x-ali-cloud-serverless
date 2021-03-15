@@ -10,17 +10,17 @@ export interface ExecRequestConfig {
   host: string
 
   /**
-   * Ali cloud account id.
+   * AliCloud account id.
    */
   accountId: string
 
   /**
-   * Ali cloud access id.
+   * AliCloud access id.
    */
   accessId: string
 
   /**
-   * Ali cloud access key.
+   * AliCloud access key.
    */
   accessSecretKey: string
 
@@ -78,7 +78,7 @@ export interface ExecRequestResult {
 }
 
 /**
- * Execute requests.
+ * Execute the request.
  */
 export interface ExecRequestFunction {
   (

@@ -14,7 +14,7 @@ export type HttpMethod =
   | 'UNLINK'
 
 /**
- * Handle ali cloud gateway event options.
+ * Handle AliCloud gateway event options.
  */
 export interface HandleAliCloudGatewayEventOptions {
   /**
@@ -76,7 +76,7 @@ export interface HandleEventToBufferFunction {
 }
 
 /**
- * Handle ali cloud gateway event.
+ * Handle AliCloud gateway event.
  */
 export interface HandleAliCloudGatewayEventFunction {
   (options: HandleAliCloudGatewayEventOptions): string

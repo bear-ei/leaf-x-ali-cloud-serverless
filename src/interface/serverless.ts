@@ -6,17 +6,17 @@ import { WarmUpFunction } from './warmUp'
  */
 export interface ServerlessOptions {
   /**
-   * Ali cloud account id.
+   * AliCloud account id.
    */
   accountId: string
 
   /**
-   * Ali cloud serverless access id.
+   * AliCloud serverless access id.
    */
   accessId: string
 
   /**
-   * Ali cloud serverless access key.
+   * AliCloud serverless access key.
    */
   accessSecretKey: string
 

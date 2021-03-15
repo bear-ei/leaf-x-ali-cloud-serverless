@@ -9,7 +9,7 @@ export interface HandleResponseFunction {
 }
 
 /**
- * Handle ali cloud gateway options.
+ * Handle AliCloud gateway options.
  */
 export interface HandleAliCloudGatewayResponseOptions {
   /**
@@ -34,7 +34,7 @@ export interface HandleAliCloudGatewayResponseOptions {
 }
 
 /**
- * Handle ali cloud gateway responses.
+ * Handle AliCloud gateway responses.
  */
 export interface HandleAliCloudGatewayResponseFunction {
   (options: HandleAliCloudGatewayResponseOptions): InvokeResult | never

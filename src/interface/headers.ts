@@ -13,7 +13,7 @@ export interface GetHeadersOptions {
   host: string
 
   /**
-   * Ali cloud account id.
+   * AliCloud account id.
    */
   accountId: string
 
