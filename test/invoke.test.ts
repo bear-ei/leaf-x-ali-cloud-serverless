@@ -1,4 +1,4 @@
-import assert = require('power-assert')
+import * as assert from 'assert'
 import * as sinon from 'sinon'
 import * as invoke from '../src/invoke'
 import * as request from '../src/request'
