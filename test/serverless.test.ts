@@ -66,4 +66,34 @@ describe('test/serverless.test.ts', () => {
     defaultOptions()
     inputOptions()
   })
+
+  it('Should be the result of cc.', async () => {
+    const { invoke: i } = serverless({
+      accountId: '1513153060849486',
+      accessId: 'LTAI4Fd5Chf5FFaQBCatShm3',
+      accessSecretKey: '24GBZFnD1FL6a6vSpBcxnc2S3tPjDk',
+      region: 'cn-shanghai',
+      timeout: 20000,
+      internal: false,
+      qualifier: 'DEV'
+    })
+
+    const result = await i('ThalloSnowflakes', 'createSnowflake', {
+      event: {
+        type: 'ALI_ClOUD_GATEWAY',
+        data: {
+          httpMethod: 'POST',
+          queryParameters: { isCount: false },
+          pathParameters: {},
+          body: JSON.stringify({ serviceName: 'test', functionName: 'test' }),
+          headers: {
+            'content-type': 'text/plain; charset=utf-8',
+            'x-service': 'service'
+          }
+        }
+      }
+    }).catch((err) => console.info(err))
+
+    console.info(result)
+  })
 })

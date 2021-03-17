@@ -1,11 +1,11 @@
 import * as crypto from 'crypto'
 import { flow } from 'lodash/fp'
+import { getCanonicalHeadersString } from './headers'
 import {
   GetSignFunction,
   GetSignStringFunction,
   GetTokenFunction
-} from 'src/interface/token'
-import { getCanonicalHeadersString } from './headers'
+} from './interface/token'
 
 export const getToken: GetTokenFunction = ({
   accessId,

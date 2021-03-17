@@ -6,10 +6,12 @@ import { ExecRequestFunction, ExecRequestResult } from './interface/request'
 import { getToken } from './token'
 
 export const execRequest: ExecRequestFunction = async (
-  { host, accountId, accessId, accessSecretKey, timeout, qualifier },
-  { url, event, async, serviceName, functionName }
+  { url, event, async, serviceName, functionName },
+  { host, accountId, accessId, accessSecretKey, timeout, qualifier }
 ) => {
   const method = 'POST'
+
+  console.info(event)
   const buffer = handleEventToBuffer(event)
   const headers = getHeaders({
     content: buffer,
@@ -36,14 +38,11 @@ export const execRequest: ExecRequestFunction = async (
     })
     .then((result) => (result as unknown) as ExecRequestResult)
     .catch((error) =>
-      handleRequestError(
-        {
-          serviceName,
-          functionName,
-          env: qualifier,
-          requestId: headers.requestId
-        },
-        error
-      )
+      handleRequestError(error, {
+        serviceName,
+        functionName,
+        env: qualifier,
+        requestId: headers.requestId
+      })
     )
 }

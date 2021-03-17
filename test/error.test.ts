@@ -8,13 +8,13 @@ describe('test/error.test.ts', () => {
   it('Should be the result of handleError.', async () => {
     const serviceError = () => {
       const result = handleError(
+        { message: 'Internal service error.' },
         {
           serviceName: 'leaf-x@snowflake',
           functionName: 'snowflake',
           requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
           env: 'PROD'
-        },
-        { message: 'Internal service error.' }
+        }
       )
 
       assert(typeof result === 'object')
@@ -25,22 +25,16 @@ describe('test/error.test.ts', () => {
       assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
       assert(result.message === 'Internal service error.')
       assert(result.env === 'PROD')
-      assert(Array.isArray(result.functions))
+      assert(Array.isArray(result.apis))
       assert(typeof result.details === 'object')
     }
 
     const businessError = () => {
       const result = handleError(
         {
-          serviceName: 'leaf-x@snowflake',
-          functionName: 'snowflake',
-          requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
-          env: 'PROD'
-        },
-        {
           status: 422,
           code: 422000,
-          functions: [
+          apis: [
             {
               serviceName: 'leaf-x@pay',
               functionName: 'pay',
@@ -48,6 +42,12 @@ describe('test/error.test.ts', () => {
               env: 'PROD'
             }
           ]
+        },
+        {
+          serviceName: 'leaf-x@snowflake',
+          functionName: 'snowflake',
+          requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
+          env: 'PROD'
         }
       )
 
@@ -59,7 +59,7 @@ describe('test/error.test.ts', () => {
       assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
       assert(result.message === 'leaf-x@snowflake snowflake invoke failed.')
       assert(result.env === 'PROD')
-      assert(Array.isArray(result.functions))
+      assert(Array.isArray(result.apis))
     }
 
     serviceError()
@@ -77,7 +77,7 @@ describe('test/error.test.ts', () => {
         requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
         message: 'Internal service error.',
         env: 'PROD',
-        functions: [
+        apis: [
           {
             serviceName: 'leaf-x@snowflake',
             functionName: 'snowflake',
@@ -90,14 +90,14 @@ describe('test/error.test.ts', () => {
       try {
         handleRequestError(
           {
+            status: 500,
+            message: 'Internal service error.'
+          },
+          {
             serviceName: 'leaf-x@snowflake',
             functionName: 'snowflake',
             env: 'PROD',
             requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7'
-          },
-          {
-            status: 500,
-            message: 'Internal service error.'
           }
         )
       } catch (error) {
@@ -111,7 +111,7 @@ describe('test/error.test.ts', () => {
         assert(error.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
         assert(error.message === 'Internal service error.')
         assert(error.env === 'PROD')
-        assert(Array.isArray(error.functions))
+        assert(Array.isArray(error.apis))
         assert(typeof error.details === 'object')
       }
     }
@@ -126,7 +126,7 @@ describe('test/error.test.ts', () => {
         requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
         message: 'Bad Request.',
         env: 'PROD',
-        functions: [
+        apis: [
           {
             serviceName: 'leaf-x@snowflake',
             functionName: 'snowflake',
@@ -139,12 +139,6 @@ describe('test/error.test.ts', () => {
       try {
         handleRequestError(
           {
-            serviceName: 'leaf-x@snowflake',
-            functionName: 'snowflake',
-            env: 'PROD',
-            requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7'
-          },
-          {
             response: {
               headers: {
                 'x-fc-request-id': 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7'
@@ -152,6 +146,12 @@ describe('test/error.test.ts', () => {
               status: 400,
               message: 'Bad Request.'
             }
+          },
+          {
+            serviceName: 'leaf-x@snowflake',
+            functionName: 'snowflake',
+            env: 'PROD',
+            requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7'
           }
         )
       } catch (error) {
@@ -165,7 +165,7 @@ describe('test/error.test.ts', () => {
         assert(error.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')
         assert(error.message === 'Bad Request.')
         assert(error.env === 'PROD')
-        assert(Array.isArray(error.functions))
+        assert(Array.isArray(error.apis))
         assert(typeof error.details === 'object')
       }
     }

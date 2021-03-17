@@ -45,7 +45,7 @@ export interface HandleErrorResult extends HandleErrorOptions {
   /**
    * Invoke chain information.
    */
-  functions?: HandleErrorOptions[]
+  apis?: HandleErrorOptions[]
 
   /**
    * Error details.
@@ -58,8 +58,8 @@ export interface HandleErrorResult extends HandleErrorOptions {
  */
 export interface HandleErrorFunction {
   (
-    options: HandleErrorOptions,
-    error: Record<string, unknown>
+    error: Record<string, unknown>,
+    options: HandleErrorOptions
   ): HandleErrorResult
 }
 
@@ -67,5 +67,5 @@ export interface HandleErrorFunction {
  * Handle request error.
  */
 export interface HandleRequestErrorFunction {
-  (options: HandleErrorOptions, error: Record<string, unknown>): never
+  (error: Record<string, unknown>, options: HandleErrorOptions): never
 }

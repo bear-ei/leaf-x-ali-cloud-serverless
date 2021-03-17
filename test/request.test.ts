@@ -23,14 +23,6 @@ describe('test/request.test.ts', () => {
 
       const result = await execRequest(
         {
-          host: 'github.com',
-          accountId: '3546677',
-          accessId: 'MzU0NjY3Nw==',
-          accessSecretKey: 'NTY3NjcxMjMxMg==',
-          timeout: 3000,
-          qualifier: 'PROD'
-        },
-        {
           url: 'https://github.com/',
           async: false,
           serviceName: 'leaf-x@snowflake',
@@ -39,6 +31,14 @@ describe('test/request.test.ts', () => {
             type: 'ALI_ClOUD_GATEWAY',
             data: { queryParameters: { name: 'snowflake' } }
           }
+        },
+        {
+          host: 'github.com',
+          accountId: '3546677',
+          accessId: 'MzU0NjY3Nw==',
+          accessSecretKey: 'NTY3NjcxMjMxMg==',
+          timeout: 3000,
+          qualifier: 'PROD'
         }
       )
 
@@ -67,14 +67,6 @@ describe('test/request.test.ts', () => {
       try {
         await execRequest(
           {
-            host: 'github.com',
-            accountId: '3546677',
-            accessId: 'MzU0NjY3Nw==',
-            accessSecretKey: 'NTY3NjcxMjMxMg==',
-            timeout: 3000,
-            qualifier: 'PROD'
-          },
-          {
             url: 'https://github.com/',
             async: false,
             serviceName: 'leaf-x@snowflake',
@@ -83,6 +75,14 @@ describe('test/request.test.ts', () => {
               type: 'ALI_ClOUD_GATEWAY',
               data: { queryParameters: { name: 'snowflake' } }
             }
+          },
+          {
+            host: 'github.com',
+            accountId: '3546677',
+            accessId: 'MzU0NjY3Nw==',
+            accessSecretKey: 'NTY3NjcxMjMxMg==',
+            timeout: 3000,
+            qualifier: 'PROD'
           }
         )
       } catch (error) {

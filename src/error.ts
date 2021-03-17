@@ -4,8 +4,8 @@ import {
 } from './interface/error'
 
 export const handleError: HandleErrorFunction = (
-  { serviceName, functionName, requestId, env },
-  error
+  error,
+  { serviceName, functionName, requestId, env }
 ) => {
   const status = (error.status ?? 500) as number
   const code = (error.code ? error.code : Number(`${status}000`)) as number
@@ -14,8 +14,8 @@ export const handleError: HandleErrorFunction = (
   const message = (error.message ??
     `${serviceName} ${functionName} invoke failed.`) as string
 
-  const functions = Array.isArray(err.functions)
-    ? currentApis.concat(err.functions)
+  const apis = Array.isArray(err.apis)
+    ? currentApis.concat(err.apis)
     : currentApis
 
   return Object.assign({}, err, {
@@ -26,13 +26,13 @@ export const handleError: HandleErrorFunction = (
     requestId,
     message,
     env,
-    functions
+    apis
   })
 }
 
 export const handleRequestError: HandleRequestErrorFunction = (
-  { serviceName, functionName, requestId, env },
-  error
+  error,
+  { serviceName, functionName, requestId, env }
 ) => {
   const responseError = error.response as Record<string, unknown>
 
@@ -42,11 +42,13 @@ export const handleRequestError: HandleRequestErrorFunction = (
       string
     >['x-fc-request-id']
 
-    throw handleError(
-      { serviceName, functionName, requestId, env },
-      responseError.data as Record<string, unknown>
-    )
+    throw handleError(responseError.data as Record<string, unknown>, {
+      serviceName,
+      functionName,
+      requestId,
+      env
+    })
   }
 
-  throw handleError({ serviceName, functionName, requestId, env }, error)
+  throw handleError(error, { serviceName, functionName, requestId, env })
 }

@@ -82,7 +82,7 @@ export interface ExecRequestResult {
  */
 export interface ExecRequestFunction {
   (
-    config: ExecRequestConfig,
-    options: ExecRequestOptions
+    options: ExecRequestOptions,
+    config: ExecRequestConfig
   ): Promise<ExecRequestResult>
 }

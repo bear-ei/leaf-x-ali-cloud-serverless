@@ -29,7 +29,7 @@ export const execInvoke: ExecInvokeFunction = async (
 ) => {
   let error!: Record<string, unknown>
 
-  const result = await execRequest(config, options)
+  const result = await execRequest(options, config)
     .then((result) => result)
     .catch((err) => (error = err))
 
@@ -40,7 +40,7 @@ export const execInvoke: ExecInvokeFunction = async (
     if (retry) {
       retryNumber--
 
-      return execInvoke(retryNumber, { config, options })
+      return execInvoke(retryNumber, { options, config })
     }
 
     throw error
