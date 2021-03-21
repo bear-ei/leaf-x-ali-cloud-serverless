@@ -6,7 +6,7 @@ import {
 } from './request'
 
 /**
- * Invoke options.
+ * Invoke the options.
  */
 export interface InvokeOptions {
   /**
@@ -15,13 +15,13 @@ export interface InvokeOptions {
   event: HandleEventToBufferOptions
 
   /**
-   * If or not the request is asynchronous, default value false.
+   * Whether to make asynchronous invokes.
    */
   async?: boolean
 }
 
 /**
- * Executes the invoke options.
+ * Execute the invoke options.
  */
 export interface ExecInvokeOptions {
   /**
@@ -36,9 +36,9 @@ export interface ExecInvokeOptions {
 }
 
 /**
- * Executes the invoke.
+ * Execute the invoke.
  *
- * @param retryNumber Retry times.
+ * @param retryNumber Number of retries.
  */
 export interface ExecInvokeFunction {
   (retryNumber: number, options: ExecInvokeOptions): Promise<ExecRequestResult>
@@ -47,7 +47,7 @@ export interface ExecInvokeFunction {
 /**
  * Retry the invoke.
  *
- * @param retryNumber   Retry times.
+ * @param retryNumber   Number of retries.
  * @param error         Error.
  */
 export interface RetryInvokeFunction {
@@ -57,7 +57,7 @@ export interface RetryInvokeFunction {
 }
 
 /**
- * Invoke configuration.
+ * invoke the configuration.
  */
 export interface InvokeConfig extends ExecRequestConfig {
   /**
@@ -72,7 +72,7 @@ export interface InvokeConfig extends ExecRequestConfig {
 }
 
 /**
- * Invoke result.
+ * Invoke results.
  */
 export interface InvokeResult {
   /**
@@ -106,7 +106,7 @@ export interface InvokeFunction {
 }
 
 /**
- * Initialize the invoke.
+ * Initialization invoke.
  */
 export interface InitInvokeFunction {
   (config: InvokeConfig): InvokeFunction

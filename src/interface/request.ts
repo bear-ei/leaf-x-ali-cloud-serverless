@@ -1,7 +1,7 @@
 import { InvokeOptions } from './invoke'
 
 /**
- * Execute request configuration.
+ * Execute the request configuration.
  */
 export interface ExecRequestConfig {
   /**
@@ -10,22 +10,22 @@ export interface ExecRequestConfig {
   host: string
 
   /**
-   * AliCloud account id.
+   * Ali cloud account ID.
    */
   accountId: string
 
   /**
-   * AliCloud access id.
+   * Ali cloud access ID.
    */
   accessId: string
 
   /**
-   * AliCloud access key.
+   *  Ali cloud access key.
    */
   accessSecretKey: string
 
   /**
-   * Request timeout time in milliseconds.
+   * Request timeout time, in milliseconds.
    */
   timeout: number
 
@@ -36,7 +36,7 @@ export interface ExecRequestConfig {
 }
 
 /**
- *  Execute request options.
+ *  Execute the request options.
  */
 export interface ExecRequestOptions extends InvokeOptions {
   /**
@@ -56,7 +56,7 @@ export interface ExecRequestOptions extends InvokeOptions {
 }
 
 /**
- * Execution request result.
+ * Execute the request results.
  */
 export interface ExecRequestResult {
   /**

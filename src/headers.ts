@@ -1,4 +1,5 @@
 import * as crypto from 'crypto'
+import { curry } from 'lodash/fp'
 import {
   GetCanonicalHeadersStringFunction,
   GetHeadersFunction,
@@ -26,8 +27,9 @@ export const getCanonicalHeadersString: GetCanonicalHeadersStringFunction = (
   prefix,
   headers
 ) => {
-  const spliceHeaderString = (((headers) => (key) =>
-    `${key}:${headers[key]}`) as SpliceHeadersStringFunction)(headers)
+  const spliceHeaderString = curry(
+    ((headers, key) => `${key}:${headers[key]}`) as SpliceHeadersStringFunction
+  )(headers)
 
   return Object.keys(headers)
     .filter((key) => key.startsWith(prefix))

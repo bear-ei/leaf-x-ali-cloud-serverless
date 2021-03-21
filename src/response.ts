@@ -4,11 +4,6 @@ import {
   HandleResponseFunction
 } from './interface/response'
 
-/**
- * TODO:
- *
- * Add HTTP response support.
- */
 export const handleResponse: HandleResponseFunction = ({
   data,
   status,

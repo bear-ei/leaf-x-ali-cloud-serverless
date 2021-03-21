@@ -3,11 +3,6 @@ import {
   HandleEventToBufferFunction
 } from './interface/event'
 
-/**
- * TODO:
- *
- * Add HTTP event support.
- */
 export const handleEventToBuffer: HandleEventToBufferFunction = ({
   type,
   data

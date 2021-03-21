@@ -14,16 +14,16 @@ export type HttpMethod =
   | 'UNLINK'
 
 /**
- * Handle AliCloud gateway event options.
+ * Handles ali cloud gateway event options.
  */
 export interface HandleAliCloudGatewayEventOptions {
   /**
-   * Http request method, default value GET.
+   * Http request method, default GET.
    */
   httpMethod?: HttpMethod
 
   /**
-   * Whether to encode the request body in base64, default value false.
+   * Whether to encode in base64 or not, default false.
    */
   isBase64Encoded?: boolean
 
@@ -43,7 +43,7 @@ export interface HandleAliCloudGatewayEventOptions {
   body?: unknown
 
   /**
-   * Request headers, default content-type: application/json; charset=utf-8.
+   * Request headers, default content type: application/json;charset=UTF-8.
    */
   headers?: Record<string, string>
 }
@@ -54,7 +54,7 @@ export interface HandleAliCloudGatewayEventOptions {
 export type EventType = 'ALI_ClOUD_GATEWAY'
 
 /**
- * Event to buffer options.
+ * Handles the event to buffer options.
  */
 export interface HandleEventToBufferOptions {
   /**
@@ -69,14 +69,14 @@ export interface HandleEventToBufferOptions {
 }
 
 /**
- * Handle event to buffer.
+ * Handles events turn Buffer.
  */
 export interface HandleEventToBufferFunction {
   (options: HandleEventToBufferOptions): Buffer
 }
 
 /**
- * Handle AliCloud gateway event.
+ * Handles the event to buffer.
  */
 export interface HandleAliCloudGatewayEventFunction {
   (options: HandleAliCloudGatewayEventOptions): string
