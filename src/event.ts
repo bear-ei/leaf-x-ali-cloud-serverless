@@ -3,15 +3,19 @@ import {
   HandleEventToBufferFunction
 } from './interface/event'
 
+export enum Event {
+  ALI_ClOUD_GATEWAY = 'aliCloudGateway'
+}
+
 export const handleEventToBuffer: HandleEventToBufferFunction = ({
   type,
   data
 }) => {
-  const event = {
-    ALI_ClOUD_GATEWAY: handleAliCloudGatewayEvent
-  }
+  const event = Object.freeze({
+    aliCloudGateway: handleAliCloudGatewayEvent
+  })
 
-  const handleEvent = event[type]
+  const handleEvent = event[Event[type]]
 
   if (!handleEvent) {
     throw new Error('Invalid event type.')

@@ -1,3 +1,4 @@
+import { Event } from './event'
 import {
   HandleAliCloudGatewayResponseFunction,
   HandleAliCloudGatewayResponseOptions,
@@ -9,7 +10,10 @@ export const handleResponse: HandleResponseFunction = ({
   status,
   ...args
 }) => {
-  const response = { ALI_ClOUD_GATEWAY: handleAliCloudGatewayResponse }
+  const response = Object.freeze({
+    aliCloudGateway: handleAliCloudGatewayResponse
+  })
+
   const aliCloudGatewayKeys = [
     'statusCode',
     'isBase64Encoded',
@@ -23,7 +27,7 @@ export const handleResponse: HandleResponseFunction = ({
     Object.keys(data).sort().join() === aliCloudGatewayKeys.sort().join()
 
   return aliCloudGatewayResponse
-    ? response['ALI_ClOUD_GATEWAY'](
+    ? response[Event['ALI_ClOUD_GATEWAY']](
         data as HandleAliCloudGatewayResponseOptions
       )
     : { data, status, ...args }
