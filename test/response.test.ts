@@ -86,7 +86,7 @@ describe('test/response.test.ts', () => {
       try {
         handleAliCloudGatewayResponse({
           statusCode: 400,
-          body: JSON.stringify({ message: 'Bad Request.' }),
+          body: JSON.stringify({ statusCode: 400, message: 'Bad Request.' }),
           isBase64Encoded: false,
           headers: {
             'content-type': 'application/json'
@@ -94,11 +94,8 @@ describe('test/response.test.ts', () => {
         })
       } catch (error) {
         assert(typeof error === 'object')
-        assert(error.status === 400)
-        assert(
-          (error.data as Record<string, unknown>).message === 'Bad Request.'
-        )
-        assert(typeof error.headers === 'object')
+        assert(error.statusCode === 400)
+        assert(error.message === 'Bad Request.')
       }
     }
 

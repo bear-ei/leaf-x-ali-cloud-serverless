@@ -1,6 +1,6 @@
 {
   "name": "@leaf-x/ali-cloud-serverless",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "main": "./dist/index.js",
   "author": "sound shell <sound_shell@outlook.com>",
   "license": "MIT",

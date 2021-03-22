@@ -39,20 +39,18 @@ export const handleAliCloudGatewayResponse: HandleAliCloudGatewayResponseFunctio
   body,
   isBase64Encoded
 }) => {
-  const data = isBase64Encoded
+  const originalBody = isBase64Encoded
     ? Buffer.from(body as string, 'base64').toString()
     : body
 
-  const result = {
-    status: statusCode,
-    headers,
-    data: headers['content-type'].startsWith('application/json')
-      ? JSON.parse(data as string)
-      : data
-  }
+  const data = headers['content-type'].startsWith('application/json')
+    ? JSON.parse(originalBody as string)
+    : originalBody
+
+  const result = { status: statusCode, headers, data }
 
   if (statusCode >= 400) {
-    throw result
+    throw data
   }
 
   return result
