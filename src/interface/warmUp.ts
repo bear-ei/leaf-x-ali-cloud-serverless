@@ -18,13 +18,28 @@ export interface WarmUpOptions {
 }
 
 /**
+ * Warm-up result.
+ */
+export interface WarmUpResult extends InvokeResult {
+  /**
+   * Service name.
+   */
+  serviceName: string
+
+  /**
+   * Function name.
+   */
+  functionName: string
+}
+
+/**
  * Warm-up.
  *
  * @param serviceName       Service name.
  */
 export interface WarmUpFunction {
   (serviceName: string, options: WarmUpOptions[]): Promise<
-    (HandleErrorResult | InvokeResult)[]
+    (HandleErrorResult | WarmUpResult)[]
   >
 }
 
@@ -44,5 +59,5 @@ export interface InitWarmUpFunction {
 export interface ExecWarmUpFunction {
   (serviceName: string): (
     options: WarmUpOptions
-  ) => Promise<HandleErrorResult | InvokeResult>
+  ) => Promise<HandleErrorResult | WarmUpResult>
 }

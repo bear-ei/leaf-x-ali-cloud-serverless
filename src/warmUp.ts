@@ -12,7 +12,14 @@ export const initWarmUp: InitWarmUpFunction = (config) => async (
         type,
         data: { httpMethod: 'OPTIONS', headers: { 'x-warm-up': 'warmUp' } }
       }
-    }).catch((error) => error)) as ExecWarmUpFunction)(serviceName)
+    })
+      .then((result) =>
+        Object.assign({}, result, {
+          serviceName,
+          functionName
+        })
+      )
+      .catch((error) => error)) as ExecWarmUpFunction)(serviceName)
 
   return Promise.all(functionNames.map(execWarmUp))
 }

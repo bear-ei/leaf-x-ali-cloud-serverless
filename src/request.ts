@@ -10,8 +10,6 @@ export const execRequest: ExecRequestFunction = async (
   { host, accountId, accessId, accessSecretKey, timeout, qualifier }
 ) => {
   const method = 'POST'
-
-  console.info(event)
   const buffer = handleEventToBuffer(event)
   const headers = getHeaders({
     content: buffer,
