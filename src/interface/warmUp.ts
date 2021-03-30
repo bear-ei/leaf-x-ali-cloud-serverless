@@ -44,8 +44,7 @@ export interface WarmUpFunction {
 }
 
 /**
- * Initialize the warm-up function，Reduce cold starts by running functions in
- * a minimal access manner.
+ * Initialization warm-up.
  */
 export interface InitWarmUpFunction {
   (config: InvokeConfig): WarmUpFunction

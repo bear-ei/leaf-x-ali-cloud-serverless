@@ -1,6 +1,6 @@
 # Serverless
 
-AliCloud serverless access.
+Ali cloud serverless access.
 
 ## Installation
 
@@ -10,9 +10,9 @@ AliCloud serverless access.
 
 | Name            | Type    | Default Value | Description                                                                                                                  |
 | :-------------- | :------ | :------------ | :--------------------------------------------------------------------------------------------------------------------------- |
-| accountId       | String  | Required      | AliCloud account id.                                                                                                         |
-| accessId        | String  | Required      | AliCloud serverless access id.                                                                                               |
-| accessSecretKey | String  | Required      | AliCloud serverless access key.                                                                                              |
+| accountId       | String  | Required      | Ali cloud account id.                                                                                                        |
+| accessId        | String  | Required      | Ali cloud access id.                                                                                                         |
+| accessSecretKey | String  | Required      | Ali cloud access key.                                                                                                        |
 | region          | String  | Required      | Serverless region,for example: cn-chengdu.                                                                                   |
 | timeout         | Number  | 30000         | Request timeout time in milliseconds.                                                                                        |
 | qualifier       | String  | LATEST        | Serverless version alias.                                                                                                    |
@@ -32,7 +32,7 @@ const { invoke, warmUp } = serverless({
   region: 'cn-chengdu'
 })
 
-// Invoke the serverless function of the AliCloud gateway trigger.
+// Invoke the serverless function of the Ali cloud gateway trigger.
 const invokeResult = invoke('@leaf-x/snowflake', 'snowflake', {
   type: 'ALI_ClOUD_GATEWAY',
   data: { queryParameters: { name: 'snowflake' } }

@@ -1,9 +1,9 @@
 /**
- * Get request headers options.
+ * Get request header options.
  */
 export interface GetHeadersOptions {
   /**
-   * Request body buffer.
+   * Request content.
    */
   content: Buffer
 
@@ -13,25 +13,28 @@ export interface GetHeadersOptions {
   host: string
 
   /**
-   * AliCloud account id.
+   * Ali cloud account ID.
    */
   accountId: string
 
   /**
-   * If or not the request is asynchronous.
+   * Whether to make asynchronous requests.
    */
   async?: boolean
 }
 
 /**
- * Get request headers.
+ * Get the request headers.
  */
 export interface GetHeadersFunction {
   (options: GetHeadersOptions): Record<string, string>
 }
 
 /**
- * Get the canonical headers string.
+ * Get the canonical request headers string.
+ *
+ * @param prefix    Request headers prefix..
+ * @param headers   Request headers.
  */
 export interface GetCanonicalHeadersStringFunction {
   (prefix: string, headers: Record<string, string>): string
@@ -44,5 +47,5 @@ export interface GetCanonicalHeadersStringFunction {
  * @param key       Request headers key.
  */
 export interface SpliceHeadersStringFunction {
-  (headers: Record<string, string>): (key: string) => string
+  (headers: Record<string, string>, key: string): string
 }

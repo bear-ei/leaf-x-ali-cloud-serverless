@@ -1,5 +1,5 @@
 /**
- * Handle the error options.
+ * Handles the error option.
  */
 export interface HandleErrorOptions {
   /**
@@ -13,7 +13,7 @@ export interface HandleErrorOptions {
   functionName: string
 
   /**
-   * Request id.
+   * Request ID.
    */
   requestId: string
 
@@ -24,7 +24,7 @@ export interface HandleErrorOptions {
 }
 
 /**
- * Handle the error result.
+ * Handles the error results.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
@@ -33,17 +33,17 @@ export interface HandleErrorResult extends HandleErrorOptions {
   status: number
 
   /**
-   * Response error code.
+   * Custom error codes.
    */
   code: number
 
   /**
-   * Response error message.
+   * Error message.
    */
   message: string
 
   /**
-   * Invoke chain information.
+   * Api call chain.
    */
   apis?: HandleErrorOptions[]
 
@@ -54,7 +54,9 @@ export interface HandleErrorResult extends HandleErrorOptions {
 }
 
 /**
- * Handle error.
+ * Handles Errors.
+ *
+ * @param error Error.
  */
 export interface HandleErrorFunction {
   (
@@ -64,7 +66,9 @@ export interface HandleErrorFunction {
 }
 
 /**
- * Handle request error.
+ * Handles request errors.
+ *
+ * @param error Error.
  */
 export interface HandleRequestErrorFunction {
   (error: Record<string, unknown>, options: HandleErrorOptions): never

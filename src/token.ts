@@ -1,5 +1,5 @@
 import * as crypto from 'crypto'
-import { flow } from 'lodash/fp'
+import { compose } from 'lodash/fp'
 import { getCanonicalHeadersString } from './headers'
 import {
   GetSignFunction,
@@ -11,7 +11,7 @@ export const getToken: GetTokenFunction = ({
   accessId,
   accessSecretKey,
   ...args
-}) => `FC ${accessId}:${flow(getSignString, getSign(accessSecretKey))(args)}`
+}) => `FC ${accessId}:${compose(getSign(accessSecretKey), getSignString)(args)}`
 
 export const getSignString: GetSignStringFunction = ({
   method,

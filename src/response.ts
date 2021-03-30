@@ -1,20 +1,19 @@
+import { Event } from './event'
 import {
   HandleAliCloudGatewayResponseFunction,
   HandleAliCloudGatewayResponseOptions,
   HandleResponseFunction
 } from './interface/response'
 
-/**
- * TODO:
- *
- * Add HTTP response support.
- */
 export const handleResponse: HandleResponseFunction = ({
   data,
   status,
   ...args
 }) => {
-  const response = { ALI_ClOUD_GATEWAY: handleAliCloudGatewayResponse }
+  const response = Object.freeze({
+    aliCloudGateway: handleAliCloudGatewayResponse
+  })
+
   const aliCloudGatewayKeys = [
     'statusCode',
     'isBase64Encoded',
@@ -28,7 +27,7 @@ export const handleResponse: HandleResponseFunction = ({
     Object.keys(data).sort().join() === aliCloudGatewayKeys.sort().join()
 
   return aliCloudGatewayResponse
-    ? response['ALI_ClOUD_GATEWAY'](
+    ? response[Event['ALI_ClOUD_GATEWAY']](
         data as HandleAliCloudGatewayResponseOptions
       )
     : { data, status, ...args }
@@ -40,20 +39,18 @@ export const handleAliCloudGatewayResponse: HandleAliCloudGatewayResponseFunctio
   body,
   isBase64Encoded
 }) => {
-  const data = isBase64Encoded
+  const originalBody = isBase64Encoded
     ? Buffer.from(body as string, 'base64').toString()
     : body
 
-  const result = {
-    status: statusCode,
-    headers,
-    data: headers['content-type'].startsWith('application/json')
-      ? JSON.parse(data as string)
-      : data
-  }
+  const data = headers['content-type'].startsWith('application/json')
+    ? JSON.parse(originalBody as string)
+    : originalBody
+
+  const result = { status: statusCode, headers, data }
 
   if (statusCode >= 400) {
-    throw result
+    throw data
   }
 
   return result
