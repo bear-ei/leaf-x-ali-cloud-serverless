@@ -43,6 +43,7 @@ export interface ServerlessOptions {
   /**
    * If or not invoke protection is enabled, if it is enabled the request will
    * be made using HTTPS, otherwise the request will be made using HTTP.
+   * Default: false.
    */
   secure?: boolean
 

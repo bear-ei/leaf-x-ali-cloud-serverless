@@ -11,20 +11,8 @@ export const execRequest: ExecRequestFunction = async (
 ) => {
   const method = 'POST'
   const buffer = handleEventToBuffer(event)
-  const headers = getHeaders({
-    content: buffer,
-    host,
-    accountId,
-    async
-  })
-
-  const token = getToken({
-    accessId,
-    accessSecretKey,
-    method,
-    url,
-    headers
-  })
+  const headers = getHeaders({ content: buffer, host, accountId, async })
+  const token = getToken({ accessId, accessSecretKey, method, url, headers })
 
   return axios
     .request({

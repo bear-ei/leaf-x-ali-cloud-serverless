@@ -44,14 +44,16 @@ export const handleAliCloudGatewayEvent: HandleAliCloudGatewayEventFunction = ({
     ...headers
   } as Record<string, string>
 
+  const data = requestHeaders['content-type'].startsWith('application/json')
+    ? JSON.stringify(body)
+    : body
+
   return JSON.stringify({
     httpMethod,
     isBase64Encoded,
     queryParameters,
     pathParameters,
-    body: requestHeaders['content-type'].startsWith('application/json')
-      ? JSON.stringify(body)
-      : body,
+    body: data,
     headers: requestHeaders
   })
 }

@@ -8,7 +8,7 @@ export const handleError: HandleErrorFunction = (
   { serviceName, functionName, requestId, env }
 ) => {
   const status = (error.status ?? 500) as number
-  const code = (error.code ? error.code : Number(`${status}000`)) as number
+  const code = (error.code ?? Number(`${status}000`)) as number
   const err = error.status && error.code ? error : { details: error }
   const currentApis = [{ serviceName, functionName, requestId, env }]
   const message = (error.message ??
