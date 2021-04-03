@@ -3,39 +3,39 @@ import { EventType } from './event'
 import { InvokeConfig, InvokeResult } from './invoke'
 
 /**
- * Warm-up options.
+ * Options for warming up serverless.
  */
 export interface WarmUpOptions {
   /**
-   * Event type.
+   * The serverless event type.
    */
   type: EventType
 
   /**
-   * Function name.
+   * The name of the function to be warm up.
    */
   functionName: string
 }
 
 /**
- * Warm-up result.
+ * Warm up the results of serverless.
  */
 export interface WarmUpResult extends InvokeResult {
   /**
-   * Service name.
+   * The name of the service to be warm up.
    */
   serviceName: string
 
   /**
-   * Function name.
+   * The name of the function to be warm up.
    */
   functionName: string
 }
 
 /**
- * Warm-up.
+ * Warm up serverless functions.
  *
- * @param serviceName       Service name.
+ * @param serviceName The name of the service to be warm up.
  */
 export interface WarmUpFunction {
   (serviceName: string, options: WarmUpOptions[]): Promise<
@@ -44,16 +44,17 @@ export interface WarmUpFunction {
 }
 
 /**
- * Initialization warm-up.
+ * Initialize the function that warm up serverless.
  */
 export interface InitWarmUpFunction {
   (config: InvokeConfig): WarmUpFunction
 }
 
 /**
- * Execute the warm-up.
+ * Execution serverless warm up functions.
  *
- * @param serviceName   Service name.
+ * @export
+ * @interface ExecWarmUpFunction
  */
 export interface ExecWarmUpFunction {
   (serviceName: string): (

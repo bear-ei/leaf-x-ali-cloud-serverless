@@ -1,16 +1,16 @@
 import { HttpMethod } from './event'
 
 /**
- * Get request token options.
+ * The options to get the request token.
  */
 export interface getTokenOptions {
   /**
-   * Ali cloud access ID.
+   * Ali cloud access id.
    */
   accessId: string
 
   /**
-   * Ali cloud access key.
+   * Access key for ali cloud.
    */
   accessSecretKey: string
 
@@ -20,7 +20,7 @@ export interface getTokenOptions {
   method: HttpMethod
 
   /**
-   * Request url.
+   * Request url address.
    */
   url: string
 
@@ -31,14 +31,14 @@ export interface getTokenOptions {
 }
 
 /**
- * Get the request token.
+ * The function to get the request token.
  */
 export interface GetTokenFunction {
   (options: getTokenOptions): string
 }
 
 /**
- * Get the signature string options.
+ * The options to get the signature string.
  */
 export interface GetSignStringOptions {
   /**
@@ -47,7 +47,7 @@ export interface GetSignStringOptions {
   method: HttpMethod
 
   /**
-   * Request url.
+   * Request url address.
    */
   url: string
 
@@ -58,17 +58,14 @@ export interface GetSignStringOptions {
 }
 
 /**
- * Get the signature string.
+ * The function to get the signature string.
  */
 export interface GetSignStringFunction {
   (options: GetSignStringOptions): string
 }
 
 /**
- * Get the signature.
- *
- * @param accessSecretKey   Ali cloud access key.
- * @param signString        Signature string.
+ * The function to get the signature.
  */
 export interface GetSignFunction {
   (accessSecretKey: string): (signString: string) => string

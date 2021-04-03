@@ -6,49 +6,48 @@ import {
 } from './request'
 
 /**
- * Invoke the options.
+ * The options to invoke the serverless function.
  */
 export interface InvokeOptions {
   /**
-   * Invoke the event.
+   * Invoke the event of the serverless function.
    */
   event: HandleEventToBufferOptions
 
   /**
-   * Whether to make asynchronous invokes.
+   * Whether to make asynchronous invoke.
    */
   async?: boolean
 }
 
 /**
- * Execute the invoke options.
+ * The options to perform serverless invoke.
  */
 export interface ExecInvokeOptions {
   /**
-   * Request configuration.
+   * Execute the requested configuration.
    */
   config: ExecRequestConfig
 
   /**
-   * Request options.
+   * The options to execute the request.
    */
   options: ExecRequestOptions
 }
 
 /**
- * Execute the invoke.
+ * Executes the function invoked by serverless.
  *
- * @param retryNumber Number of retries.
+ * @param retryNumber The number of times to retry after a failed invoke.
  */
 export interface ExecInvokeFunction {
   (retryNumber: number, options: ExecInvokeOptions): Promise<ExecRequestResult>
 }
 
 /**
- * Retry the invoke.
+ * Retries the invoked function.
  *
- * @param retryNumber   Number of retries.
- * @param error         Error.
+ * @param retryNumber The number of times to retry after a failed invoke.
  */
 export interface RetryInvokeFunction {
   (retryNumber: number, error: Record<string, unknown>):
@@ -57,45 +56,42 @@ export interface RetryInvokeFunction {
 }
 
 /**
- * invoke the configuration.
+ * Invoke the serverless configuration.
  */
 export interface InvokeConfig extends ExecRequestConfig {
   /**
-   * Invoke the endpoint.
+   * Endpoints for serverless.
    */
   endpoint: string
 
   /**
-   * Serverless api version.
+   * The api version of serverless.
    */
   version: string
 }
 
 /**
- * Invoke results.
+ * The result of invoke serverless.
  */
 export interface InvokeResult {
   /**
-   * Response data.
+   * Serverless response data.
    */
   data: unknown
 
   /**
-   * Response status code.
+   * Serverless response status.
    */
   status: number
 
   /**
-   * Response headers.
+   * Serverless response headers.
    */
   headers: Record<string, string>
 }
 
 /**
- * Invoke.
- *
- * @param serviceName   Service name.
- * @param functionName  Function name.
+ * Invoke the functions of serverless.
  */
 export interface InvokeFunction {
   (
@@ -106,7 +102,7 @@ export interface InvokeFunction {
 }
 
 /**
- * Initialization invoke.
+ * Initialize the function that invoke serverless.
  */
 export interface InitInvokeFunction {
   (config: InvokeConfig): InvokeFunction

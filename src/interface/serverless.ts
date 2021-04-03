@@ -6,70 +6,69 @@ import { WarmUpFunction } from './warmUp'
  */
 export interface ServerlessOptions {
   /**
-   * Ali cloud account ID.
+   * Ali cloud account id.
    */
   accountId: string
 
   /**
-   * Ali cloud access ID.
+   * Ali cloud access id.
    */
   accessId: string
 
   /**
-   * Ali cloud access key.
+   * Access key for AliCloud.
    */
   accessSecretKey: string
 
   /**
-   * Serverless region.
+   * The territory where Serverless is located.
    */
   region: string
 
   /**
-   * Invoke timeout time in milliseconds, default 3000.
+   * The timeout for the invoke, in milliseconds. Default: 3000ms.
    */
   timeout?: number
 
   /**
-   * Serverless version alias, default LATEST.
+   * The requested serverless alias. Default: LATEST.
    */
   qualifier?: string
 
   /**
-   * Whether to access via intranet, default true.
+   * Whether to invoke serverless through the intranet. Default: true.
    */
   internal?: boolean
 
   /**
-   * Whether to enable request protection, if enabled will use https to
-   * initiate the request, otherwise will use http to initiate the request,
-   * default false.
+   * If or not invoke protection is enabled, if it is enabled the request will
+   * be made using HTTPS, otherwise the request will be made using HTTP.
    */
   secure?: boolean
 
   /**
-   * Serverless api version, default 2016-08-15.
+   * The requested serverless alias. Default: 2016-08-15.
    */
   version?: string
 }
 
 /**
- * Serverless results.
+ * The result of serverless.
  */
 export interface ServerlessResult {
   /**
-   * Invoke.
+   * Invoke the serverless function.
    */
   invoke: InvokeFunction
 
   /**
-   * Warm-up.
+   * The function to warm up serverless.
    */
   warmUp: WarmUpFunction
 }
 
 /**
- * Serverless.
+ * Serverless functions.
  */
 export interface ServerlessFunction {
   (options: ServerlessOptions): ServerlessResult

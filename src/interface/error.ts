@@ -1,62 +1,60 @@
 /**
- * Handles the error option.
+ * Handle the error options.
  */
 export interface HandleErrorOptions {
   /**
-   * Service name.
+   * The name of the currently invoked service.
    */
   serviceName: string
 
   /**
-   * Function name.
+   * The name of the currently invoked function.
    */
   functionName: string
 
   /**
-   * Request ID.
+   * The request id of the current invoked.
    */
   requestId: string
 
   /**
-   * Running environment.
+   * The request environment of the current invoked.
    */
   env: string
 }
 
 /**
- * Handles the error results.
+ * The result of a handle error.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
-   * Response status code.
+   * The status code of the error response.
    */
   status: number
 
   /**
-   * Custom error codes.
+   * The business code for the error response.
    */
   code: number
 
   /**
-   * Error message.
+   * Error description message.
    */
   message: string
 
   /**
-   * Api call chain.
+   * The chain of api invoked where the error occurred.
    */
   apis?: HandleErrorOptions[]
 
   /**
-   * Error details.
+   * Details of the error.
    */
   details?: unknown
 }
 
 /**
- * Handles Errors.
- *
- * @param error Error.
+ * Function to handle errors.
  */
 export interface HandleErrorFunction {
   (
@@ -66,9 +64,7 @@ export interface HandleErrorFunction {
 }
 
 /**
- * Handles request errors.
- *
- * @param error Error.
+ * Function to handle request errors.
  */
 export interface HandleRequestErrorFunction {
   (error: Record<string, unknown>, options: HandleErrorOptions): never

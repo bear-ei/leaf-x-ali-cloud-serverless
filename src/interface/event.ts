@@ -14,69 +14,69 @@ export type HttpMethod =
   | 'UNLINK'
 
 /**
- * Handles ali cloud gateway event options.
+ * Options to handle ali cloud gateway request events.
  */
 export interface HandleAliCloudGatewayEventOptions {
   /**
-   * Http request method, default GET.
+   * Http request method.
    */
   httpMethod?: HttpMethod
 
   /**
-   * Whether to encode in base64 or not, default false.
+   * Whether the request entity is base64 encoded.
    */
   isBase64Encoded?: boolean
 
   /**
-   * Query parameters.
+   * The query parameters for the request event.
    */
   queryParameters?: Record<string, unknown>
 
   /**
-   * Path parameters.
+   * The path parameter of the request event.
    */
   pathParameters?: Record<string, string>
 
   /**
-   * Request body.
+   * The request body of the request event.
    */
   body?: unknown
 
   /**
-   * Request headers, default content type: application/json;charset=UTF-8.
+   * The request headers of the request event.
    */
   headers?: Record<string, string>
 }
 
 /**
- * Event type.
+ * The serverless event type.
  */
 export type EventType = 'ALI_ClOUD_GATEWAY'
 
 /**
- * Handles the event to buffer options.
+ * Options to handle the request event to buffer.
  */
 export interface HandleEventToBufferOptions {
   /**
-   * Event type.
+   * The serverless event type.
    */
   type: EventType
 
   /**
-   * Event data.
+   * The data that needs to be converted to buffer.
    */
   data: HandleAliCloudGatewayEventOptions
 }
 
 /**
- * Handles events turn Buffer.
+ * The function that handles the request event to buffer.
  */
 export interface HandleEventToBufferFunction {
   (options: HandleEventToBufferOptions): Buffer
 }
 
 /**
- * Handles the event to buffer.
+ * Function to handle ali cloud gateway request events.
  */
 export interface HandleAliCloudGatewayEventFunction {
   (options: HandleAliCloudGatewayEventOptions): string
