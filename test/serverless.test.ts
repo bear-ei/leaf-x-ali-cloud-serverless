@@ -54,7 +54,7 @@ describe('test/serverless.test.ts', () => {
         version: '2016-08-15',
         qualifier: 'PROD',
         internal: false,
-        secure: true
+        secure: false
       })
 
       sinon.restore()

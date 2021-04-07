@@ -1,6 +1,6 @@
 import * as crypto from 'crypto'
 import { compose } from 'lodash/fp'
-import { getCanonicalHeadersString } from './headers'
+import { getCanonicalHeaderString } from './header'
 import {
   GetSignFunction,
   GetSignStringFunction,
@@ -18,7 +18,7 @@ export const getSignString: GetSignStringFunction = ({
   url,
   headers
 }) => {
-  const canonicalHeaderString = getCanonicalHeadersString('x-fc-', headers)
+  const canonicalHeaderString = getCanonicalHeaderString('x-fc-', headers)
   const pathname = decodeURIComponent(new URL(url).pathname)
 
   return [

@@ -1,12 +1,12 @@
 import * as crypto from 'crypto'
 import { curry } from 'lodash/fp'
 import {
-  GetCanonicalHeadersStringFunction,
-  GetHeadersFunction,
-  SpliceHeadersStringFunction
-} from './interface/headers'
+  GetCanonicalHeaderStringFunction,
+  GetHeaderFunction,
+  SpliceHeaderStringFunction
+} from './interface/header'
 
-export const getHeaders: GetHeadersFunction = ({
+export const getHeaders: GetHeaderFunction = ({
   content,
   host,
   accountId,
@@ -23,12 +23,12 @@ export const getHeaders: GetHeadersFunction = ({
   ...(async ? { 'x-fc-invocation-type': 'Async' } : undefined)
 })
 
-export const getCanonicalHeadersString: GetCanonicalHeadersStringFunction = (
+export const getCanonicalHeaderString: GetCanonicalHeaderStringFunction = (
   prefix,
   headers
 ) => {
   const spliceHeaderString = curry(
-    ((headers, key) => `${key}:${headers[key]}`) as SpliceHeadersStringFunction
+    ((headers, key) => `${key}:${headers[key]}`) as SpliceHeaderStringFunction
   )(headers)
 
   return Object.keys(headers)

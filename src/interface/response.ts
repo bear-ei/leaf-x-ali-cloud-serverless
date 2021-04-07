@@ -2,23 +2,23 @@ import { InvokeResult } from './invoke'
 import { ExecRequestResult } from './request'
 
 /**
- * The function that handles the response.
+ * Handle the response.
  */
 export interface HandleResponseFunction {
   (options: ExecRequestResult): InvokeResult
 }
 
 /**
- * Options for handling ali cloud gateway responses.
+ * Handle ali cloud gateway response options.
  */
 export interface HandleAliCloudGatewayResponseOptions {
   /**
-   * Response status code.
+   * Gateway response status code.
    */
   statusCode: number
 
   /**
-   * Whether the request entity is Base64 encoded.
+   * If or not to base64 encode the body.
    */
   isBase64Encoded: boolean
 
@@ -34,7 +34,7 @@ export interface HandleAliCloudGatewayResponseOptions {
 }
 
 /**
- * Function to handle ali cloud gateway response.
+ * Handle Ali cloud gateway responses.
  */
 export interface HandleAliCloudGatewayResponseFunction {
   (options: HandleAliCloudGatewayResponseOptions): InvokeResult | never

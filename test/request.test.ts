@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import axios from 'axios'
 import * as sinon from 'sinon'
 import * as event from '../src/event'
-import * as headers from '../src/headers'
+import * as headers from '../src/header'
 import { execRequest } from '../src/request'
 import * as token from '../src/token'
 

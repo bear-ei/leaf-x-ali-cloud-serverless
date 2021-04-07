@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { handleRequestError } from './error'
 import { handleEventToBuffer } from './event'
-import { getHeaders } from './headers'
+import { getHeaders } from './header'
 import { ExecRequestFunction, ExecRequestResult } from './interface/request'
 import { getToken } from './token'
 

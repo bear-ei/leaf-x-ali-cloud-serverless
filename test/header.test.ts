@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import { getCanonicalHeadersString, getHeaders } from '../src/headers'
+import { getCanonicalHeaderString, getHeaders } from '../src/header'
 
 describe('test/headers.test.ts', () => {
   it('Should be the result of getHeaders.', async () => {
@@ -57,8 +57,8 @@ describe('test/headers.test.ts', () => {
     asyncHeaders()
   })
 
-  it('Should be the result of getCanonicalHeadersString.', async () => {
-    const result = getCanonicalHeadersString('x-fc-', {
+  it('Should be the result of getCanonicalHeaderString.', async () => {
+    const result = getCanonicalHeaderString('x-fc-', {
       accept: 'application/json; charset=utf-8',
       date: new Date().toUTCString(),
       host: 'https://github.com/',

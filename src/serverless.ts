@@ -9,7 +9,7 @@ export const serverless: ServerlessFunction = ({
   version = '2016-08-15',
   qualifier = 'LATEST',
   internal = true,
-  secure = false,
+  secure = true,
   ...args
 }) => {
   const protocol = secure ? 'https' : 'http'

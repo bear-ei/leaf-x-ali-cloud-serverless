@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import * as sinon from 'sinon'
-import * as headers from '../src/headers'
+import * as headers from '../src/header'
 import * as token from '../src/token'
 
 const { getToken, getSignString, getSign } = token
@@ -28,7 +28,7 @@ describe('test/token.test.ts', () => {
 
   it('Should be the result of getSignString.', async () => {
     sinon
-      .stub(headers, 'getCanonicalHeadersString')
+      .stub(headers, 'getCanonicalHeaderString')
       .returns(
         ['x-fc-account-id:1787993', 'x-fc-invocation-type:Async'].join('\n')
       )

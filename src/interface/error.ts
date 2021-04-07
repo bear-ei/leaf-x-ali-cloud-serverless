@@ -3,37 +3,37 @@
  */
 export interface HandleErrorOptions {
   /**
-   * The name of the currently invoked service.
+   * Name of the error service.
    */
   serviceName: string
 
   /**
-   * The name of the currently invoked function.
+   * Name of the error function.
    */
   functionName: string
 
   /**
-   * The request id of the current invoked.
+   * Request id.
    */
   requestId: string
 
   /**
-   * The request environment of the current invoked.
+   * The current operating environment.
    */
   env: string
 }
 
 /**
- * The result of a handle error.
+ * Handle the error results.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
-   * The status code of the error response.
+   * Response status code.
    */
   status: number
 
   /**
-   * The business code for the error response.
+   * Error business status code.
    */
   code: number
 
@@ -43,18 +43,18 @@ export interface HandleErrorResult extends HandleErrorOptions {
   message: string
 
   /**
-   * The chain of api invoked where the error occurred.
+   * Error API access chain.
    */
   apis?: HandleErrorOptions[]
 
   /**
-   * Details of the error.
+   * Error details.
    */
   details?: unknown
 }
 
 /**
- * Function to handle errors.
+ * Handle error.
  */
 export interface HandleErrorFunction {
   (
@@ -64,7 +64,7 @@ export interface HandleErrorFunction {
 }
 
 /**
- * Function to handle request errors.
+ * Handle the request error.
  */
 export interface HandleRequestErrorFunction {
   (error: Record<string, unknown>, options: HandleErrorOptions): never
