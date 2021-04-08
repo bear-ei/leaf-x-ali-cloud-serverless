@@ -49,6 +49,8 @@ export interface InitWarmUpFunction {
 
 /**
  * Execute warm-up serverless.
+ *
+ * @param serviceName The name of the serverless service.
  */
 export interface ExecWarmUpFunction {
   (serviceName: string): (

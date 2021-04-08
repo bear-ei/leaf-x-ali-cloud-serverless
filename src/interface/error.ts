@@ -55,6 +55,8 @@ export interface HandleErrorResult extends HandleErrorOptions {
 
 /**
  * Handle error.
+ *
+ * @param error Error.
  */
 export interface HandleErrorFunction {
   (
@@ -65,6 +67,8 @@ export interface HandleErrorFunction {
 
 /**
  * Handle the request error.
+ *
+ * @param error Error.
  */
 export interface HandleRequestErrorFunction {
   (error: Record<string, unknown>, options: HandleErrorOptions): never
