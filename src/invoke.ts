@@ -12,7 +12,7 @@ export const initInvoke: InitInvokeFunction = ({
   endpoint,
   version,
   ...args
-}) => async (serviceName, functionName, { async = false, ...invokeArgs }) => {
+}) => async ({ serviceName, functionName, async = false, ...invokeArgs }) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
   const result = await execInvoke(3, {

@@ -24,7 +24,9 @@ describe('test/invoke.test.ts', () => {
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
       timeout: 3000
-    })('leaf-x@snowflake', 'snowflake', {
+    })({
+      serviceName: 'leaf-x@snowflake',
+      functionName: 'snowflake',
       event: {
         type: 'ALI_ClOUD_GATEWAY',
         data: { queryParameters: { name: 'snowflake' } }

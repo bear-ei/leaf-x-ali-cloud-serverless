@@ -10,6 +10,16 @@ import {
  */
 export interface InvokeOptions {
   /**
+   * The name of the serverless service.
+   */
+  serviceName: string
+
+  /**
+   * The name of the serverless function.
+   */
+  functionName: string
+
+  /**
    * Handle the event to buffer options.
    */
   event: HandleEventToBufferOptions
@@ -93,16 +103,9 @@ export interface InvokeResult {
 
 /**
  * Invoke serverless.
- *
- * @param serviceName The name of the serverless service.
- * @param functionName The name of the serverless function.
  */
 export interface InvokeFunction {
-  (
-    serviceName: string,
-    functionName: string,
-    options: InvokeOptions
-  ): Promise<InvokeResult>
+  (options: InvokeOptions): Promise<InvokeResult>
 }
 
 /**
