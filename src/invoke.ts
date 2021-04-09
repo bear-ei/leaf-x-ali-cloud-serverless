@@ -2,8 +2,8 @@ import {
   ExecInvokeFunction,
   InitInvokeFunction,
   RetryInvokeFunction
-} from './interface/invoke'
-import { ExecRequestResult } from './interface/request'
+} from './interface/invoke.interface'
+import { ExecRequestResult } from './interface/request.interface'
 import { execRequest } from './request'
 import { handleResponse } from './response'
 

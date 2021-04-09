@@ -1,4 +1,7 @@
-import { ExecWarmUpFunction, InitWarmUpFunction } from './interface/warmUp'
+import {
+  ExecWarmUpFunction,
+  InitWarmUpFunction
+} from './interface/warmUp.interface'
 import { initInvoke } from './invoke'
 
 export const initWarmUp: InitWarmUpFunction = (config) => async (

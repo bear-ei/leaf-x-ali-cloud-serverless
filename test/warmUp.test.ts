@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import * as sinon from 'sinon'
-import { HandleErrorResult } from 'src/interface/error'
-import { InvokeResult } from 'src/interface/invoke'
+import { HandleErrorResult } from 'src/interface/error.interface'
+import { InvokeResult } from 'src/interface/invoke.interface'
 import * as invoke from '../src/invoke'
 import { initWarmUp } from '../src/warmUp'
 

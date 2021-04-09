@@ -1,4 +1,4 @@
-import { ServerlessFunction } from './interface/serverless'
+import { ServerlessFunction } from './interface/serverless.interface'
 import { initInvoke } from './invoke'
 import { initWarmUp } from './warmUp'
 

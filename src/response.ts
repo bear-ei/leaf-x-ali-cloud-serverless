@@ -1,9 +1,9 @@
-import { Event } from './event'
+import { Event } from './enum/error.enum'
 import {
   HandleAliCloudGatewayResponseFunction,
   HandleAliCloudGatewayResponseOptions,
   HandleResponseFunction
-} from './interface/response'
+} from './interface/response.interface'
 
 export const handleResponse: HandleResponseFunction = ({
   data,

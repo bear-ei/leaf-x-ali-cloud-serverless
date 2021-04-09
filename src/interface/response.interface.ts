@@ -1,15 +1,15 @@
-import { InvokeResult } from './invoke'
-import { ExecRequestResult } from './request'
+import { InvokeResult } from './invoke.interface'
+import { ExecRequestResult } from './request.interface'
 
 /**
- * Handle the response.
+ * Function to handle serverless responses.
  */
 export interface HandleResponseFunction {
   (options: ExecRequestResult): InvokeResult
 }
 
 /**
- * Handle ali cloud gateway response options.
+ * Options to handle ali cloud gateway response.
  */
 export interface HandleAliCloudGatewayResponseOptions {
   /**
@@ -18,23 +18,23 @@ export interface HandleAliCloudGatewayResponseOptions {
   statusCode: number
 
   /**
-   * If or not to base64 encode the body.
+   * Whether or not the request body is base64 encoded.
    */
   isBase64Encoded: boolean
 
   /**
-   * Response headers.
+   * Gateway response header.
    */
   headers: Record<string, string>
 
   /**
-   * Response body.
+   * Gateway response body.
    */
   body: unknown
 }
 
 /**
- * Handle Ali cloud gateway responses.
+ * Function to handle ali cloud gateway response.
  */
 export interface HandleAliCloudGatewayResponseFunction {
   (options: HandleAliCloudGatewayResponseOptions): InvokeResult | never

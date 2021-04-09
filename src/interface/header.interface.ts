@@ -1,14 +1,14 @@
 /**
- * Gets the request header options.
+ * Get the options to invoke the serverless request headers.
  */
 export interface GetHeaderOptions {
   /**
-   * Request content length.
+   * Buffer of the request content.
    */
   content: Buffer
 
   /**
-   * Request host address.
+   * Request host.
    */
   host: string
 
@@ -18,33 +18,30 @@ export interface GetHeaderOptions {
   accountId: string
 
   /**
-   * Whether to execute asynchronous requests.
+   * Whether to make asynchronous invoke.
    */
   async?: boolean
 }
 
 /**
- * Get the request headers.
+ * Get the function to invoke the serverless request header.
  */
 export interface GetHeaderFunction {
   (options: GetHeaderOptions): Record<string, string>
 }
 
 /**
- * Get the canonical request header string.
+ * Get the function to invoke the serverless specification request header
+ * string.
  *
- * @param prefix Canonical request header prefix.
- * @param headers request headers.
+ * @param prefix Serverless canonical header prefix.
  */
 export interface GetCanonicalHeaderStringFunction {
   (prefix: string, headers: Record<string, string>): string
 }
 
 /**
- * Splice the canonical request header string.
- *
- * @param headers request headers.
- * @param key Request header key.
+ * Splice the function that invoke the serverless request header string.
  */
 export interface SpliceHeaderStringFunction {
   (headers: Record<string, string>, key: string): string

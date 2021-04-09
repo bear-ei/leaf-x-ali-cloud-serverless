@@ -1,5 +1,5 @@
 /**
- * HTTP request method.
+ * Http request method.
  */
 export type HttpMethod =
   | 'GET'
@@ -14,16 +14,16 @@ export type HttpMethod =
   | 'UNLINK'
 
 /**
- * Handle ali cloud Gateway event options.
+ * Options to handle aliyun gateway events.
  */
 export interface HandleAliCloudGatewayEventOptions {
   /**
-   * HTTP request method.
+   * Http request method.
    */
   httpMethod?: HttpMethod
 
   /**
-   * If or not to base64 encode the body.
+   * Whether or not the request body is base64 encoded.
    */
   isBase64Encoded?: boolean
 
@@ -43,40 +43,40 @@ export interface HandleAliCloudGatewayEventOptions {
   body?: unknown
 
   /**
-   * Request headers.
+   * Request header.
    */
   headers?: Record<string, string>
 }
 
 /**
- * Serverless event type.
+ * Serverless request event type.
  */
 export type EventType = 'ALI_ClOUD_GATEWAY'
 
 /**
- * Handle the event to buffer options.
+ * Options to handle serverless events to Buffer.
  */
 export interface HandleEventToBufferOptions {
   /**
-   * Serverless event type.
+   * Serverless request event type.
    */
   type: EventType
 
   /**
-   * Handle ali cloud Gateway event options.
+   * Options to handle aliyun gateway events.
    */
   data: HandleAliCloudGatewayEventOptions
 }
 
 /**
- * Handle the event to buffer.
+ * Function to handle serverless events to Buffer.
  */
 export interface HandleEventToBufferFunction {
   (options: HandleEventToBufferOptions): Buffer
 }
 
 /**
- * Handle ali cloud gateway events.
+ * Function to handle aliyun gateway events.
  */
 export interface HandleAliCloudGatewayEventFunction {
   (options: HandleAliCloudGatewayEventOptions): string

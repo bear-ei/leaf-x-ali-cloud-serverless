@@ -1,11 +1,11 @@
-import { InvokeOptions } from './invoke'
+import { InvokeOptions } from './invoke.interface'
 
 /**
- * Execute the request configuration.
+ * Execute the configuration of serverless requests.
  */
 export interface ExecRequestConfig {
   /**
-   * Request host.
+   * Serverless requests host.
    */
   host: string
 
@@ -20,57 +20,57 @@ export interface ExecRequestConfig {
   accessId: string
 
   /**
-   * Ali cloud access key.
+   * Ali cloud serverless access key.
    */
   accessSecretKey: string
 
   /**
-   * Request timeout time, in milliseconds.
+   * Serverless request timeout time.
    */
   timeout: number
 
   /**
-   * Serverless service alias.
+   * Serverless request api version.
    */
   qualifier: string
 }
 
 /**
- * Execute the request options.
+ * Options to execute serverless requests.
  */
 export interface ExecRequestOptions extends InvokeOptions {
   /**
-   * The name of the serverless service.
+   * Name of the service that request serverless.
    */
   serviceName: string
 
   /**
-   * The name of the serverless function.
+   * Name of the function to request serverless.
    */
   functionName: string
 
   /**
-   * Serverless url address.
+   * Url address of the request serverless.
    */
   url: string
 }
 
 /**
- * Execute the request result.
+ * Result of executing a serverless request.
  */
 export interface ExecRequestResult {
   /**
-   * Response status code.
+   * Request response status code.
    */
   status: number
 
   /**
-   * Response data.
+   * Request response data.
    */
   data: unknown
 
   /**
-   * Response headers.
+   * Request response header.
    */
   headers: Record<string, string>
 
@@ -78,7 +78,10 @@ export interface ExecRequestResult {
 }
 
 /**
- * Execute the request.
+ * Function to execute serverless requests.
+ *
+ * @export
+ * @interface ExecRequestFunction
  */
 export interface ExecRequestFunction {
   (

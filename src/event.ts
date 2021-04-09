@@ -1,11 +1,8 @@
+import { Event } from './enum/error.enum'
 import {
   HandleAliCloudGatewayEventFunction,
   HandleEventToBufferFunction
-} from './interface/event'
-
-export enum Event {
-  ALI_ClOUD_GATEWAY = 'aliCloudGateway'
-}
+} from './interface/event.interface'
 
 export const handleEventToBuffer: HandleEventToBufferFunction = ({
   type,

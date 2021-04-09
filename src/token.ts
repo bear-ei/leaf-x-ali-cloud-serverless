@@ -5,7 +5,7 @@ import {
   GetSignFunction,
   GetSignStringFunction,
   GetTokenFunction
-} from './interface/token'
+} from './interface/token.interface'
 
 export const getToken: GetTokenFunction = ({
   accessId,

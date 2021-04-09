@@ -1,64 +1,63 @@
-import { HandleEventToBufferOptions } from './event'
+import { HandleEventToBufferOptions } from './event.interface'
 import {
   ExecRequestConfig,
   ExecRequestOptions,
   ExecRequestResult
-} from './request'
+} from './request.interface'
 
 /**
  * Invoke the serverless options.
  */
 export interface InvokeOptions {
   /**
-   * The name of the serverless service.
+   * Name of the service that invoke serverless.
    */
   serviceName: string
 
   /**
-   * The name of the serverless function.
+   * Name of the function to invoke serverless.
    */
   functionName: string
 
   /**
-   * Handle the event to buffer options.
+   * Options to handle serverless events to Buffer.
    */
   event: HandleEventToBufferOptions
 
   /**
-   * Whether to invoke serverless asynchronously.
+   * Whether to make asynchronous invoke.
    */
   async?: boolean
 }
 
 /**
- * Execute the invoke to serverless options.
+ * Execute the invoke no server options.
  */
 export interface ExecInvokeOptions {
   /**
-   * Execute the request configuration.
+   * Execute the configuration of serverless requests.
    */
   config: ExecRequestConfig
 
   /**
-   * Execute the request options.
+   * Options to execute serverless requests.
    */
   options: ExecRequestOptions
 }
 
 /**
- * Execute the invoke to serverless.
+ * Execute invoke serverless.
  *
- * @param retryNumber The number of retries to invoke.
+ * @param retryNumber Number of retries after the invoke failed.
  */
 export interface ExecInvokeFunction {
   (retryNumber: number, options: ExecInvokeOptions): Promise<ExecRequestResult>
 }
 
 /**
- * Retry the invoke to serverless.
+ * Retry invoke serverless.
  *
- * @param retryNumber   The number of retries to invoke.
- * @param error         Error.
+ * @param retryNumber Number of retries after the invoke failed.
  */
 export interface RetryInvokeFunction {
   (retryNumber: number, error: Record<string, unknown>):
@@ -71,45 +70,45 @@ export interface RetryInvokeFunction {
  */
 export interface InvokeConfig extends ExecRequestConfig {
   /**
-   * Invoke the endpoint.
+   * Invoke serverless endpoints.
    */
   endpoint: string
 
   /**
-   * Invoke the serverless API version.
+   * Invoke the serverless version.
    */
   version: string
 }
 
 /**
- * Invoke serverless results.
+ * Result of Invoke serverless.
  */
 export interface InvokeResult {
   /**
-   * Response data.
+   * Data that serverless responds to.
    */
   data: unknown
 
   /**
-   * Response status code.
+   * Status code of the serverless response.
    */
   status: number
 
   /**
-   * Response headers.
+   * Serverless response header.
    */
   headers: Record<string, string>
 }
 
 /**
- * Invoke serverless.
+ * Invoke serverless function.
  */
 export interface InvokeFunction {
   (options: InvokeOptions): Promise<InvokeResult>
 }
 
 /**
- * Initialize the invoke to serverless.
+ * Initialize the serverless function.
  */
 export interface InitInvokeFunction {
   (config: InvokeConfig): InvokeFunction

@@ -4,7 +4,7 @@ import {
   GetCanonicalHeaderStringFunction,
   GetHeaderFunction,
   SpliceHeaderStringFunction
-} from './interface/header'
+} from './interface/header.interface'
 
 export const getHeaders: GetHeaderFunction = ({
   content,

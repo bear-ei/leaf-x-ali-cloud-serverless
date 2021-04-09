@@ -1,7 +1,7 @@
 import {
   HandleErrorFunction,
   HandleRequestErrorFunction
-} from './interface/error'
+} from './interface/error.interface'
 
 export const handleError: HandleErrorFunction = (
   error,
