@@ -33,7 +33,7 @@ export interface GetHeaderFunction {
 /**
  * Function to get the serverless specification request headers string.
  *
- * @param prefix    Serverless request specification header prefix.
+ * @param prefix    Serverless request specification headers prefix.
  * @param headers   Serverless request headers.
  */
 export interface GetCanonicalHeaderStringFunction {
