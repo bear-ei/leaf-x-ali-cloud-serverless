@@ -30,7 +30,7 @@ export interface ExecRequestConfig {
   timeout: number
 
   /**
-   * Serverless request api version.
+   * Qualifier for serverless.
    */
   qualifier: string
 }
@@ -70,7 +70,7 @@ export interface ExecRequestResult {
   data: unknown
 
   /**
-   * Request response header.
+   * Request response headers.
    */
   headers: Record<string, string>
 
@@ -79,9 +79,6 @@ export interface ExecRequestResult {
 
 /**
  * Function to execute serverless requests.
- *
- * @export
- * @interface ExecRequestFunction
  */
 export interface ExecRequestFunction {
   (

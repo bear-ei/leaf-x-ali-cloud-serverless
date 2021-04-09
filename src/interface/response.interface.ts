@@ -23,7 +23,7 @@ export interface HandleAliCloudGatewayResponseOptions {
   isBase64Encoded: boolean
 
   /**
-   * Gateway response header.
+   * Gateway response headers.
    */
   headers: Record<string, string>
 

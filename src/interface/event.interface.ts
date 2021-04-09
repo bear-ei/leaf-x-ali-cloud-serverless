@@ -14,7 +14,7 @@ export type HttpMethod =
   | 'UNLINK'
 
 /**
- * Options to handle aliyun gateway events.
+ * Options to handle ali cloud gateway events.
  */
 export interface HandleAliCloudGatewayEventOptions {
   /**
@@ -43,7 +43,7 @@ export interface HandleAliCloudGatewayEventOptions {
   body?: unknown
 
   /**
-   * Request header.
+   * Request headers.
    */
   headers?: Record<string, string>
 }
@@ -63,7 +63,7 @@ export interface HandleEventToBufferOptions {
   type: EventType
 
   /**
-   * Options to handle aliyun gateway events.
+   * Options to handle ali cloud gateway events.
    */
   data: HandleAliCloudGatewayEventOptions
 }
@@ -76,7 +76,7 @@ export interface HandleEventToBufferFunction {
 }
 
 /**
- * Function to handle aliyun gateway events.
+ * Function to handle ali cloud gateway events.
  */
 export interface HandleAliCloudGatewayEventFunction {
   (options: HandleAliCloudGatewayEventOptions): string

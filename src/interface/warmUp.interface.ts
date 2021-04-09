@@ -3,7 +3,7 @@ import { EventType } from './event.interface'
 import { InvokeConfig, InvokeResult } from './invoke.interface'
 
 /**
- * Warm up serverless options.
+ * Warm up the serverless options.
  */
 export interface WarmUpOptions {
   /**
@@ -18,7 +18,7 @@ export interface WarmUpOptions {
 }
 
 /**
- * Warm up serverless results.
+ * Warm up the serverless results.
  */
 export interface WarmUpResult extends InvokeResult {
   /**
@@ -44,14 +44,14 @@ export interface WarmUpFunction {
 }
 
 /**
- * Initialize the warm up serverless feature.
+ * Initialize the warm up serverless function.
  */
 export interface InitWarmUpFunction {
   (config: InvokeConfig): WarmUpFunction
 }
 
 /**
- * Execute warm up without server function.
+ * Execute warm up serverless function.
  *
  * @param serviceName Name of the service that invoke serverless.
  */

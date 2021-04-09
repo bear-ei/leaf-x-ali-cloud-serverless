@@ -31,7 +31,7 @@ export interface InvokeOptions {
 }
 
 /**
- * Execute the invoke no server options.
+ * Execute the invoke serverless options.
  */
 export interface ExecInvokeOptions {
   /**
@@ -57,7 +57,8 @@ export interface ExecInvokeFunction {
 /**
  * Retry invoke serverless.
  *
- * @param retryNumber Number of retries after the invoke failed.
+ * @param retryNumber   Number of retries after the invoke failed.
+ * @param error         Error message.
  */
 export interface RetryInvokeFunction {
   (retryNumber: number, error: Record<string, unknown>):
@@ -75,7 +76,7 @@ export interface InvokeConfig extends ExecRequestConfig {
   endpoint: string
 
   /**
-   * Invoke the serverless version.
+   * Serverless api version.
    */
   version: string
 }

@@ -55,7 +55,7 @@ export interface ServerlessOptions {
   secure?: boolean
 
   /**
-   * Api version of serverless.
+   * Serverless api version.
    *
    * Default: 2016-08-15
    */

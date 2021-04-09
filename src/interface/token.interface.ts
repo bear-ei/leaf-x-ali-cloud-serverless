@@ -25,20 +25,20 @@ export interface GetTokenOptions {
   url: string
 
   /**
-   * Serverless request header.
+   * Serverless request headers.
    */
   headers: Record<string, string>
 }
 
 /**
- * Function to get the request no server token.
+ * Function to get the request serverless token.
  */
 export interface GetTokenFunction {
   (options: GetTokenOptions): string
 }
 
 /**
- * Get the options to request no server signature.
+ * Get the options to request serverless signature.
  */
 export interface GetSignStringOptions {
   /**
@@ -52,23 +52,23 @@ export interface GetSignStringOptions {
   url: string
 
   /**
-   * Serverless request header.
+   * Serverless request headers.
    */
   headers: Record<string, string>
 }
 
 /**
- * Function to get the request without server signature.
+ * Function to get the request serverless signature string.
  */
 export interface GetSignStringFunction {
   (options: GetSignStringOptions): string
 }
 
 /**
- * Function to get the signature.
+ * Function to get the request serverless signature.
  *
  * @param accessSecretKey   Ali cloud serverless access key.
- * @param signString        Request the signature string of serverless.
+ * @param signString        Request serverless signature string.
  */
 export interface GetSignFunction {
   (accessSecretKey: string): (signString: string) => string

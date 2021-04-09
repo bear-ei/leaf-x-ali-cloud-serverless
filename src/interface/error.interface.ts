@@ -43,7 +43,7 @@ export interface HandleErrorResult extends HandleErrorOptions {
   message: string
 
   /**
-   * Invoke chain where the error occurred.
+   * Chain of invoke api  where the error occurred.
    */
   apis?: HandleErrorOptions[]
 

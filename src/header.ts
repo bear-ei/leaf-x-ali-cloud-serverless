@@ -3,7 +3,7 @@ import { curry } from 'lodash/fp'
 import {
   GetCanonicalHeaderStringFunction,
   GetHeaderFunction,
-  SpliceHeaderStringFunction
+  SpliceCanonicalHeaderStringFunction
 } from './interface/header.interface'
 
 export const getHeaders: GetHeaderFunction = ({
@@ -27,13 +27,14 @@ export const getCanonicalHeaderString: GetCanonicalHeaderStringFunction = (
   prefix,
   headers
 ) => {
-  const spliceHeaderString = curry(
-    ((headers, key) => `${key}:${headers[key]}`) as SpliceHeaderStringFunction
+  const spliceCanonicalHeaderString = curry(
+    ((headers, key) =>
+      `${key}:${headers[key]}`) as SpliceCanonicalHeaderStringFunction
   )(headers)
 
   return Object.keys(headers)
     .filter((key) => key.startsWith(prefix))
     .sort()
-    .map(spliceHeaderString)
+    .map(spliceCanonicalHeaderString)
     .join('\n')
 }
