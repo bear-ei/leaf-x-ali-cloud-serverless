@@ -6,7 +6,7 @@ import { initInvoke } from './invoke'
 
 export const initWarmUp: InitWarmUpFunction = (config) => async (
   serviceName,
-  functionNames
+  options
 ) => {
   const invoke = initInvoke(config)
   const execWarmUp = (((serviceName) => async ({ functionName, type }) =>
@@ -26,5 +26,5 @@ export const initWarmUp: InitWarmUpFunction = (config) => async (
       )
       .catch((error) => error)) as ExecWarmUpFunction)(serviceName)
 
-  return Promise.all(functionNames.map(execWarmUp))
+  return Promise.all(options.map(execWarmUp))
 }

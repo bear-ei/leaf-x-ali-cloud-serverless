@@ -33,18 +33,19 @@ const { invoke, warmUp } = serverless({
 })
 
 // Invoke the serverless function of the Ali cloud gateway trigger.
-const invokeResult = invoke('@leaf-x/snowflake', 'snowflake', {
-  type: 'ALI_ClOUD_GATEWAY',
-  data: { queryParameters: { name: 'snowflake' } }
+const invokeResult = invoke({
+    serviceName:"snowflake",
+    functionName:"IndexSnowflake"
+    type: 'ALI_ClOUD_GATEWAY',
+    data: { queryParameters: { name: 'snowflake' } }
 })
   .then((response) => response)
   .catch((error) => error)
 
 // Warm-up serverless functions to avoid cold starts.
-const warmUpResult = warmUp('@leaf-x/snowflake', [
-  { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflake' }
-  //   { type: 'HTTP', functionName: 'snowflakeIndex' }   HTTP events are not supported for now, and will be added later.
-])
+ const warmUpResult = warmUp('snowflake', [
+    { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflake' }
+  ])
 
 console.info(invokeResult)
 console.info(warmUpResult)
