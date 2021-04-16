@@ -93,7 +93,5 @@ describe('test/serverless.test.ts', () => {
       },
       async: false
     })
-
-    console.info(result)
   })
 })
