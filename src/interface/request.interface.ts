@@ -72,7 +72,7 @@ export interface ExecRequestResult {
   /**
    * Request response headers.
    */
-  headers: Record<string, string>
+  headers: unknown
 
   [key: string]: unknown
 }

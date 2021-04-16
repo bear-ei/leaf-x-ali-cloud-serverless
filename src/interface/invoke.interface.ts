@@ -98,7 +98,7 @@ export interface InvokeResult {
   /**
    * Serverless response headers.
    */
-  headers: Record<string, string>
+  headers: unknown
 }
 
 /**

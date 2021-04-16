@@ -67,4 +67,33 @@ describe('test/serverless.test.ts', () => {
     defaultOptions()
     inputOptions()
   })
+
+  it('Should be the result of cc.', async () => {
+    const { invoke: i } = serverless({
+      accountId: '1513153060849486',
+      accessId: 'LTAI4Fd5Chf5FFaQBCatShm3',
+      accessSecretKey: '24GBZFnD1FL6a6vSpBcxnc2S3tPjDk',
+      region: 'cn-shanghai',
+      internal: false,
+      qualifier: 'DEV'
+    })
+
+    const result = await i({
+      serviceName: 'ThalloAttendances',
+      functionName: 'attendanceIndex',
+
+      event: {
+        type: 'ALI_ClOUD_GATEWAY',
+        data: {
+          httpMethod: 'GET',
+          queryParameters: { isCount: false, s: '233' },
+          pathParameters: {},
+          headers: { 'x-service': 'service' }
+        }
+      },
+      async: false
+    })
+
+    console.info(result)
+  })
 })
