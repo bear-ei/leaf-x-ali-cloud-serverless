@@ -1,47 +1,87 @@
+import { handleServerlessError } from './error'
+import { handleEvent } from './event'
+import { getRequestHeaders } from './headers'
 import {
-  ExecInvokeFunction,
-  InitInvokeFunction,
-  RetryInvokeFunction
+  ExecInvoke,
+  InitInvoke,
+  InvokeError,
+  RetryInvoke
 } from './interface/invoke.interface'
-import { execRequest } from './request'
-import { handleResponse } from './response'
+import { request } from './request'
+import { response } from './response'
+import { getToken } from './token'
 
-export const initInvoke: InitInvokeFunction = ({
-  qualifier,
-  endpoint,
-  version,
-  ...args
-}) => async ({ serviceName, functionName, async = false, ...invokeArgs }) => {
-  const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
-  const url = `${endpoint}/${version}${path}`
+const execInvoke: ExecInvoke = (retryNumber, { url, options }) => {
+  const retry = retryInvoke(retryNumber, { url, options })
 
-  const result = await execInvoke(3, {
-    config: { qualifier, ...args },
-    options: { url, serviceName, functionName, async, ...invokeArgs }
-  })
-
-  return handleResponse(result)
+  return request(url, options)
+    .then((response) => response)
+    .catch(retry)
 }
 
-export const execInvoke: ExecInvokeFunction = async (
-  retryNumber,
-  { config, options }
-) => {
-  let error!: Record<string, unknown>
-
-  return execRequest(options, config)
-    .then((result) => result)
-    .catch(retryInvoke)
-}
-
-const retryInvoke: RetryInvokeFunction = (retryNumber, error) => {
-  const retry = retryNumber > 0 && ((error.status as unknown) as number) >= 500
-
-  if (retry) {
+const retryInvoke: RetryInvoke = (retryNumber, { url, options }) => (error) => {
+  if (retryNumber > 0) {
     retryNumber--
 
-    return execInvoke(retryNumber, { options, config })
+    return execInvoke(retryNumber, { url, options })
   }
 
   throw error
+}
+
+const invokeError: InvokeError = (options) => (error) => {
+  const requestId = (error as Record<string, Record<string, unknown>>).headers[
+    'x-fc-request-id'
+  ] as string
+
+  return handleServerlessError({ ...options, requestId })(error)
+}
+
+export const initInvoke: InitInvoke = ({
+  qualifier,
+  endpoint,
+  version,
+  host,
+  accountId,
+  accessSecretKey,
+  accessId,
+  timeout
+}) => async ({
+  serviceName,
+  functionName,
+  async = false,
+  event: triggerEvent
+}) => {
+  const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
+  const url = `${endpoint}/${version}${path}`
+  const method = 'POST'
+  const body = JSON.stringify(handleEvent(triggerEvent))
+  const requestHeaders = getRequestHeaders({
+    content: body,
+    host,
+    accountId,
+    async
+  })
+  const authorization = getToken({
+    accessId,
+    accessSecretKey,
+    method,
+    url,
+    headers: requestHeaders
+  })
+
+  const execOptions = {
+    url,
+    options: {
+      method,
+      headers: { authorization, ...requestHeaders },
+      body,
+      timeout
+    }
+  }
+
+  const error = invokeError({ serviceName, functionName, env: qualifier })
+  const result = await execInvoke(3, execOptions).catch(error)
+
+  return response({ type: triggerEvent.type, requestResponse: result })
 }

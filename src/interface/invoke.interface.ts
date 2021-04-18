@@ -1,116 +1,154 @@
-import { HandleEventToBufferOptions } from './event.interface'
-import {
-  ExecRequestConfig,
-  ExecRequestOptions,
-  ExecRequestResult
-} from './request.interface'
+import { FetchOptions, HandleResponseResult } from '@leaf-x/fetch'
+import { TriggerEvent } from './event.interface'
+import { ResponseResult } from './response.interface'
 
 /**
- * Invoke the serverless options.
+ * Invoke options.
  */
 export interface InvokeOptions {
   /**
-   * Name of the service that invoke serverless.
+   * Service name.
    */
   serviceName: string
 
   /**
-   * Name of the function to invoke serverless.
+   * Function name.
    */
   functionName: string
 
   /**
-   * Options to handle serverless events to Buffer.
+   * Trigger events.
    */
-  event: HandleEventToBufferOptions
+  event: TriggerEvent
 
   /**
-   * Whether to make asynchronous invoke.
+   * Whether to invoke asynchronously or not.
    */
   async?: boolean
 }
 
 /**
- * Execute the invoke serverless options.
+ * Execution invoke options.
  */
 export interface ExecInvokeOptions {
   /**
-   * Execute the configuration of serverless requests.
+   * The URL address to invoke.
    */
-  config: ExecRequestConfig
+  url: string
 
   /**
-   * Options to execute serverless requests.
+   * Fetch options.
    */
-  options: ExecRequestOptions
+  options: FetchOptions
 }
 
 /**
- * Execute invoke serverless.
+ * Execution invoke.
  *
- * @param retryNumber Number of retries after the invoke failed.
+ * @param retryNumber Number of retries.
  */
-export interface ExecInvokeFunction {
-  (retryNumber: number, options: ExecInvokeOptions): Promise<ExecRequestResult>
+export interface ExecInvoke {
+  (
+    retryNumber: number,
+    options: ExecInvokeOptions
+  ): Promise<HandleResponseResult>
 }
 
 /**
- * Retry invoke serverless.
+ * Retry invoke.
  *
- * @param retryNumber   Number of retries after the invoke failed.
- * @param error         Error message.
+ * @param retryNumber Number of retries.
  */
-export interface RetryInvokeFunction {
-  (retryNumber: number, error: Record<string, unknown>):
-    | Promise<ExecRequestResult>
-    | never
+export interface RetryInvoke {
+  (retryNumber: number, options: ExecInvokeOptions): (
+    error: Record<string, unknown>
+  ) => Promise<HandleResponseResult> | never
 }
 
 /**
- * Invoke serverless configuration.
+ * Initialize the invoke options.
  */
-export interface InvokeConfig extends ExecRequestConfig {
+export interface InitInvokeOptions {
   /**
-   * Invoke serverless endpoints.
+   * Ali cloud account ID.
+   */
+  accountId: string
+
+  /**
+   * Ali cloud access ID.
+   */
+  accessId: string
+
+  /**
+   * Ali cloud access key.
+   */
+  accessSecretKey: string
+
+  /**
+   * Serverless qualifier.
+   */
+  qualifier: string
+
+  /**
+   * Serverless host.
+   */
+  host: string
+
+  /**
+   * Timeout time.
+   */
+  timeout: number
+
+  /**
+   * Serverless host.
    */
   endpoint: string
 
   /**
-   * Serverless api version.
+   * Serverless API version.
    */
   version: string
 }
 
 /**
- * Result of Invoke serverless.
+ * Invoke.
  */
-export interface InvokeResult {
-  /**
-   * Data that serverless responds to.
-   */
-  data: unknown
-
-  /**
-   * Status code of the serverless response.
-   */
-  status: number
-
-  /**
-   * Serverless response headers.
-   */
-  headers: unknown
+export interface Invoke {
+  (options: InvokeOptions): Promise<ResponseResult>
 }
 
 /**
- * Invoke serverless function.
+ * Initialization invoke.
  */
-export interface InvokeFunction {
-  (options: InvokeOptions): Promise<InvokeResult>
+export interface InitInvoke {
+  (config: InitInvokeOptions): Invoke
 }
 
 /**
- * Initialize the serverless function.
+ * Invoke the wrong option.
  */
-export interface InitInvokeFunction {
-  (config: InvokeConfig): InvokeFunction
+export interface InvokeErrorOptions {
+  /**
+   * Service name.
+   */
+  serviceName: string
+
+  /**
+   * Function name.
+   */
+  functionName: string
+
+  /**
+   * Running environment.
+   */
+  env: string
+}
+
+/**
+ * Invoke error.
+ *
+ * @param error Error.
+ */
+export interface InvokeError {
+  (options: InvokeErrorOptions): (error: Record<string, unknown>) => never
 }

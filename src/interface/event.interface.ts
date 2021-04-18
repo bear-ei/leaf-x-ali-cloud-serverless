@@ -1,4 +1,25 @@
 /**
+ * Event type.
+ */
+export type EventType = 'GATEWAY'
+
+/**
+ * Trigger events.
+ */
+export interface TriggerEvent {
+  /**
+   * Event type.
+   */
+  type: EventType
+
+  /**
+   * Gateway options.
+   *
+   */
+  data: HandleGatewayEventOptions
+}
+
+/**
  * Http request method.
  */
 export type HttpMethod =
@@ -14,16 +35,23 @@ export type HttpMethod =
   | 'UNLINK'
 
 /**
- * Options to handle ali cloud gateway events.
+ * Handle the event.
  */
-export interface HandleAliCloudGatewayEventOptions {
+export interface HandleEvent {
+  (options: TriggerEvent): HandleGatewayEventOptions
+}
+
+/**
+ * Handle gateway event options.
+ */
+export interface HandleGatewayEventOptions {
   /**
    * Http request method.
    */
   httpMethod?: HttpMethod
 
   /**
-   * Whether or not the request body is base64 encoded.
+   * Whether to base64 encode the request body.
    */
   isBase64Encoded?: boolean
 
@@ -49,35 +77,8 @@ export interface HandleAliCloudGatewayEventOptions {
 }
 
 /**
- * Serverless request event type.
+ * Handle gateway events.
  */
-export type EventType = 'ALI_ClOUD_GATEWAY'
-
-/**
- * Options to handle serverless events to Buffer.
- */
-export interface HandleEventToBufferOptions {
-  /**
-   * Serverless request event type.
-   */
-  type: EventType
-
-  /**
-   * Options to handle ali cloud gateway events.
-   */
-  data: HandleAliCloudGatewayEventOptions
-}
-
-/**
- * Function to handle serverless events to Buffer.
- */
-export interface HandleEventToBufferFunction {
-  (options: HandleEventToBufferOptions): Buffer
-}
-
-/**
- * Function to handle ali cloud gateway events.
- */
-export interface HandleAliCloudGatewayEventFunction {
-  (options: HandleAliCloudGatewayEventOptions): string
+export interface HandleGatewayEvent {
+  (options: HandleGatewayEventOptions): HandleGatewayEventOptions
 }

@@ -1,30 +1,30 @@
 /**
- * Options to handle error messages when an error occurs.
+ * Handle Error options.
  */
 export interface HandleErrorOptions {
   /**
-   * Name of the service where the error occurred.
+   * Service name.
    */
   serviceName: string
 
   /**
-   * Name of the function where the error occurred.
+   * Function name.
    */
   functionName: string
 
   /**
-   * Request id of the error occurred.
-   */
-  requestId: string
-
-  /**
-   * Operating environment where the error occurred.
+   * Running environment.
    */
   env: string
+
+  /**
+   * Request ID.
+   */
+  requestId?: string
 }
 
 /**
- * Result of processing error messages when an error occurs.
+ * Handle error results.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
@@ -38,12 +38,12 @@ export interface HandleErrorResult extends HandleErrorOptions {
   code: number
 
   /**
-   * Error description message.
+   * Error message.
    */
   message: string
 
   /**
-   * Chain of invoke api  where the error occurred.
+   * API invoke chain information.
    */
   apis?: HandleErrorOptions[]
 
@@ -54,11 +54,11 @@ export interface HandleErrorResult extends HandleErrorOptions {
 }
 
 /**
- * Function to handle error messages.
+ * Handle error.
  *
- * @param error Error message.
+ * @param error Error.
  */
-export interface HandleErrorFunction {
+export interface HandleError {
   (
     error: Record<string, unknown>,
     options: HandleErrorOptions
@@ -66,10 +66,10 @@ export interface HandleErrorFunction {
 }
 
 /**
- * Function to handle request error messages.
+ * Handle serverless error.
  *
- * @param error Error message.
+ * @param error Error.
  */
-export interface HandleRequestErrorFunction {
-  (error: Record<string, unknown>, options: HandleErrorOptions): never
+export interface HandleServerlessError {
+  (options: HandleErrorOptions): (error: Record<string, unknown>) => never
 }

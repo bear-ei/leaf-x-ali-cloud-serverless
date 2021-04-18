@@ -1,83 +1,76 @@
 import * as assert from 'assert'
 import * as sinon from 'sinon'
 import { HandleErrorResult } from 'src/interface/error.interface'
-import { InvokeResult } from 'src/interface/invoke.interface'
+import { ResponseResult } from 'src/interface/response.interface'
 import * as invoke from '../src/invoke'
 import { initWarmUp } from '../src/warmUp'
 
 describe('test/warmUp.test.ts', () => {
-  it('Should be the result of execWarmUp.', async () => {
-    const correctResponse = async () => {
-      sinon.stub(invoke, 'initInvoke').returns(async () => ({
-        data: '',
-        status: 200,
-        headers: { 'content-type': 'application/json' }
-      }))
+  it('Should be the result of a successful warm-up.', async () => {
+    sinon.stub(invoke, 'initInvoke').returns(async () => ({
+      data: '',
+      status: 200,
+      headers: { 'content-type': 'application/json; charset=utf-8' }
+    }))
 
-      const result = await initWarmUp({
-        qualifier: 'PROD',
-        endpoint: 'https://github.com/',
-        version: '2016-10-17',
-        host: 'github.com',
-        accountId: '1235555677',
-        accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
-        accessSecretKey: 'MTIzNTU1NTY3Nw==',
-        timeout: 3000
-      })('leaf-x@snowflake', [
-        { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflake' },
-        { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflakeIndex' }
-      ])
+    const result = await initWarmUp({
+      qualifier: 'PROD',
+      endpoint: 'https://github.com/',
+      version: '2016-10-17',
+      host: 'github.com',
+      accountId: '1235555677',
+      accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
+      accessSecretKey: 'MTIzNTU1NTY3Nw==',
+      timeout: 3000
+    })('leaf-x@snowflake', [
+      { type: 'GATEWAY', functionName: 'snowflake' },
+      { type: 'GATEWAY', functionName: 'snowflakeIndex' }
+    ])
 
-      sinon.restore()
+    sinon.restore()
 
-      assert(Array.isArray(result))
-      assert(
-        result.some((result) => {
-          const { status, data, headers } = result as InvokeResult
+    assert(Array.isArray(result))
+    assert(
+      result.some((result) => {
+        const { status, data, headers } = result as ResponseResult
 
-          return status === 200 && data === '' && typeof headers === 'object'
-        })
-      )
-    }
-
-    const errorResponse = async () => {
-      sinon.stub(invoke, 'initInvoke').returns(async () => {
-        throw {
-          code: 4000000,
-          status: 400,
-          message: 'Bad Request.'
-        }
+        return status === 200 && data === '' && typeof headers === 'object'
       })
+    )
+  })
 
-      const result = await initWarmUp({
-        qualifier: 'PROD',
-        endpoint: 'https://github.com/',
-        version: '2016-10-17',
-        host: 'github.com',
-        accountId: '1235555677',
-        accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
-        accessSecretKey: 'MTIzNTU1NTY3Nw==',
-        timeout: 3000
-      })('leaf-x@snowflake', [
-        { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflake' },
-        { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflakeIndex' }
-      ])
+  it('Should be the result of a failed warm-up. ', async () => {
+    sinon.stub(invoke, 'initInvoke').returns(async () => {
+      throw {
+        code: 4000000,
+        status: 400,
+        message: 'Bad Request.'
+      }
+    })
 
-      sinon.restore()
+    const result = await initWarmUp({
+      qualifier: 'PROD',
+      endpoint: 'https://github.com/',
+      version: '2016-10-17',
+      host: 'github.com',
+      accountId: '1235555677',
+      accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
+      accessSecretKey: 'MTIzNTU1NTY3Nw==',
+      timeout: 3000
+    })('leaf-x@snowflake', [
+      { type: 'GATEWAY', functionName: 'snowflake' },
+      { type: 'GATEWAY', functionName: 'snowflakeIndex' }
+    ])
 
-      assert(Array.isArray(result))
-      assert(
-        result.some((result) => {
-          const { status, code, message } = result as HandleErrorResult
+    sinon.restore()
 
-          return (
-            status === 400 && code === 4000000 && message === 'Bad Request.'
-          )
-        })
-      )
-    }
+    assert(Array.isArray(result))
+    assert(
+      result.some((result) => {
+        const { status, code, message } = result as HandleErrorResult
 
-    await correctResponse()
-    await errorResponse()
+        return status === 400 && code === 4000000 && message === 'Bad Request.'
+      })
+    )
   })
 })

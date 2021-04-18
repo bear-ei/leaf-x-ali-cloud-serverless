@@ -1,8 +1,8 @@
-import { ServerlessFunction } from './interface/serverless.interface'
+import { Serverless } from './interface/serverless.interface'
 import { initInvoke } from './invoke'
 import { initWarmUp } from './warmUp'
 
-export const serverless: ServerlessFunction = ({
+export const serverless: Serverless = ({
   accountId,
   region,
   timeout = 30000,
@@ -16,7 +16,7 @@ export const serverless: ServerlessFunction = ({
   const network = internal ? '-internal' : ''
   const endpoint = `${protocol}://${accountId}.${region}${network}.fc.aliyuncs.com`
   const host = `${accountId}.${region}${network}.fc.aliyuncs.com`
-  const config = {
+  const options = {
     accountId,
     host,
     timeout,
@@ -26,5 +26,5 @@ export const serverless: ServerlessFunction = ({
     ...args
   }
 
-  return { invoke: initInvoke(config), warmUp: initWarmUp(config) }
+  return { invoke: initInvoke(options), warmUp: initWarmUp(options) }
 }

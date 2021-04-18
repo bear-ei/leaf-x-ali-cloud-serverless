@@ -1,24 +1,18 @@
 import * as crypto from 'crypto'
-import { compose } from 'lodash/fp'
-import { getCanonicalHeaderString } from './header'
-import {
-  GetSignFunction,
-  GetSignStringFunction,
-  GetTokenFunction
-} from './interface/token.interface'
+import { getCanonicalHeadersString } from './headers'
+import { GetSignString, GetToken, Sign } from './interface/token.interface'
 
-export const getToken: GetTokenFunction = ({
-  accessId,
-  accessSecretKey,
-  ...args
-}) => `FC ${accessId}:${compose(getSign(accessSecretKey), getSignString)(args)}`
+const sign: Sign = (secret) => (signString) => {
+  const buffer = crypto
+    .createHmac('sha256', secret)
+    .update(signString, 'utf8')
+    .digest()
 
-export const getSignString: GetSignStringFunction = ({
-  method,
-  url,
-  headers
-}) => {
-  const canonicalHeaderString = getCanonicalHeaderString('x-fc-', headers)
+  return Buffer.from(buffer).toString('base64')
+}
+
+const getSignString: GetSignString = ({ method, url, headers }) => {
+  const canonicalHeaderString = getCanonicalHeadersString('x-fc-', headers)
   const pathname = decodeURIComponent(new URL(url).pathname)
 
   return [
@@ -31,11 +25,8 @@ export const getSignString: GetSignStringFunction = ({
   ].join('\n')
 }
 
-export const getSign: GetSignFunction = (secret) => (signString) => {
-  const buffer = crypto
-    .createHmac('sha256', secret)
-    .update(signString, 'utf8')
-    .digest()
+export const getToken: GetToken = ({ accessId, accessSecretKey, ...args }) => {
+  const signString = getSignString(args)
 
-  return Buffer.from(buffer).toString('base64')
+  return `FC ${accessId}:${sign(accessSecretKey)(signString)}`
 }

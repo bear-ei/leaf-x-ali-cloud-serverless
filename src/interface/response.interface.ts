@@ -1,17 +1,52 @@
-import { InvokeResult } from './invoke.interface'
-import { ExecRequestResult } from './request.interface'
+import { HandleResponseResult } from '@leaf-x/fetch'
+import { EventType } from './event.interface'
 
 /**
- * Function to handle serverless responses.
+ * Response events.
  */
-export interface HandleResponseFunction {
-  (options: ExecRequestResult): InvokeResult
+export interface ResponseEvent {
+  /**
+   * Event type.
+   */
+  type: EventType
+
+  /**
+   * Request response.
+   */
+  requestResponse: HandleResponseResult
 }
 
 /**
- * Options to handle ali cloud gateway response.
+ * Response results.
  */
-export interface HandleAliCloudGatewayResponseOptions {
+export interface ResponseResult {
+  /**
+   * Response data.
+   */
+  data: unknown
+
+  /**
+   * Response status code.
+   */
+  status: number
+
+  /**
+   * Response headers.
+   */
+  headers: Record<string, unknown>
+}
+
+/**
+ * Response.
+ */
+export interface Response {
+  (options: ResponseEvent): ResponseResult | HandleResponseResult
+}
+
+/**
+ * Handle gateway response options.
+ */
+export interface HandleGatewayResponseOptions {
   /**
    * Gateway response status code.
    */
@@ -34,8 +69,8 @@ export interface HandleAliCloudGatewayResponseOptions {
 }
 
 /**
- * Function to handle ali cloud gateway response.
+ * Handle gateway response.
  */
-export interface HandleAliCloudGatewayResponseFunction {
-  (options: HandleAliCloudGatewayResponseOptions): InvokeResult | never
+export interface HandleGatewayResponse {
+  (options: HandleGatewayResponseOptions): ResponseResult | never
 }

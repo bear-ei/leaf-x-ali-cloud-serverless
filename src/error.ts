@@ -1,9 +1,6 @@
-import {
-  HandleErrorFunction,
-  HandleRequestErrorFunction
-} from './interface/error.interface'
+import { HandleError, HandleServerlessError } from './interface/error.interface'
 
-export const handleError: HandleErrorFunction = (
+export const handleError: HandleError = (
   error,
   { serviceName, functionName, requestId, env }
 ) => {
@@ -33,25 +30,8 @@ export const handleError: HandleErrorFunction = (
   })
 }
 
-export const handleRequestError: HandleRequestErrorFunction = (
-  error,
-  { serviceName, functionName, requestId, env }
+export const handleServerlessError: HandleServerlessError = (options) => (
+  responseError
 ) => {
-  const responseError = error.response as Record<string, unknown>
-
-  if (responseError) {
-    const requestId = responseError.headers as Record<
-      string,
-      string
-    >['x-fc-request-id']
-
-    throw handleError(responseError.data as Record<string, unknown>, {
-      serviceName,
-      functionName,
-      requestId,
-      env
-    })
-  }
-
-  throw handleError(error, { serviceName, functionName, requestId, env })
+  throw handleError(responseError, options)
 }

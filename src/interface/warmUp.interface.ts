@@ -1,62 +1,68 @@
 import { HandleErrorResult } from './error.interface'
 import { EventType } from './event.interface'
-import { InvokeConfig, InvokeResult } from './invoke.interface'
+import { InitInvokeOptions } from './invoke.interface'
+import { ResponseResult } from './response.interface'
 
 /**
- * Warm up the serverless options.
+ * Warm-up options.
  */
 export interface WarmUpOptions {
   /**
-   * Serverless request event type.
+   * Event type.
    */
   type: EventType
 
   /**
-   * Name of the function to invoke serverless.
+   * Function name.
    */
   functionName: string
 }
 
 /**
- * Warm up the serverless results.
+ * Warm-up results.
  */
-export interface WarmUpResult extends InvokeResult {
+export interface WarmUpResult extends ResponseResult {
   /**
-   * Name of the service that invoke serverless.
+   * Service name.
    */
   serviceName: string
 
   /**
-   * Name of the function to invoke serverless.
+   * Function name.
    */
   functionName: string
 }
 
 /**
- * Warm up serverless function.
+ * Warm-up.
  *
- * @param serviceName Name of the service that invoke serverless.
+ * @param serviceName Service name.
  */
-export interface WarmUpFunction {
+export interface WarmUp {
   (serviceName: string, options: WarmUpOptions[]): Promise<
     (HandleErrorResult | WarmUpResult)[]
   >
 }
 
 /**
- * Initialize the warm up serverless function.
+ * Initialization warm-up.
  */
-export interface InitWarmUpFunction {
-  (config: InvokeConfig): WarmUpFunction
+export interface InitWarmUp {
+  (options: InitInvokeOptions): WarmUp
+}
+
+export interface ExecWarmUpOptions {
+  serviceName: string
+  options: InitInvokeOptions
 }
 
 /**
- * Execute warm up serverless function.
+ * Execute the warm-up.
  *
- * @param serviceName Name of the service that invoke serverless.
+ * @param serviceName Service name.
  */
-export interface ExecWarmUpFunction {
-  (serviceName: string): (
+export interface ExecWarmUp {
+  (options: ExecWarmUpOptions): (
     options: WarmUpOptions
   ) => Promise<HandleErrorResult | WarmUpResult>
 }

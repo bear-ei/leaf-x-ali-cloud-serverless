@@ -1,6 +1,6 @@
 /**
- * Serverless request event type.
+ * Event type.
  */
-export enum Event {
-  ALI_ClOUD_GATEWAY = 'aliCloudGateway'
+export enum EventType {
+  GATEWAY = 'gateway'
 }

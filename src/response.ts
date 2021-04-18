@@ -1,39 +1,11 @@
-import { Event } from './enum/error.enum'
+import { EventType } from './enum/error.enum'
 import {
-  HandleAliCloudGatewayResponseFunction,
-  HandleAliCloudGatewayResponseOptions,
-  HandleResponseFunction
+  HandleGatewayResponse,
+  HandleGatewayResponseOptions,
+  Response
 } from './interface/response.interface'
 
-export const handleResponse: HandleResponseFunction = ({
-  data,
-  status,
-  ...args
-}) => {
-  const response = Object.freeze({
-    aliCloudGateway: handleAliCloudGatewayResponse
-  })
-
-  const aliCloudGatewayKeys = [
-    'statusCode',
-    'isBase64Encoded',
-    'headers',
-    'body'
-  ]
-
-  const aliCloudGatewayResponse =
-    typeof data === 'object' &&
-    data !== null &&
-    Object.keys(data).sort().join() === aliCloudGatewayKeys.sort().join()
-
-  return aliCloudGatewayResponse
-    ? response[Event['ALI_ClOUD_GATEWAY']](
-        data as HandleAliCloudGatewayResponseOptions
-      )
-    : { data, status, ...args }
-}
-
-export const handleAliCloudGatewayResponse: HandleAliCloudGatewayResponseFunction = ({
+const handleGatewayResponse: HandleGatewayResponse = ({
   statusCode,
   headers,
   body,
@@ -49,9 +21,21 @@ export const handleAliCloudGatewayResponse: HandleAliCloudGatewayResponseFunctio
 
   const result = { status: statusCode, headers, data }
 
-  if (statusCode >= 400) {
+  if (result.status < 200 || result.status >= 300) {
     throw data
   }
 
   return result
+}
+
+export const response: Response = ({ type, requestResponse }) => {
+  const responseType = Object.freeze({ gateway: handleGatewayResponse })
+
+  if (requestResponse.status === 202) {
+    return requestResponse
+  }
+
+  return responseType[EventType[type]](
+    requestResponse.data as HandleGatewayResponseOptions
+  )
 }

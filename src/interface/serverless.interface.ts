@@ -1,5 +1,5 @@
-import { InvokeFunction } from './invoke.interface'
-import { WarmUpFunction } from './warmUp.interface'
+import { Invoke } from './invoke.interface'
+import { WarmUp } from './warmUp.interface'
 
 /**
  * Serverless options.
@@ -11,12 +11,12 @@ export interface ServerlessOptions {
   accountId: string
 
   /**
-   * Ali cloud serverless access id.
+   * Ali cloud access id.
    */
   accessId: string
 
   /**
-   * Ali cloud serverless access key.
+   * Ali cloud access key.
    */
   accessSecretKey: string
 
@@ -33,7 +33,7 @@ export interface ServerlessOptions {
   timeout?: number
 
   /**
-   * Qualifier for serverless.
+   * Serverless qualifier.
    *
    * Default: LATEST
    */
@@ -55,7 +55,7 @@ export interface ServerlessOptions {
   secure?: boolean
 
   /**
-   * Serverless api version.
+   * Serverless API version.
    *
    * Default: 2016-08-15
    */
@@ -63,23 +63,23 @@ export interface ServerlessOptions {
 }
 
 /**
- * Result of serverless.
+ * Serverless results.
  */
 export interface ServerlessResult {
   /**
-   * Invoke serverless function.
+   * Invoke.
    */
-  invoke: InvokeFunction
+  invoke: Invoke
 
   /**
-   * Warm up serverless function.
+   * Warm up.
    */
-  warmUp: WarmUpFunction
+  warmUp: WarmUp
 }
 
 /**
- * Serverless function.
+ * Serverless.
  */
-export interface ServerlessFunction {
+export interface Serverless {
   (options: ServerlessOptions): ServerlessResult
 }

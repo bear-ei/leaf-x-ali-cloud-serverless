@@ -1,137 +1,41 @@
 import * as assert from 'assert'
-import * as sinon from 'sinon'
-import * as event from '../src/event'
-
-const { handleEventToBuffer, handleAliCloudGatewayEvent } = event
+import { handleEvent } from '../src/event'
 
 describe('test/event.test.ts', () => {
-  it('Should be the result of handleEventToBuffer.', async () => {
-    const correct = () => {
-      sinon.stub(event, 'handleAliCloudGatewayEvent').returns(
-        JSON.stringify({
-          httpMethod: 'GET',
-          isBase64Encoded: false,
-          queryParameters: {},
-          pathParameters: {},
-          body: JSON.stringify({}),
-          headers: {
-            'content-type': 'application/json; charset=utf-8',
-            accept: 'application/json; charset=utf-8'
-          }
-        })
-      )
+  it('Should be the result of the default input of the gateway event.', async () => {
+    const result = handleEvent({ type: 'GATEWAY', data: {} })
 
-      const result = handleEventToBuffer({
-        type: 'ALI_ClOUD_GATEWAY',
-        data: {}
-      })
-
-      sinon.restore()
-
-      assert(Buffer.isBuffer(result))
-    }
-
-    const error = () => {
-      sinon.stub(event, 'handleAliCloudGatewayEvent').returns(
-        JSON.stringify({
-          httpMethod: 'GET',
-          isBase64Encoded: false,
-          queryParameters: {},
-          pathParameters: {},
-          body: JSON.stringify({}),
-          headers: {
-            'content-type': 'application/json; charset=utf-8',
-            accept: 'application/json; charset=utf-8'
-          }
-        })
-      )
-
-      try {
-        handleEventToBuffer({
-          type: 'ALI_ClOUD' as 'ALI_ClOUD_GATEWAY',
-          data: {}
-        })
-      } catch (error) {
-        sinon.restore()
-
-        assert(typeof error === 'object')
-        assert(error.message === 'Invalid event type.')
-      }
-    }
-
-    correct()
-    error()
+    assert(typeof result === 'object')
+    assert(result.httpMethod === 'GET')
+    assert(result.isBase64Encoded === false)
+    assert(typeof result.queryParameters === 'object')
+    assert(typeof result.pathParameters === 'object')
+    assert(typeof result.body === 'string')
+    assert(typeof result.headers === 'object')
+    assert(result.headers['content-type'] === 'application/json; charset=utf-8')
+    assert(result.headers['accept'] === '*/*')
   })
 
-  it('Should be the result of handleAliCloudGatewayEvent.', async () => {
-    const correct = () => {
-      const result = handleAliCloudGatewayEvent({})
-
-      assert(typeof result === 'string')
-      assert(
-        result ===
-          JSON.stringify({
-            httpMethod: 'GET',
-            isBase64Encoded: false,
-            queryParameters: {},
-            pathParameters: {},
-            body: JSON.stringify({}),
-            headers: {
-              'content-type': 'application/json; charset=utf-8',
-              accept: 'application/json; charset=utf-8'
-            }
-          })
-      )
-    }
-
-    const defaultContentType = () => {
-      const result = handleAliCloudGatewayEvent({ headers: {} })
-
-      assert(typeof result === 'string')
-      assert(
-        result ===
-          JSON.stringify({
-            httpMethod: 'GET',
-            isBase64Encoded: false,
-            queryParameters: {},
-            pathParameters: {},
-            body: JSON.stringify({}),
-            headers: {
-              'content-type': 'application/json; charset=utf-8',
-              accept: 'application/json; charset=utf-8'
-            }
-          })
-      )
-    }
-
-    const inputContentType = () => {
-      const result = handleAliCloudGatewayEvent({
+  it('Should be the result of the gateway event custom input.', async () => {
+    const result = handleEvent({
+      type: 'GATEWAY',
+      data: {
         headers: {
-          'content-type': 'application/text; charset=utf-8',
-          accept: 'application/text; charset=utf-8'
+          'content-type': 'application/text',
+          accept: 'application/text'
         },
         body: 'data'
-      })
+      }
+    })
 
-      assert(typeof result === 'string')
-      assert(
-        result ===
-          JSON.stringify({
-            httpMethod: 'GET',
-            isBase64Encoded: false,
-            queryParameters: {},
-            pathParameters: {},
-            body: 'data',
-            headers: {
-              'content-type': 'application/text; charset=utf-8',
-              accept: 'application/text; charset=utf-8'
-            }
-          })
-      )
-    }
-
-    correct()
-    defaultContentType()
-    inputContentType()
+    assert(typeof result === 'object')
+    assert(result.httpMethod === 'GET')
+    assert(result.isBase64Encoded === false)
+    assert(typeof result.queryParameters === 'object')
+    assert(typeof result.pathParameters === 'object')
+    assert(result.body === 'data')
+    assert(typeof result.headers === 'object')
+    assert(result.headers['content-type'] === 'application/text')
+    assert(result.headers['accept'] === 'application/text')
   })
 })

@@ -1,6 +1,6 @@
 {
   "name": "@leaf-x/ali-cloud-serverless",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "main": "./dist/index.js",
   "author": "sound shell <sound_shell@outlook.com>",
   "license": "MIT",
@@ -13,18 +13,14 @@
     "url": "https://github.com/SoundShell/leaf-x-ali-cloud-serverless/issues"
   },
   "dependencies": {
-    "abort-controller": "^3.0.0",
-    "isomorphic-fetch": "^3.0.0",
-    "node-fetch": "^2.6.1"
+    "@leaf-x/fetch": "^0.3.2"
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.35",
-    "@types/lodash": "^4.14.168",
     "@types/mocha": "^8.0.4",
     "@types/node": "^14.14.10",
     "@types/node-fetch": "^2.5.10",
     "@types/power-assert": "^1.5.3",
-    "@types/ramda": "^0.27.36",
     "@types/sinon": "^9.0.9",
     "@typescript-eslint/eslint-plugin": "^4.8.2",
     "@typescript-eslint/parser": "^4.8.2",
