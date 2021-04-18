@@ -13,8 +13,7 @@ export interface TriggerEvent {
   type: EventType
 
   /**
-   * Gateway options.
-   *
+   * Trigger event data.
    */
   data: HandleGatewayEventOptions
 }

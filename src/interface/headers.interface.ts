@@ -43,8 +43,8 @@ export interface GetCanonicalHeadersString {
 /**
  * Splice canonical headers.
  *
- * @param headers   Headers.
- * @param key       Headers key.
+ * @param headers   Request headers.
+ * @param key       Request headers key.
  */
 export interface SpliceCanonicalHeaders {
   (headers: Record<string, string>): (key: string) => string

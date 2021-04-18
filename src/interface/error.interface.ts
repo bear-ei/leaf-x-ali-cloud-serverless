@@ -1,5 +1,5 @@
 /**
- * Handle Error options.
+ * Handle error options.
  */
 export interface HandleErrorOptions {
   /**

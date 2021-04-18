@@ -72,7 +72,7 @@ export interface ServerlessResult {
   invoke: Invoke
 
   /**
-   * Warm up.
+   * Warm-up.
    */
   warmUp: WarmUp
 }

@@ -31,7 +31,7 @@ export interface GetTokenOptions {
 }
 
 /**
- * Get token
+ * Get token.
  */
 export interface GetToken {
   (options: GetTokenOptions): string

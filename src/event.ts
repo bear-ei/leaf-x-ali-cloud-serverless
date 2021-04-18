@@ -1,5 +1,6 @@
 import { EventType } from './enum/error.enum'
 import { HandleEvent, HandleGatewayEvent } from './interface/event.interface'
+
 const handleGatewayEvent: HandleGatewayEvent = ({
   httpMethod = 'GET',
   isBase64Encoded = false,

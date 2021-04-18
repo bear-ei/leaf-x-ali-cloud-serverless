@@ -125,7 +125,7 @@ export interface InitInvoke {
 }
 
 /**
- * Invoke the wrong option.
+ * Invoke the error options.
  */
 export interface InvokeErrorOptions {
   /**

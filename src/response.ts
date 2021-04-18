@@ -20,8 +20,9 @@ const handleGatewayResponse: HandleGatewayResponse = ({
     : originalBody
 
   const result = { status: statusCode, headers, data }
+  const error = result.status < 200 || result.status >= 300
 
-  if (result.status < 200 || result.status >= 300) {
+  if (error) {
     throw data
   }
 

@@ -51,6 +51,9 @@ export interface InitWarmUp {
   (options: InitInvokeOptions): WarmUp
 }
 
+/**
+ * Execute the warm-up options.
+ */
 export interface ExecWarmUpOptions {
   serviceName: string
   options: InitInvokeOptions

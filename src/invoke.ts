@@ -62,6 +62,7 @@ export const initInvoke: InitInvoke = ({
     accountId,
     async
   })
+
   const authorization = getToken({
     accessId,
     accessSecretKey,
