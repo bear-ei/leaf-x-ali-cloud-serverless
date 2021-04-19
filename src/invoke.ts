@@ -84,5 +84,5 @@ export const initInvoke: InitInvoke = ({
   const error = invokeError({ serviceName, functionName, env: qualifier })
   const result = await execInvoke(3, execOptions).catch(error)
 
-  return response({ type: triggerEvent.type, requestResponse: result })
+  return response({ type: triggerEvent.type, response: result })
 }

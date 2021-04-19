@@ -29,14 +29,14 @@ const handleGatewayResponse: HandleGatewayResponse = ({
   return result
 }
 
-export const response: Response = ({ type, requestResponse }) => {
+export const response: Response = ({ type, response }) => {
   const responseType = Object.freeze({ gateway: handleGatewayResponse })
 
-  if (requestResponse.status === 202) {
-    return requestResponse
+  if (response.status === 202) {
+    return response
   }
 
   return responseType[EventType[type]](
-    requestResponse.data as HandleGatewayResponseOptions
+    response.data as HandleGatewayResponseOptions
   )
 }

@@ -1,6 +1,6 @@
 {
   "name": "@leaf-x/ali-cloud-serverless",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "main": "./dist/index.js",
   "author": "sound shell <sound_shell@outlook.com>",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "url": "https://github.com/SoundShell/leaf-x-ali-cloud-serverless/issues"
   },
   "dependencies": {
-    "@leaf-x/fetch": "^0.3.2"
+    "@leaf-x/fetch": "^0.3.4"
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.35",

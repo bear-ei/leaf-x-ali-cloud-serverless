@@ -36,7 +36,7 @@ const { invoke, warmUp } = serverless({
 const invokeResult = invoke({
     serviceName:"snowflake",
     functionName:"IndexSnowflake"
-    type: 'ALI_ClOUD_GATEWAY',
+    type: 'GATEWAY',
     data: { queryParameters: { name: 'snowflake' } }
 })
   .then((response) => response)
@@ -44,7 +44,7 @@ const invokeResult = invoke({
 
 // Warm-up serverless functions to avoid cold starts.
  const warmUpResult = warmUp('snowflake', [
-    { type: 'ALI_ClOUD_GATEWAY', functionName: 'snowflake' }
+    { type: 'GATEWAY', functionName: 'snowflake' }
   ])
 
 console.info(invokeResult)

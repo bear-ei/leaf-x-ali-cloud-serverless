@@ -5,7 +5,7 @@ describe('test/response.test.ts', () => {
   it('Should be the result of an asynchronous request response.', async () => {
     const result = response({
       type: 'GATEWAY',
-      requestResponse: {
+      response: {
         status: 202,
         data: '',
         headers: { 'content-type': 'application/json; charset=utf-8' },
@@ -24,7 +24,7 @@ describe('test/response.test.ts', () => {
   it('Should be the result of responding to a gateway event.', async () => {
     const result = response({
       type: 'GATEWAY',
-      requestResponse: {
+      response: {
         status: 200,
         data: {
           statusCode: 200,
@@ -49,7 +49,7 @@ describe('test/response.test.ts', () => {
   it('Should be the result of a response to a Base64 gateway event.', async () => {
     const result = response({
       type: 'GATEWAY',
-      requestResponse: {
+      response: {
         status: 200,
         data: {
           statusCode: 200,
@@ -75,7 +75,7 @@ describe('test/response.test.ts', () => {
     try {
       response({
         type: 'GATEWAY',
-        requestResponse: {
+        response: {
           status: 200,
           data: {
             statusCode: 400,

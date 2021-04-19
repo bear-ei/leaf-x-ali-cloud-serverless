@@ -11,9 +11,9 @@ export interface ResponseEvent {
   type: EventType
 
   /**
-   * Request response.
+   * Response.
    */
-  requestResponse: HandleResponseResult
+  response: HandleResponseResult
 }
 
 /**
