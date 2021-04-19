@@ -17,7 +17,7 @@ export const getRequestHeaders: GetRequestHeaders = ({
   accept: '*/*',
   date: new Date().toUTCString(),
   host,
-  'user-agent': `Node.js/${process.version}`,
+  'user-agent': `Node.js(${process.version}) OS(${process.platform}/${process.arch})`,
   'x-fc-account-id': accountId,
   'content-type': 'application/json; charset=utf-8',
   'content-length': Buffer.isBuffer(content)
