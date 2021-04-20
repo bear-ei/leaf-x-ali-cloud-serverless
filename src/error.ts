@@ -1,4 +1,7 @@
-import { HandleError, HandleServerlessError } from './interface/error.interface'
+import {
+  HandleError,
+  InitHandleServerlessError
+} from './interface/error.interface'
 
 export const handleError: HandleError = (
   error,
@@ -30,8 +33,8 @@ export const handleError: HandleError = (
   })
 }
 
-export const handleServerlessError: HandleServerlessError = (options) => (
-  responseError
-) => {
+export const initHandleServerlessError: InitHandleServerlessError = (
+  options
+) => (responseError) => {
   throw handleError(responseError, options)
 }

@@ -38,6 +38,8 @@ export interface ResponseResult {
 
 /**
  * Response.
+ * @param options ResponseEvent
+ * @return ResponseResult | HandleResponseResult
  */
 export interface Response {
   (options: ResponseEvent): ResponseResult | HandleResponseResult
@@ -60,7 +62,7 @@ export interface HandleGatewayResponseOptions {
   /**
    * Gateway response headers.
    */
-  headers: Record<string, string>
+  headers: Record<string, unknown>
 
   /**
    * Gateway response body.
@@ -70,6 +72,9 @@ export interface HandleGatewayResponseOptions {
 
 /**
  * Handle gateway response.
+ *
+ * @param options HandleGatewayResponseOptions
+ * @return ResponseResult | never
  */
 export interface HandleGatewayResponse {
   (options: HandleGatewayResponseOptions): ResponseResult | never

@@ -27,11 +27,14 @@ export interface GetTokenOptions {
   /**
    * Request headers.
    */
-  headers: Record<string, string>
+  headers: Record<string, unknown>
 }
 
 /**
  * Get token.
+ *
+ * @param options GetTokenOptions
+ * @return string
  */
 export interface GetToken {
   (options: GetTokenOptions): string
@@ -54,22 +57,35 @@ export interface GetSignStringOptions {
   /**
    * Request headers.
    */
-  headers: Record<string, string>
+  headers: Record<string, unknown>
 }
 
 /**
- * Get signature string.
+ * Get the signature string.
+ *
+ * @param GetSignString
+ * @return string
  */
 export interface GetSignString {
   (options: GetSignStringOptions): string
 }
 
 /**
- * Signature.
+ * Initialize the signature.
  *
  * @param accessSecretKey   Ali cloud access key.
- * @param signString        Signature string.
+ * @return Sign
+ */
+export interface InitSign {
+  (accessSecretKey: string): Sign
+}
+
+/**
+ * Signature.
+ *
+ * @param signString string
+ * @return string
  */
 export interface Sign {
-  (accessSecretKey: string): (signString: string) => string
+  (signString: string): string
 }

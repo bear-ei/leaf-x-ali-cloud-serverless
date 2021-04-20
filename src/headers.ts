@@ -2,11 +2,12 @@ import * as crypto from 'crypto'
 import {
   GetCanonicalHeadersString,
   GetRequestHeaders,
-  SpliceCanonicalHeaders
+  InitSpliceCanonicalHeaders
 } from './interface/headers.interface'
 
-const spliceCanonicalHeaders: SpliceCanonicalHeaders = (headers) => (key) =>
-  `${key}:${headers[key]}`
+const initSpliceCanonicalHeaders: InitSpliceCanonicalHeaders = (headers) => (
+  key
+) => `${key}:${headers[key]}`
 
 export const getRequestHeaders: GetRequestHeaders = ({
   content,
@@ -31,11 +32,11 @@ export const getCanonicalHeadersString: GetCanonicalHeadersString = (
   prefix,
   headers
 ) => {
-  const canonicalHeaders = spliceCanonicalHeaders(headers)
+  const spliceCanonicalHeaders = initSpliceCanonicalHeaders(headers)
 
   return Object.keys(headers)
     .filter((key) => key.startsWith(prefix))
     .sort()
-    .map(canonicalHeaders)
+    .map(spliceCanonicalHeaders)
     .join('\n')
 }

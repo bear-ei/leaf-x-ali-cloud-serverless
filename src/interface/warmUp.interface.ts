@@ -20,6 +20,8 @@ export interface WarmUpOptions {
 
 /**
  * Warm-up results.
+ *
+ * @extends ResponseResult
  */
 export interface WarmUpResult extends ResponseResult {
   /**
@@ -34,9 +36,21 @@ export interface WarmUpResult extends ResponseResult {
 }
 
 /**
+ * Initialization warm-up.
+ *
+ * @param options InitInvokeOptions
+ * @return WarmUp
+ */
+export interface InitWarmUp {
+  (options: InitInvokeOptions): WarmUp
+}
+
+/**
  * Warm-up.
  *
  * @param serviceName Service name.
+ * @param options WarmUpOptions[]
+ * @return Promise<(HandleErrorResult | WarmUpResult)[]>
  */
 export interface WarmUp {
   (serviceName: string, options: WarmUpOptions[]): Promise<
@@ -45,27 +59,36 @@ export interface WarmUp {
 }
 
 /**
- * Initialization warm-up.
- */
-export interface InitWarmUp {
-  (options: InitInvokeOptions): WarmUp
-}
-
-/**
  * Execute the warm-up options.
  */
 export interface ExecWarmUpOptions {
+  /**
+   * Service name.
+   */
   serviceName: string
+
+  /**
+   * Initialize the invoke options.
+   */
   options: InitInvokeOptions
 }
 
 /**
- * Execute the warm-up.
+ * Initial execution warm-up.
  *
  * @param serviceName Service name.
+ * @return ExecWarmUp
+ */
+export interface InitExecWarmUp {
+  (options: ExecWarmUpOptions): ExecWarmUp
+}
+
+/**
+ * Execution warm-up.
+ *
+ * @param options WarmUpOptions
+ * @return Promise<HandleErrorResult | WarmUpResult>
  */
 export interface ExecWarmUp {
-  (options: ExecWarmUpOptions): (
-    options: WarmUpOptions
-  ) => Promise<HandleErrorResult | WarmUpResult>
+  (options: WarmUpOptions): Promise<HandleErrorResult | WarmUpResult>
 }

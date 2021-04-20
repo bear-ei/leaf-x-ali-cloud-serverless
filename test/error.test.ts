@@ -1,5 +1,5 @@
 import * as assert from 'assert'
-import { handleError, handleServerlessError } from '../src/error'
+import { handleError, initHandleServerlessError } from '../src/error'
 
 describe('test/error.test.ts', () => {
   it('Should be the result of a status code 500 response error.', async () => {
@@ -60,7 +60,7 @@ describe('test/error.test.ts', () => {
 
   it('Should be the result of serverless error.', async () => {
     try {
-      handleServerlessError({
+      initHandleServerlessError({
         serviceName: 'leaf-x@snowflake',
         functionName: 'snowflake',
         requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',

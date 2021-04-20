@@ -35,13 +35,16 @@ export type HttpMethod =
 
 /**
  * Handle the event.
+ *
+ * @param options TriggerEvent
+ * @return HandleGatewayEventOptions
  */
 export interface HandleEvent {
   (options: TriggerEvent): HandleGatewayEventOptions
 }
 
 /**
- * Handle gateway event options.
+ * Handles gateway event options.
  */
 export interface HandleGatewayEventOptions {
   /**
@@ -72,11 +75,14 @@ export interface HandleGatewayEventOptions {
   /**
    * Request headers.
    */
-  headers?: Record<string, string>
+  headers?: Record<string, unknown>
 }
 
 /**
- * Handle gateway events.
+ * Handles gateway events.
+ *
+ * @param options HandleGatewayEventOptions
+ * @return HandleGatewayEventOptions
  */
 export interface HandleGatewayEvent {
   (options: HandleGatewayEventOptions): HandleGatewayEventOptions

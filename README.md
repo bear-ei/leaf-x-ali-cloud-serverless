@@ -23,7 +23,7 @@ Ali cloud serverless access.
 ## Usage
 
 ```typescript
-import * as serverless from '@leaf-x/ali-cloud-serverless'
+import { serverless } from '@leaf-x/ali-cloud-serverless'
 
 const { invoke, warmUp } = serverless({
   accountId: '89785723912113',
@@ -32,7 +32,6 @@ const { invoke, warmUp } = serverless({
   region: 'cn-chengdu'
 })
 
-// Invoke the serverless function of the Ali cloud gateway trigger.
 const invokeResult = invoke({
     serviceName:"snowflake",
     functionName:"IndexSnowflake"
@@ -42,7 +41,6 @@ const invokeResult = invoke({
   .then((response) => response)
   .catch((error) => error)
 
-// Warm-up serverless functions to avoid cold starts.
  const warmUpResult = warmUp('snowflake', [
     { type: 'GATEWAY', functionName: 'snowflake' }
   ])

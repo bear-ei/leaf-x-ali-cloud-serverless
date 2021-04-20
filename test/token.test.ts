@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import { getToken } from '../src/token'
 
 describe('test/token.test.ts', () => {
-  it('Should be the result of getToken.', async () => {
+  it('Should be the result of getting the token.', async () => {
     const result = getToken({
       accessId: '123456',
       accessSecretKey: 'HFINLDHGFRTF1',

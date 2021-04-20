@@ -45,7 +45,9 @@ export interface ExecInvokeOptions {
 /**
  * Execution invoke.
  *
- * @param retryNumber Number of retries.
+ * @param retryNumber   Number of retries.
+ * @param options       ExecInvokeOptions
+ * @return HandleResponseResult
  */
 export interface ExecInvoke {
   (
@@ -55,14 +57,24 @@ export interface ExecInvoke {
 }
 
 /**
+ * Initialize retry invoke.
+ *
+ * @param retryNumber   Number of retries.
+ * @param options       ExecInvokeOptions
+ * @return RetryInvoke
+ */
+export interface InitRetryInvoke {
+  (retryNumber: number, options: ExecInvokeOptions): RetryInvoke
+}
+
+/**
  * Retry invoke.
  *
- * @param retryNumber Number of retries.
+ * @param error Error.
+ * @return Promise<HandleResponseResult> | never
  */
 export interface RetryInvoke {
-  (retryNumber: number, options: ExecInvokeOptions): (
-    error: Record<string, unknown>
-  ) => Promise<HandleResponseResult> | never
+  (error: Record<string, unknown>): Promise<HandleResponseResult> | never
 }
 
 /**
@@ -112,6 +124,9 @@ export interface InitInvokeOptions {
 
 /**
  * Invoke.
+ *
+ * @param options InvokeOptions
+ * @return Promise<ResponseResult>
  */
 export interface Invoke {
   (options: InvokeOptions): Promise<ResponseResult>
@@ -119,6 +134,9 @@ export interface Invoke {
 
 /**
  * Initialization invoke.
+ *
+ * @param InitInvokeOptions
+ * @return Invoke
  */
 export interface InitInvoke {
   (config: InitInvokeOptions): Invoke
@@ -145,10 +163,21 @@ export interface InvokeErrorOptions {
 }
 
 /**
+ * Initialization invoke error.
+ *
+ * @param options InvokeErrorOptions
+ * @return InvokeError
+ */
+export interface InitInvokeError {
+  (options: InvokeErrorOptions): InvokeError
+}
+
+/**
  * Invoke error.
  *
  * @param error Error.
+ * @return never
  */
 export interface InvokeError {
-  (options: InvokeErrorOptions): (error: Record<string, unknown>) => never
+  (error: Record<string, unknown>): never
 }

@@ -28,7 +28,7 @@ export interface ServerlessOptions {
   /**
    * Invoke serverless timeout in milliseconds.
    *
-   * Default: 3000
+   * @Default 3000
    */
   timeout?: number
 
@@ -78,7 +78,10 @@ export interface ServerlessResult {
 }
 
 /**
- * Serverless.
+ * Serverless API.
+ *
+ * @param options ServerlessOptions
+ * @return ServerlessResult
  */
 export interface Serverless {
   (options: ServerlessOptions): ServerlessResult

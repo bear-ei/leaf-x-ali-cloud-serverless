@@ -1,7 +1,7 @@
-import { ExecWarmUp, InitWarmUp } from './interface/warmUp.interface'
+import { InitExecWarmUp, InitWarmUp } from './interface/warmUp.interface'
 import { initInvoke } from './invoke'
 
-const execWarmUp: ExecWarmUp = ({ serviceName, options }) => {
+const initExecWarmUp: InitExecWarmUp = ({ serviceName, options }) => {
   const invoke = initInvoke(options)
 
   return ({ functionName, type }) =>
@@ -23,7 +23,7 @@ export const initWarmUp: InitWarmUp = (invokeOptions) => (
   serviceName,
   options
 ) => {
-  const exec = execWarmUp({ serviceName, options: invokeOptions })
+  const execWarmUp = initExecWarmUp({ serviceName, options: invokeOptions })
 
-  return Promise.all(options.map(exec))
+  return Promise.all(options.map(execWarmUp))
 }

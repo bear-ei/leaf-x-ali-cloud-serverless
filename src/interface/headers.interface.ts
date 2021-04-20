@@ -25,9 +25,12 @@ export interface GetRequestHeadersOptions {
 
 /**
  * Get the request headers.
+ *
+ * @param options GetRequestHeadersOptions
+ * @return Record<string, string>
  */
 export interface GetRequestHeaders {
-  (options: GetRequestHeadersOptions): Record<string, string>
+  (options: GetRequestHeadersOptions): Record<string, unknown>
 }
 
 /**
@@ -35,17 +38,28 @@ export interface GetRequestHeaders {
  *
  * @param prefix    Canonical headers prefix.
  * @param headers   Request headers.
+ * @return string
  */
 export interface GetCanonicalHeadersString {
-  (prefix: string, headers: Record<string, string>): string
+  (prefix: string, headers: Record<string, unknown>): string
 }
 
 /**
- * Splice canonical headers.
+ * Initialization splice canonical headers.
  *
- * @param headers   Request headers.
- * @param key       Request headers key.
+ * @param headers Request headers.
+ * @return SpliceCanonicalHeaders
+ */
+export interface InitSpliceCanonicalHeaders {
+  (headers: Record<string, unknown>): SpliceCanonicalHeaders
+}
+
+/**
+ * Splice canonical headers
+ *
+ * @param key string
+ * @return string
  */
 export interface SpliceCanonicalHeaders {
-  (headers: Record<string, string>): (key: string) => string
+  (key: string): string
 }

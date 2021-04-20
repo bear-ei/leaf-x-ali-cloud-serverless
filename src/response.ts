@@ -15,7 +15,9 @@ const handleGatewayResponse: HandleGatewayResponse = ({
     ? Buffer.from(body as string, 'base64').toString()
     : body
 
-  const data = headers['content-type'].startsWith('application/json')
+  const data = (headers['content-type'] as string)?.startsWith(
+    'application/json'
+  )
     ? JSON.parse(originalBody as string)
     : originalBody
 

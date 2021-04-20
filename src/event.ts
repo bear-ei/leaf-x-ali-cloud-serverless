@@ -9,14 +9,17 @@ const handleGatewayEvent: HandleGatewayEvent = ({
   body = {},
   headers = {}
 }) => {
-  const type = 'application/json; charset=utf-8'
   const requestHeaders = {
-    ...(!headers['content-type'] ? { 'content-type': type } : undefined),
+    ...(!headers['content-type']
+      ? { 'content-type': 'application/json; charset=utf-8' }
+      : undefined),
     ...(!headers.accept ? { accept: '*/*' } : undefined),
     ...headers
-  } as Record<string, string>
+  } as Record<string, unknown>
 
-  const data = requestHeaders['content-type'].startsWith(type)
+  const data = (requestHeaders['content-type'] as string)?.startsWith(
+    'application/json'
+  )
     ? JSON.stringify(body)
     : body
 

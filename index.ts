@@ -1,4 +1,3 @@
-import { serverless } from './src/serverless'
 export * from './src/error'
 export * from './src/event'
 export * from './src/headers'
@@ -14,6 +13,6 @@ export * from './src/interface/warmUp.interface'
 export * from './src/invoke'
 export * from './src/request'
 export * from './src/response'
+export * from './src/serverless'
 export * from './src/token'
 export * from './src/warmUp'
-export default serverless

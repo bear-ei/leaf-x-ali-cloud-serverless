@@ -1,5 +1,5 @@
 /**
- * Handle error options.
+ * Handle the error options.
  */
 export interface HandleErrorOptions {
   /**
@@ -24,7 +24,9 @@ export interface HandleErrorOptions {
 }
 
 /**
- * Handle error results.
+ * The result of a handling error.
+ *
+ * @extends HandleErrorOptions
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
@@ -56,7 +58,9 @@ export interface HandleErrorResult extends HandleErrorOptions {
 /**
  * Handle error.
  *
- * @param error Error.
+ * @param error     Error.
+ * @param options   HandleErrorOptions
+ * @return HandleErrorResult
  */
 export interface HandleError {
   (
@@ -66,10 +70,21 @@ export interface HandleError {
 }
 
 /**
- * Handle serverless error.
+ * Initialize to handle serverless errors.
+ *
+ * @param options HandleErrorOptions
+ * @return HandleServerlessError
+ */
+export interface InitHandleServerlessError {
+  (options: HandleErrorOptions): HandleServerlessError
+}
+
+/**
+ * Handle serverless errors.
  *
  * @param error Error.
+ * @return never
  */
 export interface HandleServerlessError {
-  (options: HandleErrorOptions): (error: Record<string, unknown>) => never
+  (error: Record<string, unknown>): never
 }
