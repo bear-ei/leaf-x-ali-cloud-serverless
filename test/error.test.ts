@@ -15,7 +15,7 @@ describe('test/error.test.ts', () => {
 
     assert(typeof result === 'object')
     assert(result.status === 500)
-    assert(result.code === 500000)
+    assert(result.code === 500)
     assert(result.serviceName === 'leaf-x@snowflake')
     assert(result.functionName === 'snowflake')
     assert(result.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7')

@@ -155,7 +155,7 @@ describe('test/invoke.test.ts', () => {
 
       assert(typeof error === 'object')
       assert(error.status === 404)
-      assert(error.code === 404000)
+      assert(error.code === 404)
     }
   })
 })
