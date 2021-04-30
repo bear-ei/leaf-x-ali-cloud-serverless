@@ -1,4 +1,4 @@
-import { FetchOptions, HandleResponseResult } from '@leaf-x/fetch'
+import { FetchOptions, ProcessResponseResult } from '@leaf-x/fetch'
 import { TriggerEvent } from './event.interface'
 import { ResponseResult } from './response.interface'
 
@@ -6,6 +6,8 @@ import { ResponseResult } from './response.interface'
  * Invoke options.
  */
 export interface InvokeOptions {
+  event: TriggerEvent
+
   /**
    * Service name.
    */
@@ -17,11 +19,6 @@ export interface InvokeOptions {
   functionName: string
 
   /**
-   * Trigger events.
-   */
-  event: TriggerEvent
-
-  /**
    * Whether to invoke asynchronously or not.
    */
   async?: boolean
@@ -31,15 +28,12 @@ export interface InvokeOptions {
  * Execution invoke options.
  */
 export interface ExecInvokeOptions {
+  options: FetchOptions
+
   /**
    * The URL address to invoke.
    */
   url: string
-
-  /**
-   * Fetch options.
-   */
-  options: FetchOptions
 }
 
 /**
@@ -47,13 +41,13 @@ export interface ExecInvokeOptions {
  *
  * @param retryNumber   Number of retries.
  * @param options       ExecInvokeOptions
- * @return HandleResponseResult
+ * @return ProcessResponseResult
  */
 export interface ExecInvoke {
   (
     retryNumber: number,
     options: ExecInvokeOptions
-  ): Promise<HandleResponseResult>
+  ): Promise<ProcessResponseResult>
 }
 
 /**
@@ -71,10 +65,10 @@ export interface InitRetryInvoke {
  * Retry invoke.
  *
  * @param error Error.
- * @return Promise<HandleResponseResult> | never
+ * @return Promise<ProcessResponseResult>
  */
 export interface RetryInvoke {
-  (error: Record<string, unknown>): Promise<HandleResponseResult> | never
+  (error: Record<string, unknown>): Promise<ProcessResponseResult>
 }
 
 /**

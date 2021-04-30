@@ -1,4 +1,4 @@
-import { HandleResponseResult } from '@leaf-x/fetch'
+import { ProcessResponseResult } from '@leaf-x/fetch'
 import { EventType } from './event.interface'
 
 /**
@@ -13,7 +13,7 @@ export interface ResponseEvent {
   /**
    * Response.
    */
-  response: HandleResponseResult
+  response: ProcessResponseResult
 }
 
 /**
@@ -39,16 +39,16 @@ export interface ResponseResult {
 /**
  * Response.
  * @param options ResponseEvent
- * @return ResponseResult | HandleResponseResult
+ * @return ResponseResult | ProcessResponseResult
  */
 export interface Response {
-  (options: ResponseEvent): ResponseResult | HandleResponseResult
+  (options: ResponseEvent): ResponseResult | ProcessResponseResult
 }
 
 /**
- * Handle gateway response options.
+ * Process gateway response options.
  */
-export interface HandleGatewayResponseOptions {
+export interface ProcessGatewayResponseOptions {
   /**
    * Gateway response status code.
    */
@@ -71,11 +71,18 @@ export interface HandleGatewayResponseOptions {
 }
 
 /**
- * Handle gateway response.
- *
- * @param options HandleGatewayResponseOptions
- * @return ResponseResult | never
+ * Processing response method.
  */
-export interface HandleGatewayResponse {
-  (options: HandleGatewayResponseOptions): ResponseResult | never
+export interface ProcessResponseMethod {
+  readonly gateway: ProcessGatewayResponse
+}
+
+/**
+ * Process gateway response.
+ *
+ * @param options ProcessGatewayResponseOptions
+ * @return ResponseResult
+ */
+export interface ProcessGatewayResponse {
+  (options: ProcessGatewayResponseOptions): ResponseResult
 }

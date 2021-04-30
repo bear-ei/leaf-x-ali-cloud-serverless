@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import { getCanonicalHeadersString, getRequestHeaders } from '../src/headers'
 
 describe('test/headers.test.ts', () => {
-  it('Should be the result of a synchronized request headers.', async () => {
+  it('should be a result of a synchronous request header', async () => {
     const content = Buffer.from(JSON.stringify({ data: 'This is a request.' }))
     const result = getRequestHeaders({
       content,
@@ -21,7 +21,7 @@ describe('test/headers.test.ts', () => {
     assert(result['content-type'] === 'application/json; charset=utf-8')
   })
 
-  it('Should be the result of an asynchronous request headers.', async () => {
+  it('should be a result of an asynchronous request header', async () => {
     const content = JSON.stringify({ data: 'This is a request.' })
     const result = getRequestHeaders({
       content,
@@ -42,7 +42,7 @@ describe('test/headers.test.ts', () => {
     assert(result['content-type'] === 'application/json; charset=utf-8')
   })
 
-  it('Should be the result of getting the canonical request string.', async () => {
+  it('should be the result of obtaining a specified request string', async () => {
     const result = getCanonicalHeadersString('x-fc-', {
       accept: 'application/json; charset=utf-8',
       date: new Date().toUTCString(),

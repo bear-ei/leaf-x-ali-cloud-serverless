@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import { serverless } from '../src/serverless'
 
 describe('test/serverless.test.ts', () => {
-  it('Should be the result of the serverless default options.', async () => {
+  it('should be the result of the server default options', async () => {
     const result = serverless({
       accountId: '1234455',
       accessId: 'MTIzNDQ1NQ==',
@@ -15,7 +15,7 @@ describe('test/serverless.test.ts', () => {
     assert(typeof result.warmUp === 'function')
   })
 
-  it('Should be the result of the serverless customization options.', async () => {
+  it('should be the result of the server customization options', async () => {
     const result = serverless({
       accountId: '1234455',
       accessId: 'MTIzMjEzMTQ1NQ==',

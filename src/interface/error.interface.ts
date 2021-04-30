@@ -1,7 +1,7 @@
 /**
- * Handle the error options.
+ * Process the error options.
  */
-export interface HandleErrorOptions {
+export interface ProcessErrorOptions {
   /**
    * Service name.
    */
@@ -26,9 +26,9 @@ export interface HandleErrorOptions {
 /**
  * The result of a handling error.
  *
- * @extends HandleErrorOptions
+ * @extends ProcessErrorOptions
  */
-export interface HandleErrorResult extends HandleErrorOptions {
+export interface ProcessErrorResult extends ProcessErrorOptions {
   /**
    * Error response status code.
    */
@@ -45,46 +45,42 @@ export interface HandleErrorResult extends HandleErrorOptions {
   message: string
 
   /**
-   * API invoke chain information.
-   */
-  apis?: HandleErrorOptions[]
-
-  /**
    * Error details.
    */
   details?: unknown
+  apis?: ProcessErrorOptions[]
 }
 
 /**
- * Handle error.
+ * Process error.
  *
  * @param error     Error.
- * @param options   HandleErrorOptions
- * @return HandleErrorResult
+ * @param options   ProcessErrorOptions
+ * @return ProcessErrorResult
  */
-export interface HandleError {
+export interface ProcessError {
   (
     error: Record<string, unknown>,
-    options: HandleErrorOptions
-  ): HandleErrorResult
+    options: ProcessErrorOptions
+  ): ProcessErrorResult
 }
 
 /**
- * Initialize to handle serverless errors.
+ * Initialize to process serverless errors.
  *
- * @param options HandleErrorOptions
- * @return HandleServerlessError
+ * @param options ProcessErrorOptions
+ * @return ProcessServerlessError
  */
-export interface InitHandleServerlessError {
-  (options: HandleErrorOptions): HandleServerlessError
+export interface InitProcessServerlessError {
+  (options: ProcessErrorOptions): ProcessServerlessError
 }
 
 /**
- * Handle serverless errors.
+ * Process serverless errors.
  *
  * @param error Error.
  * @return never
  */
-export interface HandleServerlessError {
+export interface ProcessServerlessError {
   (error: Record<string, unknown>): never
 }

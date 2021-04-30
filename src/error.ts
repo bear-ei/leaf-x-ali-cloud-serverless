@@ -1,9 +1,9 @@
 import {
-  HandleError,
-  InitHandleServerlessError
+  InitProcessServerlessError,
+  ProcessError
 } from './interface/error.interface'
 
-export const handleError: HandleError = (
+export const processError: ProcessError = (
   error,
   { serviceName, functionName, requestId, env }
 ) => {
@@ -32,8 +32,8 @@ export const handleError: HandleError = (
   })
 }
 
-export const initHandleServerlessError: InitHandleServerlessError = (
+export const initProcessServerlessError: InitProcessServerlessError = (
   options
 ) => (responseError) => {
-  throw handleError(responseError, options)
+  throw processError(responseError, options)
 }

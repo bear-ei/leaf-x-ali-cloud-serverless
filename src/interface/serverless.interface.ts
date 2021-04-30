@@ -6,12 +6,12 @@ import { WarmUp } from './warmUp.interface'
  */
 export interface ServerlessOptions {
   /**
-   * Ali cloud account id.
+   * Ali cloud account ID.
    */
   accountId: string
 
   /**
-   * Ali cloud access id.
+   * Ali cloud access ID.
    */
   accessId: string
 
@@ -66,14 +66,7 @@ export interface ServerlessOptions {
  * Serverless results.
  */
 export interface ServerlessResult {
-  /**
-   * Invoke.
-   */
   invoke: Invoke
-
-  /**
-   * Warm-up.
-   */
   warmUp: WarmUp
 }
 

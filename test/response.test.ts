@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import { response } from '../src/response'
 
 describe('test/response.test.ts', () => {
-  it('Should be the result of an asynchronous request response.', async () => {
+  it('should be a result of an asynchronous request response', async () => {
     const result = response({
       type: 'GATEWAY',
       response: {
@@ -21,7 +21,7 @@ describe('test/response.test.ts', () => {
     assert(result.headers['content-type'] === 'application/json; charset=utf-8')
   })
 
-  it('Should be the result of responding to a gateway event.', async () => {
+  it('should be the result of the response gateway event', async () => {
     const result = response({
       type: 'GATEWAY',
       response: {
@@ -46,7 +46,7 @@ describe('test/response.test.ts', () => {
     assert(typeof result.headers === 'object')
   })
 
-  it('Should be the result of a response to a Base64 gateway event.', async () => {
+  it('should be the response result for an Base64 gateway event', async () => {
     const result = response({
       type: 'GATEWAY',
       response: {
@@ -71,7 +71,7 @@ describe('test/response.test.ts', () => {
     assert(typeof result.headers === 'object')
   })
 
-  it('Should be the result of responding to a gateway event.', async () => {
+  it('should be the result of the response gateway event', async () => {
     try {
       response({
         type: 'GATEWAY',

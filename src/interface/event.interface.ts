@@ -7,15 +7,8 @@ export type EventType = 'GATEWAY'
  * Trigger events.
  */
 export interface TriggerEvent {
-  /**
-   * Event type.
-   */
   type: EventType
-
-  /**
-   * Trigger event data.
-   */
-  data: HandleGatewayEventOptions
+  data: ProcessGatewayEventOptions
 }
 
 /**
@@ -34,22 +27,19 @@ export type HttpMethod =
   | 'UNLINK'
 
 /**
- * Handle the event.
+ * Process the event.
  *
  * @param options TriggerEvent
- * @return HandleGatewayEventOptions
+ * @return ProcessGatewayEventOptions
  */
-export interface HandleEvent {
-  (options: TriggerEvent): HandleGatewayEventOptions
+export interface ProcessEvent {
+  (options: TriggerEvent): ProcessGatewayEventOptions
 }
 
 /**
- * Handles gateway event options.
+ * Process gateway event options.
  */
-export interface HandleGatewayEventOptions {
-  /**
-   * Http request method.
-   */
+export interface ProcessGatewayEventOptions {
   httpMethod?: HttpMethod
 
   /**
@@ -79,11 +69,18 @@ export interface HandleGatewayEventOptions {
 }
 
 /**
- * Handles gateway events.
- *
- * @param options HandleGatewayEventOptions
- * @return HandleGatewayEventOptions
+ * Processing event method.
  */
-export interface HandleGatewayEvent {
-  (options: HandleGatewayEventOptions): HandleGatewayEventOptions
+export interface ProcessEventMethod {
+  readonly gateway: ProcessGatewayEvent
+}
+
+/**
+ * Process gateway events.
+ *
+ * @param options ProcessGatewayEventOptions
+ * @return ProcessGatewayEventOptions
+ */
+export interface ProcessGatewayEvent {
+  (options: ProcessGatewayEventOptions): ProcessGatewayEventOptions
 }

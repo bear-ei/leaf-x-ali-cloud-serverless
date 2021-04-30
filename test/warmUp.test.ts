@@ -1,12 +1,12 @@
 import * as assert from 'assert'
 import * as sinon from 'sinon'
-import { HandleErrorResult } from 'src/interface/error.interface'
+import { ProcessErrorResult } from 'src/interface/error.interface'
 import { ResponseResult } from 'src/interface/response.interface'
 import * as invoke from '../src/invoke'
 import { initWarmUp } from '../src/warmUp'
 
 describe('test/warmUp.test.ts', () => {
-  it('Should be the result of a successful warm-up.', async () => {
+  it('should be the result of warm-up', async () => {
     sinon.stub(invoke, 'initInvoke').returns(async () => ({
       data: '',
       status: 200,
@@ -39,7 +39,7 @@ describe('test/warmUp.test.ts', () => {
     )
   })
 
-  it('Should be the result of a failed warm-up. ', async () => {
+  it('should be the result of the failure of warm-up ', async () => {
     sinon.stub(invoke, 'initInvoke').returns(async () => {
       throw {
         code: 4000000,
@@ -67,7 +67,7 @@ describe('test/warmUp.test.ts', () => {
     assert(Array.isArray(result))
     assert(
       result.some((result) => {
-        const { status, code, message } = result as HandleErrorResult
+        const { status, code, message } = result as ProcessErrorResult
 
         return status === 400 && code === 4000000 && message === 'Bad Request.'
       })

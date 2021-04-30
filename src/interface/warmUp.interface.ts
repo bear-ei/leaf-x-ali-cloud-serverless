@@ -1,4 +1,4 @@
-import { HandleErrorResult } from './error.interface'
+import { ProcessErrorResult } from './error.interface'
 import { EventType } from './event.interface'
 import { InitInvokeOptions } from './invoke.interface'
 import { ResponseResult } from './response.interface'
@@ -7,9 +7,6 @@ import { ResponseResult } from './response.interface'
  * Warm-up options.
  */
 export interface WarmUpOptions {
-  /**
-   * Event type.
-   */
   type: EventType
 
   /**
@@ -50,11 +47,11 @@ export interface InitWarmUp {
  *
  * @param serviceName Service name.
  * @param options WarmUpOptions[]
- * @return Promise<(HandleErrorResult | WarmUpResult)[]>
+ * @return Promise<(ProcessErrorResult | WarmUpResult)[]>
  */
 export interface WarmUp {
   (serviceName: string, options: WarmUpOptions[]): Promise<
-    (HandleErrorResult | WarmUpResult)[]
+    (ProcessErrorResult | WarmUpResult)[]
   >
 }
 
@@ -62,15 +59,12 @@ export interface WarmUp {
  * Execute the warm-up options.
  */
 export interface ExecWarmUpOptions {
+  options: InitInvokeOptions
+
   /**
    * Service name.
    */
   serviceName: string
-
-  /**
-   * Initialize the invoke options.
-   */
-  options: InitInvokeOptions
 }
 
 /**
@@ -87,8 +81,8 @@ export interface InitExecWarmUp {
  * Execution warm-up.
  *
  * @param options WarmUpOptions
- * @return Promise<HandleErrorResult | WarmUpResult>
+ * @return Promise<ProcessErrorResult | WarmUpResult>
  */
 export interface ExecWarmUp {
-  (options: WarmUpOptions): Promise<HandleErrorResult | WarmUpResult>
+  (options: WarmUpOptions): Promise<ProcessErrorResult | WarmUpResult>
 }

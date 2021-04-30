@@ -4,7 +4,7 @@ import { initInvoke } from '../src/invoke'
 import * as request from '../src/request'
 
 describe('test/invoke.test.ts', () => {
-  it('Should be the result of an asynchronous invoke.', async () => {
+  it('should be a result of an asynchronous invoke', async () => {
     sinon
       .stub(request, 'request')
       .resolves({ status: 202, data: '', headers: {}, statusText: '', url: '' })
@@ -35,7 +35,7 @@ describe('test/invoke.test.ts', () => {
     assert(typeof result.headers === 'object')
   })
 
-  it('Should be the result of a correct response.', async () => {
+  it('should be the result of the correct reaction', async () => {
     sinon.stub(request, 'request').resolves({
       status: 200,
       data: {
@@ -77,7 +77,7 @@ describe('test/invoke.test.ts', () => {
     assert(typeof result.headers === 'object')
   })
 
-  it('Should be the result of an error response.', async () => {
+  it('should be the result of the wrong response', async () => {
     sinon.stub(request, 'request').resolves({
       status: 200,
       data: {
@@ -120,7 +120,7 @@ describe('test/invoke.test.ts', () => {
     }
   })
 
-  it('Should be the result of serverless error response.', async () => {
+  it('should be the result of unable server error response', async () => {
     sinon.stub(request, 'request').rejects({
       status: 404,
       data: { ErrorMessage: 'Bad Request.' },

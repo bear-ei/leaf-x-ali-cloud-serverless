@@ -1,5 +1,5 @@
-import { initHandleServerlessError } from './error'
-import { handleEvent } from './event'
+import { initProcessServerlessError } from './error'
+import { processEvent } from './event'
 import { getRequestHeaders } from './headers'
 import {
   ExecInvoke,
@@ -36,7 +36,7 @@ const initInvokeError: InitInvokeError = (options) => (error) => {
     'x-fc-request-id'
   ] as string
 
-  return initHandleServerlessError({ ...options, requestId })(error)
+  return initProcessServerlessError({ ...options, requestId })(error)
 }
 
 export const initInvoke: InitInvoke = ({
@@ -57,7 +57,7 @@ export const initInvoke: InitInvoke = ({
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
   const method = 'POST'
-  const body = JSON.stringify(handleEvent(triggerEvent))
+  const body = JSON.stringify(processEvent(triggerEvent))
   const requestHeaders = getRequestHeaders({
     content: body,
     host,
