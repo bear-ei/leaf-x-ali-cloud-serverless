@@ -1,11 +1,12 @@
-import { EventType as EventTypeEnum } from './enum/error.enum'
+import { EventType as EventTypeEnum } from './enum/event.enum'
 import {
-  ProcessGatewayResponse,
-  ProcessGatewayResponseOptions,
+  HandleGatewayResponse,
+  HandleGatewayResponseOptions,
+  HandleResponseMethod,
   Response
 } from './interface/response.interface'
 
-const processGatewayResponse: ProcessGatewayResponse = ({
+const handleGatewayResponse: HandleGatewayResponse = ({
   statusCode,
   headers,
   body,
@@ -32,15 +33,15 @@ const processGatewayResponse: ProcessGatewayResponse = ({
 }
 
 export const response: Response = ({ type, response }) => {
-  const processResponseMethod = Object.freeze({
-    gateway: processGatewayResponse
+  const handleResponseMethod: HandleResponseMethod = Object.freeze({
+    gateway: handleGatewayResponse
   })
 
   if (response.status === 202) {
     return response
   }
 
-  return processResponseMethod[EventTypeEnum[type]](
-    response.data as ProcessGatewayResponseOptions
+  return handleResponseMethod[EventTypeEnum[type]](
+    response.data as HandleGatewayResponseOptions
   )
 }

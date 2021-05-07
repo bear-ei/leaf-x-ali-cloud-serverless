@@ -1,11 +1,11 @@
-import { EventType } from './enum/error.enum'
+import { EventType as EventTypeEnum } from './enum/event.enum'
 import {
-  ProcessEvent,
-  ProcessEventMethod,
-  ProcessGatewayEvent
+  HandleEvent,
+  HandleEventMethod,
+  HandleGatewayEvent
 } from './interface/event.interface'
 
-const processGatewayEvent: ProcessGatewayEvent = ({
+const handleGatewayEvent: HandleGatewayEvent = ({
   httpMethod = 'GET',
   isBase64Encoded = false,
   queryParameters = {},
@@ -21,7 +21,7 @@ const processGatewayEvent: ProcessGatewayEvent = ({
     ...headers
   } as Record<string, unknown>
 
-  const data = (requestHeaders['content-type'] as string)?.startsWith(
+  const data = (requestHeaders['content-type'] as string).startsWith(
     'application/json'
   )
     ? JSON.stringify(body)
@@ -37,10 +37,10 @@ const processGatewayEvent: ProcessGatewayEvent = ({
   }
 }
 
-export const processEvent: ProcessEvent = ({ type, data }) => {
-  const processEventMethod: ProcessEventMethod = Object.freeze({
-    gateway: processGatewayEvent
+export const handleEvent: HandleEvent = ({ type, data }) => {
+  const handleEventMethod: HandleEventMethod = Object.freeze({
+    gateway: handleGatewayEvent
   })
 
-  return processEventMethod[EventType[type]](data)
+  return handleEventMethod[EventTypeEnum[type]](data)
 }

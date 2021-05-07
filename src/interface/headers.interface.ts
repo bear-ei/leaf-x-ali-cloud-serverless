@@ -1,5 +1,5 @@
 /**
- * Get the request headers options.
+ * Get request headers options.
  */
 export interface GetRequestHeadersOptions {
   /**
@@ -18,7 +18,7 @@ export interface GetRequestHeadersOptions {
   accountId: string
 
   /**
-   * Whether to make asynchronous request.
+   * Whether to perform asynchronous requests.
    */
   async?: boolean
 }
@@ -34,7 +34,7 @@ export interface GetRequestHeaders {
 }
 
 /**
- * Get the canonical headers string.
+ * Get the canonical request string.
  *
  * @param prefix    Canonical headers prefix.
  * @param headers   Request headers.
@@ -45,7 +45,7 @@ export interface GetCanonicalHeadersString {
 }
 
 /**
- * Initialization splice canonical headers.
+ * Initialize the splice canonical request headers.
  *
  * @param headers Request headers.
  * @return SpliceCanonicalHeaders
@@ -55,9 +55,9 @@ export interface InitSpliceCanonicalHeaders {
 }
 
 /**
- * Splice canonical headers
+ * Splice canonical request headers.
  *
- * @param key string
+ * @param key Canonical request header key.
  * @return string
  */
 export interface SpliceCanonicalHeaders {

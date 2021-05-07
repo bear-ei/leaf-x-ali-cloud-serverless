@@ -15,7 +15,7 @@ export interface GetTokenOptions {
   accessSecretKey: string
 
   /**
-   * Http request method.
+   * HTTP request method.
    */
   method: HttpMethod
 
@@ -60,7 +60,7 @@ export interface GetSignStringOptions {
 /**
  * Get the signature string.
  *
- * @param GetSignString
+ * @param options GetSignStringOptions
  * @return string
  */
 export interface GetSignString {

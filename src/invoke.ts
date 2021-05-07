@@ -1,5 +1,5 @@
-import { initProcessServerlessError } from './error'
-import { processEvent } from './event'
+import { initHandleServerlessError } from './error'
+import { handleEvent } from './event'
 import { getRequestHeaders } from './headers'
 import {
   ExecInvoke,
@@ -14,9 +14,7 @@ import { getToken } from './token'
 const execInvoke: ExecInvoke = (retryNumber, { url, options }) => {
   const retryInvoke = initRetryInvoke(retryNumber, { url, options })
 
-  return request(url, options)
-    .then((response) => response)
-    .catch(retryInvoke)
+  return request(url, options).catch(retryInvoke)
 }
 
 const initRetryInvoke: InitRetryInvoke = (retryNumber, { url, options }) => (
@@ -36,7 +34,7 @@ const initInvokeError: InitInvokeError = (options) => (error) => {
     'x-fc-request-id'
   ] as string
 
-  return initProcessServerlessError({ ...options, requestId })(error)
+  return initHandleServerlessError({ ...options, requestId })(error)
 }
 
 export const initInvoke: InitInvoke = ({
@@ -48,16 +46,11 @@ export const initInvoke: InitInvoke = ({
   accessSecretKey,
   accessId,
   timeout
-}) => async ({
-  serviceName,
-  functionName,
-  async = false,
-  event: triggerEvent
-}) => {
+}) => async ({ serviceName, functionName, async = false, event }) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
   const url = `${endpoint}/${version}${path}`
   const method = 'POST'
-  const body = JSON.stringify(processEvent(triggerEvent))
+  const body = JSON.stringify(handleEvent(event))
   const requestHeaders = getRequestHeaders({
     content: body,
     host,
@@ -91,5 +84,5 @@ export const initInvoke: InitInvoke = ({
 
   const result = await execInvoke(3, execInvokeOptions).catch(invokeError)
 
-  return response({ type: triggerEvent.type, response: result })
+  return response({ type: event.type, response: result })
 }

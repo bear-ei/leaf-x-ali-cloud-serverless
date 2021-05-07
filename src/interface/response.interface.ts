@@ -1,8 +1,8 @@
-import { ProcessResponseResult } from '@leaf-x/fetch'
+import { HandleResponseResult } from '@leaf-x/fetch'
 import { EventType } from './event.interface'
 
 /**
- * Response events.
+ * Response event.
  */
 export interface ResponseEvent {
   /**
@@ -11,13 +11,13 @@ export interface ResponseEvent {
   type: EventType
 
   /**
-   * Response.
+   * Handle the request response result.
    */
-  response: ProcessResponseResult
+  response: HandleResponseResult
 }
 
 /**
- * Response results.
+ * Response result.
  */
 export interface ResponseResult {
   /**
@@ -38,24 +38,25 @@ export interface ResponseResult {
 
 /**
  * Response.
+ *
  * @param options ResponseEvent
- * @return ResponseResult | ProcessResponseResult
+ * @return ResponseResult | HandleResponseResult
  */
 export interface Response {
-  (options: ResponseEvent): ResponseResult | ProcessResponseResult
+  (options: ResponseEvent): ResponseResult | HandleResponseResult
 }
 
 /**
- * Process gateway response options.
+ * Handle gateway response options.
  */
-export interface ProcessGatewayResponseOptions {
+export interface HandleGatewayResponseOptions {
   /**
    * Gateway response status code.
    */
   statusCode: number
 
   /**
-   * Whether or not the request body is base64 encoded.
+   * Whether to base64 encode the request body or not.
    */
   isBase64Encoded: boolean
 
@@ -71,18 +72,21 @@ export interface ProcessGatewayResponseOptions {
 }
 
 /**
- * Processing response method.
+ * Handle response method.
  */
-export interface ProcessResponseMethod {
-  readonly gateway: ProcessGatewayResponse
+export interface HandleResponseMethod {
+  /**
+   * Handle gateway response.
+   */
+  readonly gateway: HandleGatewayResponse
 }
 
 /**
- * Process gateway response.
+ * Handle gateway response.
  *
- * @param options ProcessGatewayResponseOptions
+ * @param options HandleGatewayResponseOptions
  * @return ResponseResult
  */
-export interface ProcessGatewayResponse {
-  (options: ProcessGatewayResponseOptions): ResponseResult
+export interface HandleGatewayResponse {
+  (options: HandleGatewayResponseOptions): ResponseResult
 }

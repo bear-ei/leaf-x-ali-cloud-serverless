@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import { response } from '../src/response'
 
 describe('test/response.test.ts', () => {
-  it('should be a result of an asynchronous request response', async () => {
+  it('should be the result of an asynchronous request response', async () => {
     const result = response({
       type: 'GATEWAY',
       response: {
@@ -21,7 +21,7 @@ describe('test/response.test.ts', () => {
     assert(result.headers['content-type'] === 'application/json; charset=utf-8')
   })
 
-  it('should be the result of the response gateway event', async () => {
+  it('should be the result of response to gateway event', async () => {
     const result = response({
       type: 'GATEWAY',
       response: {
@@ -46,7 +46,7 @@ describe('test/response.test.ts', () => {
     assert(typeof result.headers === 'object')
   })
 
-  it('should be the response result for an Base64 gateway event', async () => {
+  it('should be the result of Base64 gateway event response', async () => {
     const result = response({
       type: 'GATEWAY',
       response: {
@@ -71,7 +71,7 @@ describe('test/response.test.ts', () => {
     assert(typeof result.headers === 'object')
   })
 
-  it('should be the result of the response gateway event', async () => {
+  it('should be the result of gateway event error response', async () => {
     try {
       response({
         type: 'GATEWAY',
@@ -95,5 +95,28 @@ describe('test/response.test.ts', () => {
       assert(error.statusCode === 400)
       assert(error.message === 'Bad Request.')
     }
+  })
+
+  it('should be the result of an unresponsive type of gateway event', async () => {
+    const result = response({
+      type: 'GATEWAY',
+      response: {
+        status: 200,
+        data: {
+          statusCode: 200,
+          body: JSON.stringify({ message: 'json' }),
+          isBase64Encoded: false,
+          headers: {}
+        },
+        headers: { 'content-type': 'application/json; charset=utf-8' },
+        statusText: '',
+        url: ''
+      }
+    })
+
+    assert(typeof result === 'object')
+    assert(result.status === 200)
+    assert(typeof result.data === 'string')
+    assert(typeof result.headers === 'object')
   })
 })

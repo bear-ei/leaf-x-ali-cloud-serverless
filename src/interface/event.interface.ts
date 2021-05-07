@@ -7,12 +7,19 @@ export type EventType = 'GATEWAY'
  * Trigger events.
  */
 export interface TriggerEvent {
+  /**
+   * Event type.
+   */
   type: EventType
-  data: ProcessGatewayEventOptions
+
+  /**
+   * Handle gateway event options.
+   */
+  data: HandleGatewayEventOptions
 }
 
 /**
- * Http request method.
+ * HTTP request method.
  */
 export type HttpMethod =
   | 'GET'
@@ -27,23 +34,26 @@ export type HttpMethod =
   | 'UNLINK'
 
 /**
- * Process the event.
+ * Handle event.
  *
  * @param options TriggerEvent
- * @return ProcessGatewayEventOptions
+ * @return HandleGatewayEventOptions
  */
-export interface ProcessEvent {
-  (options: TriggerEvent): ProcessGatewayEventOptions
+export interface HandleEvent {
+  (options: TriggerEvent): HandleGatewayEventOptions
 }
 
 /**
- * Process gateway event options.
+ * Handle gateway event options.
  */
-export interface ProcessGatewayEventOptions {
+export interface HandleGatewayEventOptions {
+  /**
+   * HTTP request method.
+   */
   httpMethod?: HttpMethod
 
   /**
-   * Whether to base64 encode the request body.
+   * Whether to base64 encode the request body or not.
    */
   isBase64Encoded?: boolean
 
@@ -69,18 +79,21 @@ export interface ProcessGatewayEventOptions {
 }
 
 /**
- * Processing event method.
+ * Handle event method.
  */
-export interface ProcessEventMethod {
-  readonly gateway: ProcessGatewayEvent
+export interface HandleEventMethod {
+  /**
+   * Handle gateway event.
+   */
+  readonly gateway: HandleGatewayEvent
 }
 
 /**
- * Process gateway events.
+ * Handle gateway event.
  *
- * @param options ProcessGatewayEventOptions
- * @return ProcessGatewayEventOptions
+ * @param options HandleGatewayEventOptions
+ * @return HandleGatewayEventOptions
  */
-export interface ProcessGatewayEvent {
-  (options: ProcessGatewayEventOptions): ProcessGatewayEventOptions
+export interface HandleGatewayEvent {
+  (options: HandleGatewayEventOptions): HandleGatewayEventOptions
 }

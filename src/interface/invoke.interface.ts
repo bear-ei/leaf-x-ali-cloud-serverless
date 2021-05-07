@@ -1,4 +1,4 @@
-import { FetchOptions, ProcessResponseResult } from '@leaf-x/fetch'
+import { FetchOptions, HandleResponseResult } from '@leaf-x/fetch'
 import { TriggerEvent } from './event.interface'
 import { ResponseResult } from './response.interface'
 
@@ -19,41 +19,44 @@ export interface InvokeOptions {
   functionName: string
 
   /**
-   * Whether to invoke asynchronously or not.
+   * Whether to perform asynchronous invoke.
    */
   async?: boolean
 }
 
 /**
- * Execution invoke options.
+ * Execute invoke options.
  */
 export interface ExecInvokeOptions {
+  /**
+   * Initialize the fetch options.
+   */
   options: FetchOptions
 
   /**
-   * The URL address to invoke.
+   * Invoke URL address.
    */
   url: string
 }
 
 /**
- * Execution invoke.
+ * Execute the invoke.
  *
- * @param retryNumber   Number of retries.
+ * @param retryNumber   The number of retries after failed invoke.
  * @param options       ExecInvokeOptions
- * @return ProcessResponseResult
+ * @return HandleResponseResult
  */
 export interface ExecInvoke {
   (
     retryNumber: number,
     options: ExecInvokeOptions
-  ): Promise<ProcessResponseResult>
+  ): Promise<HandleResponseResult>
 }
 
 /**
- * Initialize retry invoke.
+ * Initialize the retry invoke.
  *
- * @param retryNumber   Number of retries.
+ * @param retryNumber   The number of retries after failed invoke.
  * @param options       ExecInvokeOptions
  * @return RetryInvoke
  */
@@ -62,17 +65,17 @@ export interface InitRetryInvoke {
 }
 
 /**
- * Retry invoke.
+ * Retry the invoke.
  *
  * @param error Error.
- * @return Promise<ProcessResponseResult>
+ * @return Promise<HandleResponseResult>
  */
 export interface RetryInvoke {
-  (error: Record<string, unknown>): Promise<ProcessResponseResult>
+  (error: Record<string, unknown>): Promise<HandleResponseResult>
 }
 
 /**
- * Initialize the invoke options.
+ * Initialize invoke options.
  */
 export interface InitInvokeOptions {
   /**
@@ -101,12 +104,12 @@ export interface InitInvokeOptions {
   host: string
 
   /**
-   * Timeout time.
+   * Invoke timeout time in milliseconds.
    */
   timeout: number
 
   /**
-   * Serverless host.
+   * Serverless endpoint.
    */
   endpoint: string
 
@@ -117,7 +120,7 @@ export interface InitInvokeOptions {
 }
 
 /**
- * Invoke.
+ * Invoke serverless.
  *
  * @param options InvokeOptions
  * @return Promise<ResponseResult>
@@ -127,7 +130,7 @@ export interface Invoke {
 }
 
 /**
- * Initialization invoke.
+ * Initialize invoke serverless.
  *
  * @param InitInvokeOptions
  * @return Invoke
@@ -151,13 +154,13 @@ export interface InvokeErrorOptions {
   functionName: string
 
   /**
-   * Running environment.
+   * Current runtime environment.
    */
   env: string
 }
 
 /**
- * Initialization invoke error.
+ * Initialize invoke error.
  *
  * @param options InvokeErrorOptions
  * @return InvokeError

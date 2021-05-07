@@ -1,9 +1,9 @@
 import * as assert from 'assert'
-import { processEvent } from '../src/event'
+import { handleEvent } from '../src/event'
 
 describe('test/event.test.ts', () => {
   it('should be the result of the default input of the gateway event', async () => {
-    const result = processEvent({ type: 'GATEWAY', data: {} })
+    const result = handleEvent({ type: 'GATEWAY', data: {} })
 
     assert(typeof result === 'object')
     assert(result.httpMethod === 'GET')
@@ -16,8 +16,8 @@ describe('test/event.test.ts', () => {
     assert(result.headers['accept'] === '*/*')
   })
 
-  it('should be the result of the gateway event custom input', async () => {
-    const result = processEvent({
+  it('should be the result of custom input for gateway event', async () => {
+    const result = handleEvent({
       type: 'GATEWAY',
       data: {
         headers: {

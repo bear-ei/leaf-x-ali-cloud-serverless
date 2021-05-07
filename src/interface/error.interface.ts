@@ -1,7 +1,7 @@
 /**
- * Process the error options.
+ * Handle the error options.
  */
-export interface ProcessErrorOptions {
+export interface HandleErrorOptions {
   /**
    * Service name.
    */
@@ -13,7 +13,7 @@ export interface ProcessErrorOptions {
   functionName: string
 
   /**
-   * Running environment.
+   * Current runtime environment.
    */
   env: string
 
@@ -24,11 +24,11 @@ export interface ProcessErrorOptions {
 }
 
 /**
- * The result of a handling error.
+ * Handle the error result.
  *
- * @extends ProcessErrorOptions
+ * @extends HandleErrorOptions
  */
-export interface ProcessErrorResult extends ProcessErrorOptions {
+export interface HandleErrorResult extends HandleErrorOptions {
   /**
    * Error response status code.
    */
@@ -48,39 +48,43 @@ export interface ProcessErrorResult extends ProcessErrorOptions {
    * Error details.
    */
   details?: unknown
-  apis?: ProcessErrorOptions[]
+
+  /**
+   * The function invoke chain where the error occurred.
+   */
+  apis?: HandleErrorOptions[]
 }
 
 /**
- * Process error.
+ * Handle error.
  *
  * @param error     Error.
- * @param options   ProcessErrorOptions
- * @return ProcessErrorResult
+ * @param options   HandleErrorOptions
+ * @return HandleErrorResult
  */
-export interface ProcessError {
+export interface HandleError {
   (
     error: Record<string, unknown>,
-    options: ProcessErrorOptions
-  ): ProcessErrorResult
+    options: HandleErrorOptions
+  ): HandleErrorResult
 }
 
 /**
- * Initialize to process serverless errors.
+ * Initialize the handle serverless error.
  *
- * @param options ProcessErrorOptions
- * @return ProcessServerlessError
+ * @param options HandleErrorOptions
+ * @return HandleError
  */
-export interface InitProcessServerlessError {
-  (options: ProcessErrorOptions): ProcessServerlessError
+export interface InitHandleServerlessError {
+  (options: HandleErrorOptions): HandleServerError
 }
 
 /**
- * Process serverless errors.
+ * Handle serverless error.
  *
  * @param error Error.
  * @return never
  */
-export interface ProcessServerlessError {
+export interface HandleServerError {
   (error: Record<string, unknown>): never
 }

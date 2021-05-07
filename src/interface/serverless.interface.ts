@@ -26,9 +26,9 @@ export interface ServerlessOptions {
   region: string
 
   /**
-   * Invoke serverless timeout in milliseconds.
+   * Invoke timeout time in milliseconds.
    *
-   * @Default 3000
+   * Default 3000ms
    */
   timeout?: number
 
@@ -40,15 +40,15 @@ export interface ServerlessOptions {
   qualifier?: string
 
   /**
-   * Whether to invoke serverless through the intranet.
+   * Whether to invoke the serverless through the intranet.
    *
    * Default: true
    */
   internal?: boolean
 
   /**
-   * Whether to open invoke protection, if open will use https invoke,otherwise
-   * use http.
+   * Whether to turn on invoke protection, if so will use https invoke,
+   * otherwise use http.
    *
    * Default: true
    */
@@ -63,10 +63,17 @@ export interface ServerlessOptions {
 }
 
 /**
- * Serverless results.
+ * Serverless result.
  */
 export interface ServerlessResult {
+  /**
+   * Invoke serverless.
+   */
   invoke: Invoke
+
+  /**
+   * Warm-up serverless.
+   */
   warmUp: WarmUp
 }
 

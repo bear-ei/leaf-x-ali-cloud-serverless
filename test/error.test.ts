@@ -1,9 +1,9 @@
 import * as assert from 'assert'
-import { initProcessServerlessError, processError } from '../src/error'
+import { handleError, initHandleServerlessError } from '../src/error'
 
 describe('test/error.test.ts', () => {
-  it('should be the result of the status code 500 response error', async () => {
-    const result = processError(
+  it('should be the result of status code 500 response error', async () => {
+    const result = handleError(
       { message: 'Internal service error.' },
       {
         serviceName: 'leaf-x@snowflake',
@@ -25,8 +25,8 @@ describe('test/error.test.ts', () => {
     assert(typeof result.details === 'object')
   })
 
-  it('should be the result of the status code 422 response error', async () => {
-    const result = processError(
+  it('should be the result of status code 422 response error', async () => {
+    const result = handleError(
       {
         status: 422,
         code: 422000,
@@ -58,9 +58,9 @@ describe('test/error.test.ts', () => {
     assert(Array.isArray(result.apis))
   })
 
-  it('should be the result of a server error', async () => {
+  it('should be the result of service error', async () => {
     try {
-      initProcessServerlessError({
+      initHandleServerlessError({
         serviceName: 'leaf-x@snowflake',
         functionName: 'snowflake',
         requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',

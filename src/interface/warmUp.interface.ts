@@ -1,4 +1,4 @@
-import { ProcessErrorResult } from './error.interface'
+import { HandleErrorResult } from './error.interface'
 import { EventType } from './event.interface'
 import { InitInvokeOptions } from './invoke.interface'
 import { ResponseResult } from './response.interface'
@@ -7,6 +7,9 @@ import { ResponseResult } from './response.interface'
  * Warm-up options.
  */
 export interface WarmUpOptions {
+  /**
+   * Event type.
+   */
   type: EventType
 
   /**
@@ -16,7 +19,7 @@ export interface WarmUpOptions {
 }
 
 /**
- * Warm-up results.
+ * Warm-up result.
  *
  * @extends ResponseResult
  */
@@ -33,7 +36,7 @@ export interface WarmUpResult extends ResponseResult {
 }
 
 /**
- * Initialization warm-up.
+ * Initialize warm-up.
  *
  * @param options InitInvokeOptions
  * @return WarmUp
@@ -43,15 +46,15 @@ export interface InitWarmUp {
 }
 
 /**
- * Warm-up.
+ * Warm-up serverless.
  *
  * @param serviceName Service name.
  * @param options WarmUpOptions[]
- * @return Promise<(ProcessErrorResult | WarmUpResult)[]>
+ * @return Promise<(HandleErrorResult | WarmUpResult)[]>
  */
 export interface WarmUp {
   (serviceName: string, options: WarmUpOptions[]): Promise<
-    (ProcessErrorResult | WarmUpResult)[]
+    (HandleErrorResult | WarmUpResult)[]
   >
 }
 
@@ -59,6 +62,9 @@ export interface WarmUp {
  * Execute the warm-up options.
  */
 export interface ExecWarmUpOptions {
+  /**
+   * Initialize invoke options.
+   */
   options: InitInvokeOptions
 
   /**
@@ -68,7 +74,7 @@ export interface ExecWarmUpOptions {
 }
 
 /**
- * Initial execution warm-up.
+ * Initialize the execute warm-up.
  *
  * @param serviceName Service name.
  * @return ExecWarmUp
@@ -78,11 +84,11 @@ export interface InitExecWarmUp {
 }
 
 /**
- * Execution warm-up.
+ * Execute warm-up.
  *
  * @param options WarmUpOptions
- * @return Promise<ProcessErrorResult | WarmUpResult>
+ * @return Promise<HandleErrorResult | WarmUpResult>
  */
 export interface ExecWarmUp {
-  (options: WarmUpOptions): Promise<ProcessErrorResult | WarmUpResult>
+  (options: WarmUpOptions): Promise<HandleErrorResult | WarmUpResult>
 }

@@ -21,10 +21,10 @@ export const getRequestHeaders: GetRequestHeaders = ({
   'user-agent': `Node.js(${process.version}) OS(${process.platform}/${process.arch})`,
   'x-fc-account-id': accountId,
   'content-type': 'application/json; charset=utf-8',
+  'content-md5': crypto.createHash('md5').update(content).digest('hex'),
   'content-length': Buffer.isBuffer(content)
     ? `${content.length}`
     : `${Buffer.from(content).length}`,
-  'content-md5': crypto.createHash('md5').update(content).digest('hex'),
   ...(async ? { 'x-fc-invocation-type': 'Async' } : undefined)
 })
 

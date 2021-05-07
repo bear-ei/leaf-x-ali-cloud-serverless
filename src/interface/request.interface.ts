@@ -1,12 +1,12 @@
-import { FetchOptions, ProcessResponseResult } from '@leaf-x/fetch'
+import { FetchOptions, HandleResponseResult } from '@leaf-x/fetch'
 
 /**
  * Request.
  *
  * @param url Request URL address.
  * @param options FetchOptions
- * @return Promise<ProcessResponseResult>
+ * @return Promise<HandleResponseResult>
  */
 export interface Request {
-  (url: string, options?: FetchOptions): Promise<ProcessResponseResult>
+  (url: string, options?: FetchOptions): Promise<HandleResponseResult>
 }
