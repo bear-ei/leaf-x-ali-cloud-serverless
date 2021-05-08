@@ -44,6 +44,9 @@ export interface GetToken {
  * Get signature string options.
  */
 export interface GetSignStringOptions {
+  /**
+   * HTTP request method.
+   */
   method: HttpMethod;
 
   /**

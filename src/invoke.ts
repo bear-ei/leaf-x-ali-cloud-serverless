@@ -18,13 +18,13 @@ const execInvoke: ExecInvoke = (retryNumber, {url, options}) => {
 };
 
 const initRetryInvoke: InitRetryInvoke = (
-  retryNumber,
+  {retryNumber},
   {url, options}
 ) => error => {
   if (retryNumber > 0) {
     retryNumber--;
 
-    return execInvoke(retryNumber, {url, options});
+    return execInvoke({retryNumber}, {url, options});
   }
 
   throw error;
@@ -83,7 +83,9 @@ export const initInvoke: InitInvoke = ({
     env: qualifier,
   });
 
-  const result = await execInvoke(3, execInvokeOptions).catch(invokeError);
+  const result = await execInvoke({retryNumber: 3}, execInvokeOptions).catch(
+    invokeError
+  );
 
   return response({type: event.type, response: result});
 };

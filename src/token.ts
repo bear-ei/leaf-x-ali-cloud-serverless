@@ -12,7 +12,10 @@ const initSign: InitSign = secret => signString => {
 };
 
 const getSignString: GetSignString = ({method, url, headers}) => {
-  const canonicalHeaderString = getCanonicalHeadersString('x-fc-', headers);
+  const canonicalHeaderString = getCanonicalHeadersString(
+    {prefix: 'x-fc-'},
+    headers
+  );
   const pathname = decodeURIComponent(new URL(url).pathname);
 
   return [

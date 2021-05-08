@@ -43,17 +43,20 @@ describe('test/headers.test.ts', () => {
   });
 
   it('should be the result of getting canonical request string', async () => {
-    const result = getCanonicalHeadersString('x-fc-', {
-      accept: 'application/json; charset=utf-8',
-      date: new Date().toUTCString(),
-      host: 'https://github.com/',
-      'user-agent': `Node.js/${process.version}`,
-      'x-fc-account-id': '1787993',
-      'content-type': 'application/octet-stream',
-      'content-length': '255',
-      'content-md5': 'bf32ca0ebf019d8ba4f95145a5a96865',
-      'x-fc-invocation-type': 'Async',
-    });
+    const result = getCanonicalHeadersString(
+      {prefix: 'x-fc-'},
+      {
+        accept: 'application/json; charset=utf-8',
+        date: new Date().toUTCString(),
+        host: 'https://github.com/',
+        'user-agent': `Node.js/${process.version}`,
+        'x-fc-account-id': '1787993',
+        'content-type': 'application/octet-stream',
+        'content-length': '255',
+        'content-md5': 'bf32ca0ebf019d8ba4f95145a5a96865',
+        'x-fc-invocation-type': 'Async',
+      }
+    );
 
     assert(typeof result === 'string');
     assert(

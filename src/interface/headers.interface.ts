@@ -34,14 +34,24 @@ export interface GetRequestHeaders {
 }
 
 /**
+ * Canonical headers prefix options.
+ */
+export interface PrefixOptions {
+  /**
+   * Canonical headers prefix.
+   */
+  prefix: string;
+}
+
+/**
  * Get the canonical request string.
  *
- * @param prefix    Canonical headers prefix.
- * @param headers   Request headers.
+ * @param prefixOptions     PrefixOptions
+ * @param headers           Request headers.
  * @return string
  */
 export interface GetCanonicalHeadersString {
-  (prefix: string, headers: Record<string, unknown>): string;
+  (prefixOptions: PrefixOptions, headers: Record<string, unknown>): string;
 }
 
 /**

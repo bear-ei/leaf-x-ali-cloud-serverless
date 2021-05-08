@@ -39,16 +39,24 @@ export interface ExecInvokeOptions {
   url: string;
 }
 
+export interface RetryOptions {
+  /**
+   * The number of retries after failed invoke.
+   *
+   */
+  retryNumber: number;
+}
+
 /**
  * Execute the invoke.
  *
- * @param retryNumber   The number of retries after failed invoke.
+ * @param retryOptions  RetryOptions
  * @param options       ExecInvokeOptions
  * @return HandleResponseResult
  */
 export interface ExecInvoke {
   (
-    retryNumber: number,
+    retryOptions: RetryOptions,
     options: ExecInvokeOptions
   ): Promise<HandleResponseResult>;
 }
@@ -56,12 +64,12 @@ export interface ExecInvoke {
 /**
  * Initialize the retry invoke.
  *
- * @param retryNumber   The number of retries after failed invoke.
+ * @param retryOptions  RetryOptions
  * @param options       ExecInvokeOptions
  * @return RetryInvoke
  */
 export interface InitRetryInvoke {
-  (retryNumber: number, options: ExecInvokeOptions): RetryInvoke;
+  (retryOptions: RetryOptions, options: ExecInvokeOptions): RetryInvoke;
 }
 
 /**

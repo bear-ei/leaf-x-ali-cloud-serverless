@@ -28,7 +28,7 @@ export const getRequestHeaders: GetRequestHeaders = ({
 });
 
 export const getCanonicalHeadersString: GetCanonicalHeadersString = (
-  prefix,
+  {prefix},
   headers
 ) => {
   const spliceCanonicalHeaders = initSpliceCanonicalHeaders(headers);
