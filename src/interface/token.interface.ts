@@ -1,4 +1,4 @@
-import { HttpMethod } from './event.interface'
+import {HttpMethod} from './event.interface';
 
 /**
  * Get token options.
@@ -7,27 +7,27 @@ export interface GetTokenOptions {
   /**
    * Ali cloud access ID.
    */
-  accessId: string
+  accessId: string;
 
   /**
    * Ali cloud access key.
    */
-  accessSecretKey: string
+  accessSecretKey: string;
 
   /**
    * HTTP request method.
    */
-  method: HttpMethod
+  method: HttpMethod;
 
   /**
    * Request URL address.
    */
-  url: string
+  url: string;
 
   /**
    * Request headers.
    */
-  headers: Record<string, unknown>
+  headers: Record<string, unknown>;
 }
 
 /**
@@ -37,24 +37,24 @@ export interface GetTokenOptions {
  * @return string
  */
 export interface GetToken {
-  (options: GetTokenOptions): string
+  (options: GetTokenOptions): string;
 }
 
 /**
  * Get signature string options.
  */
 export interface GetSignStringOptions {
-  method: HttpMethod
+  method: HttpMethod;
 
   /**
    * Request URL address.
    */
-  url: string
+  url: string;
 
   /**
    * Request headers.
    */
-  headers: Record<string, unknown>
+  headers: Record<string, unknown>;
 }
 
 /**
@@ -64,7 +64,7 @@ export interface GetSignStringOptions {
  * @return string
  */
 export interface GetSignString {
-  (options: GetSignStringOptions): string
+  (options: GetSignStringOptions): string;
 }
 
 /**
@@ -74,7 +74,7 @@ export interface GetSignString {
  * @return Sign
  */
 export interface InitSign {
-  (accessSecretKey: string): Sign
+  (accessSecretKey: string): Sign;
 }
 
 /**
@@ -84,5 +84,5 @@ export interface InitSign {
  * @return string
  */
 export interface Sign {
-  (signString: string): string
+  (signString: string): string;
 }

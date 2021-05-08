@@ -1,4 +1,4 @@
-import { FetchOptions, HandleResponseResult } from '@leaf-x/fetch'
+import {FetchOptions, HandleResponseResult} from '@leaf-x/fetch';
 
 /**
  * Request.
@@ -8,5 +8,5 @@ import { FetchOptions, HandleResponseResult } from '@leaf-x/fetch'
  * @return Promise<HandleResponseResult>
  */
 export interface Request {
-  (url: string, options?: FetchOptions): Promise<HandleResponseResult>
+  (url: string, options?: FetchOptions): Promise<HandleResponseResult>;
 }

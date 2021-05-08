@@ -1,27 +1,27 @@
-import { FetchOptions, HandleResponseResult } from '@leaf-x/fetch'
-import { TriggerEvent } from './event.interface'
-import { ResponseResult } from './response.interface'
+import {FetchOptions, HandleResponseResult} from '@leaf-x/fetch';
+import {TriggerEvent} from './event.interface';
+import {ResponseResult} from './response.interface';
 
 /**
  * Invoke options.
  */
 export interface InvokeOptions {
-  event: TriggerEvent
+  event: TriggerEvent;
 
   /**
    * Service name.
    */
-  serviceName: string
+  serviceName: string;
 
   /**
    * Function name.
    */
-  functionName: string
+  functionName: string;
 
   /**
    * Whether to perform asynchronous invoke.
    */
-  async?: boolean
+  async?: boolean;
 }
 
 /**
@@ -31,12 +31,12 @@ export interface ExecInvokeOptions {
   /**
    * Initialize the fetch options.
    */
-  options: FetchOptions
+  options: FetchOptions;
 
   /**
    * Invoke URL address.
    */
-  url: string
+  url: string;
 }
 
 /**
@@ -50,7 +50,7 @@ export interface ExecInvoke {
   (
     retryNumber: number,
     options: ExecInvokeOptions
-  ): Promise<HandleResponseResult>
+  ): Promise<HandleResponseResult>;
 }
 
 /**
@@ -61,7 +61,7 @@ export interface ExecInvoke {
  * @return RetryInvoke
  */
 export interface InitRetryInvoke {
-  (retryNumber: number, options: ExecInvokeOptions): RetryInvoke
+  (retryNumber: number, options: ExecInvokeOptions): RetryInvoke;
 }
 
 /**
@@ -71,7 +71,7 @@ export interface InitRetryInvoke {
  * @return Promise<HandleResponseResult>
  */
 export interface RetryInvoke {
-  (error: Record<string, unknown>): Promise<HandleResponseResult>
+  (error: Record<string, unknown>): Promise<HandleResponseResult>;
 }
 
 /**
@@ -81,42 +81,42 @@ export interface InitInvokeOptions {
   /**
    * Ali cloud account ID.
    */
-  accountId: string
+  accountId: string;
 
   /**
    * Ali cloud access ID.
    */
-  accessId: string
+  accessId: string;
 
   /**
    * Ali cloud access key.
    */
-  accessSecretKey: string
+  accessSecretKey: string;
 
   /**
    * Serverless qualifier.
    */
-  qualifier: string
+  qualifier: string;
 
   /**
    * Serverless host.
    */
-  host: string
+  host: string;
 
   /**
    * Invoke timeout time in milliseconds.
    */
-  timeout: number
+  timeout: number;
 
   /**
    * Serverless endpoint.
    */
-  endpoint: string
+  endpoint: string;
 
   /**
    * Serverless API version.
    */
-  version: string
+  version: string;
 }
 
 /**
@@ -126,7 +126,7 @@ export interface InitInvokeOptions {
  * @return Promise<ResponseResult>
  */
 export interface Invoke {
-  (options: InvokeOptions): Promise<ResponseResult>
+  (options: InvokeOptions): Promise<ResponseResult>;
 }
 
 /**
@@ -136,7 +136,7 @@ export interface Invoke {
  * @return Invoke
  */
 export interface InitInvoke {
-  (config: InitInvokeOptions): Invoke
+  (config: InitInvokeOptions): Invoke;
 }
 
 /**
@@ -146,17 +146,17 @@ export interface InvokeErrorOptions {
   /**
    * Service name.
    */
-  serviceName: string
+  serviceName: string;
 
   /**
    * Function name.
    */
-  functionName: string
+  functionName: string;
 
   /**
    * Current runtime environment.
    */
-  env: string
+  env: string;
 }
 
 /**
@@ -166,7 +166,7 @@ export interface InvokeErrorOptions {
  * @return InvokeError
  */
 export interface InitInvokeError {
-  (options: InvokeErrorOptions): InvokeError
+  (options: InvokeErrorOptions): InvokeError;
 }
 
 /**
@@ -176,5 +176,5 @@ export interface InitInvokeError {
  * @return never
  */
 export interface InvokeError {
-  (error: Record<string, unknown>): never
+  (error: Record<string, unknown>): never;
 }

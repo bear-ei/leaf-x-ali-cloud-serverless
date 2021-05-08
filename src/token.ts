@@ -1,19 +1,19 @@
-import * as crypto from 'crypto'
-import { getCanonicalHeadersString } from './headers'
-import { GetSignString, GetToken, InitSign } from './interface/token.interface'
+import * as crypto from 'crypto';
+import {getCanonicalHeadersString} from './headers';
+import {GetSignString, GetToken, InitSign} from './interface/token.interface';
 
-const initSign: InitSign = (secret) => (signString) => {
+const initSign: InitSign = secret => signString => {
   const buffer = crypto
     .createHmac('sha256', secret)
     .update(signString, 'utf8')
-    .digest()
+    .digest();
 
-  return Buffer.from(buffer).toString('base64')
-}
+  return Buffer.from(buffer).toString('base64');
+};
 
-const getSignString: GetSignString = ({ method, url, headers }) => {
-  const canonicalHeaderString = getCanonicalHeadersString('x-fc-', headers)
-  const pathname = decodeURIComponent(new URL(url).pathname)
+const getSignString: GetSignString = ({method, url, headers}) => {
+  const canonicalHeaderString = getCanonicalHeadersString('x-fc-', headers);
+  const pathname = decodeURIComponent(new URL(url).pathname);
 
   return [
     method,
@@ -21,12 +21,12 @@ const getSignString: GetSignString = ({ method, url, headers }) => {
     headers['content-type'],
     headers['date'],
     canonicalHeaderString,
-    pathname
-  ].join('\n')
-}
+    pathname,
+  ].join('\n');
+};
 
-export const getToken: GetToken = ({ accessId, accessSecretKey, ...args }) => {
-  const signString = getSignString(args)
+export const getToken: GetToken = ({accessId, accessSecretKey, ...args}) => {
+  const signString = getSignString(args);
 
-  return `FC ${accessId}:${initSign(accessSecretKey)(signString)}`
-}
+  return `FC ${accessId}:${initSign(accessSecretKey)(signString)}`;
+};

@@ -5,22 +5,22 @@ export interface GetRequestHeadersOptions {
   /**
    * Request content.
    */
-  content: string | Buffer
+  content: string | Buffer;
 
   /**
    * Request host.
    */
-  host: string
+  host: string;
 
   /**
    * Ali cloud account ID.
    */
-  accountId: string
+  accountId: string;
 
   /**
    * Whether to perform asynchronous requests.
    */
-  async?: boolean
+  async?: boolean;
 }
 
 /**
@@ -30,7 +30,7 @@ export interface GetRequestHeadersOptions {
  * @return Record<string, string>
  */
 export interface GetRequestHeaders {
-  (options: GetRequestHeadersOptions): Record<string, unknown>
+  (options: GetRequestHeadersOptions): Record<string, unknown>;
 }
 
 /**
@@ -41,7 +41,7 @@ export interface GetRequestHeaders {
  * @return string
  */
 export interface GetCanonicalHeadersString {
-  (prefix: string, headers: Record<string, unknown>): string
+  (prefix: string, headers: Record<string, unknown>): string;
 }
 
 /**
@@ -51,7 +51,7 @@ export interface GetCanonicalHeadersString {
  * @return SpliceCanonicalHeaders
  */
 export interface InitSpliceCanonicalHeaders {
-  (headers: Record<string, unknown>): SpliceCanonicalHeaders
+  (headers: Record<string, unknown>): SpliceCanonicalHeaders;
 }
 
 /**
@@ -61,5 +61,5 @@ export interface InitSpliceCanonicalHeaders {
  * @return string
  */
 export interface SpliceCanonicalHeaders {
-  (key: string): string
+  (key: string): string;
 }

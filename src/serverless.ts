@@ -1,6 +1,6 @@
-import { Serverless } from './interface/serverless.interface'
-import { initInvoke } from './invoke'
-import { initWarmUp } from './warmUp'
+import {Serverless} from './interface/serverless.interface';
+import {initInvoke} from './invoke';
+import {initWarmUp} from './warm_up';
 
 export const serverless: Serverless = ({
   accountId,
@@ -12,10 +12,10 @@ export const serverless: Serverless = ({
   secure = true,
   ...args
 }) => {
-  const protocol = secure ? 'https' : 'http'
-  const network = internal ? '-internal' : ''
-  const endpoint = `${protocol}://${accountId}.${region}${network}.fc.aliyuncs.com`
-  const host = `${accountId}.${region}${network}.fc.aliyuncs.com`
+  const protocol = secure ? 'https' : 'http';
+  const network = internal ? '-internal' : '';
+  const endpoint = `${protocol}://${accountId}.${region}${network}.fc.aliyuncs.com`;
+  const host = `${accountId}.${region}${network}.fc.aliyuncs.com`;
   const options = {
     accountId,
     host,
@@ -23,8 +23,8 @@ export const serverless: Serverless = ({
     qualifier,
     version,
     endpoint,
-    ...args
-  }
+    ...args,
+  };
 
-  return { invoke: initInvoke(options), warmUp: initWarmUp(options) }
-}
+  return {invoke: initInvoke(options), warmUp: initWarmUp(options)};
+};

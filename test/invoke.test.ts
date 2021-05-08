@@ -1,13 +1,13 @@
-import * as assert from 'assert'
-import * as sinon from 'sinon'
-import { initInvoke } from '../src/invoke'
-import * as request from '../src/request'
+import * as assert from 'assert';
+import * as sinon from 'sinon';
+import {initInvoke} from '../src/invoke';
+import * as request from '../src/request';
 
 describe('test/invoke.test.ts', () => {
   it('should be the result of an asynchronous invoke', async () => {
     sinon
       .stub(request, 'request')
-      .resolves({ status: 202, data: '', headers: {}, statusText: '', url: '' })
+      .resolves({status: 202, data: '', headers: {}, statusText: '', url: ''});
 
     const result = await initInvoke({
       qualifier: 'PROD',
@@ -17,39 +17,39 @@ describe('test/invoke.test.ts', () => {
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
-      timeout: 3000
+      timeout: 3000,
     })({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
       event: {
         type: 'GATEWAY',
-        data: { queryParameters: { name: 'snowflake' } }
-      }
-    })
+        data: {queryParameters: {name: 'snowflake'}},
+      },
+    });
 
-    sinon.restore()
+    sinon.restore();
 
-    assert(typeof result === 'object')
-    assert(result.status === 202)
-    assert(result.data === '')
-    assert(typeof result.headers === 'object')
-  })
+    assert(typeof result === 'object');
+    assert(result.status === 202);
+    assert(result.data === '');
+    assert(typeof result.headers === 'object');
+  });
 
   it('should be the correct response to the request', async () => {
     sinon.stub(request, 'request').resolves({
       status: 200,
       data: {
         statusCode: 200,
-        body: JSON.stringify({ message: 'json' }),
+        body: JSON.stringify({message: 'json'}),
         isBase64Encoded: false,
         headers: {
-          'content-type': 'application/json; charset=utf-8'
-        }
+          'content-type': 'application/json; charset=utf-8',
+        },
       },
-      headers: { 'content-type': 'application/json; charset=utf-8' },
+      headers: {'content-type': 'application/json; charset=utf-8'},
       statusText: '',
-      url: ''
-    })
+      url: '',
+    });
 
     const result = await initInvoke({
       qualifier: 'PROD',
@@ -59,39 +59,39 @@ describe('test/invoke.test.ts', () => {
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
-      timeout: 3000
+      timeout: 3000,
     })({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
       event: {
         type: 'GATEWAY',
-        data: { queryParameters: { name: 'snowflake' } }
-      }
-    })
+        data: {queryParameters: {name: 'snowflake'}},
+      },
+    });
 
-    sinon.restore()
+    sinon.restore();
 
-    assert(typeof result === 'object')
-    assert(result.status === 200)
-    assert((result.data as Record<string, unknown>).message === 'json')
-    assert(typeof result.headers === 'object')
-  })
+    assert(typeof result === 'object');
+    assert(result.status === 200);
+    assert((result.data as Record<string, unknown>).message === 'json');
+    assert(typeof result.headers === 'object');
+  });
 
   it('should be the result of an abnormal request response', async () => {
     sinon.stub(request, 'request').resolves({
       status: 200,
       data: {
         statusCode: 400,
-        body: JSON.stringify({ statusCode: 400, message: 'Bad Request.' }),
+        body: JSON.stringify({statusCode: 400, message: 'Bad Request.'}),
         isBase64Encoded: false,
         headers: {
-          'content-type': 'application/json; charset=utf-8'
-        }
+          'content-type': 'application/json; charset=utf-8',
+        },
       },
-      headers: { 'content-type': 'application/json; charset=utf-8' },
+      headers: {'content-type': 'application/json; charset=utf-8'},
       statusText: '',
-      url: ''
-    })
+      url: '',
+    });
 
     try {
       await initInvoke({
@@ -102,35 +102,35 @@ describe('test/invoke.test.ts', () => {
         accountId: '1235555677',
         accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
         accessSecretKey: 'MTIzNTU1NTY3Nw==',
-        timeout: 3000
+        timeout: 3000,
       })({
         serviceName: 'leaf-x@snowflake',
         functionName: 'snowflake',
         event: {
           type: 'GATEWAY',
-          data: { queryParameters: { name: 'snowflake' } }
-        }
-      })
+          data: {queryParameters: {name: 'snowflake'}},
+        },
+      });
     } catch (error) {
-      sinon.restore()
+      sinon.restore();
 
-      assert(typeof error === 'object')
-      assert(error.statusCode === 400)
-      assert(error.message === 'Bad Request.')
+      assert(typeof error === 'object');
+      assert(error.statusCode === 400);
+      assert(error.message === 'Bad Request.');
     }
-  })
+  });
 
   it('should be the result of response to service error request', async () => {
     sinon.stub(request, 'request').rejects({
       status: 404,
-      data: { ErrorMessage: 'Bad Request.' },
+      data: {ErrorMessage: 'Bad Request.'},
       headers: {
         'content-type': 'application/json; charset=utf-8',
-        'x-fc-request-id': '87af2ed2-5205-4a13-9ee1-90ceaf51eee3'
+        'x-fc-request-id': '87af2ed2-5205-4a13-9ee1-90ceaf51eee3',
       },
       statusText: '',
-      url: ''
-    })
+      url: '',
+    });
 
     try {
       await initInvoke({
@@ -141,21 +141,21 @@ describe('test/invoke.test.ts', () => {
         accountId: '1235555677',
         accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
         accessSecretKey: 'MTIzNTU1NTY3Nw==',
-        timeout: 3000
+        timeout: 3000,
       })({
         serviceName: 'leaf-x@snowflake',
         functionName: 'snowflake',
         event: {
           type: 'GATEWAY',
-          data: { queryParameters: { name: 'snowflake' } }
-        }
-      })
+          data: {queryParameters: {name: 'snowflake'}},
+        },
+      });
     } catch (error) {
-      sinon.restore()
+      sinon.restore();
 
-      assert(typeof error === 'object')
-      assert(error.status === 404)
-      assert(error.code === 404)
+      assert(typeof error === 'object');
+      assert(error.status === 404);
+      assert(error.code === 404);
     }
-  })
-})
+  });
+});

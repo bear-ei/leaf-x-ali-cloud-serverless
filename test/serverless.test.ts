@@ -1,5 +1,5 @@
-import * as assert from 'assert'
-import { serverless } from '../src/serverless'
+import * as assert from 'assert';
+import {serverless} from '../src/serverless';
 
 describe('test/serverless.test.ts', () => {
   it('should be the result of the serverless default options', async () => {
@@ -7,13 +7,13 @@ describe('test/serverless.test.ts', () => {
       accountId: '1234455',
       accessId: 'MTIzNDQ1NQ==',
       accessSecretKey: 'MTIzMjEz',
-      region: 'cn-shanghai'
-    })
+      region: 'cn-shanghai',
+    });
 
-    assert(typeof result === 'object')
-    assert(typeof result.invoke === 'function')
-    assert(typeof result.warmUp === 'function')
-  })
+    assert(typeof result === 'object');
+    assert(typeof result.invoke === 'function');
+    assert(typeof result.warmUp === 'function');
+  });
 
   it('should be the result of the serverless customization options', async () => {
     const result = serverless({
@@ -25,11 +25,11 @@ describe('test/serverless.test.ts', () => {
       version: '2016-08-15',
       qualifier: 'PROD',
       internal: false,
-      secure: false
-    })
+      secure: false,
+    });
 
-    assert(typeof result === 'object')
-    assert(typeof result.invoke === 'function')
-    assert(typeof result.warmUp === 'function')
-  })
-})
+    assert(typeof result === 'object');
+    assert(typeof result.invoke === 'function');
+    assert(typeof result.warmUp === 'function');
+  });
+});

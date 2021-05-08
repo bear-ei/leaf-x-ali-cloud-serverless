@@ -1,5 +1,5 @@
-import * as assert from 'assert'
-import { getToken } from '../src/token'
+import * as assert from 'assert';
+import {getToken} from '../src/token';
 
 describe('test/token.test.ts', () => {
   it('should be the result of getting request token', async () => {
@@ -8,9 +8,9 @@ describe('test/token.test.ts', () => {
       accessSecretKey: 'MTIz',
       method: 'GET',
       url: 'https://github.com/',
-      headers: { 'content-type': 'application/octet-stream; charset=utf-8' }
-    })
+      headers: {'content-type': 'application/octet-stream; charset=utf-8'},
+    });
 
-    assert(typeof result === 'string')
-  })
-})
+    assert(typeof result === 'string');
+  });
+});

@@ -1,19 +1,18 @@
-import * as crypto from 'crypto'
+import * as crypto from 'crypto';
 import {
   GetCanonicalHeadersString,
   GetRequestHeaders,
-  InitSpliceCanonicalHeaders
-} from './interface/headers.interface'
+  InitSpliceCanonicalHeaders,
+} from './interface/headers.interface';
 
-const initSpliceCanonicalHeaders: InitSpliceCanonicalHeaders = (headers) => (
-  key
-) => `${key}:${headers[key]}`
+const initSpliceCanonicalHeaders: InitSpliceCanonicalHeaders = headers => key =>
+  `${key}:${headers[key]}`;
 
 export const getRequestHeaders: GetRequestHeaders = ({
   content,
   host,
   accountId,
-  async
+  async,
 }) => ({
   accept: '*/*',
   date: new Date().toUTCString(),
@@ -25,18 +24,18 @@ export const getRequestHeaders: GetRequestHeaders = ({
   'content-length': Buffer.isBuffer(content)
     ? `${content.length}`
     : `${Buffer.from(content).length}`,
-  ...(async ? { 'x-fc-invocation-type': 'Async' } : undefined)
-})
+  ...(async ? {'x-fc-invocation-type': 'Async'} : undefined),
+});
 
 export const getCanonicalHeadersString: GetCanonicalHeadersString = (
   prefix,
   headers
 ) => {
-  const spliceCanonicalHeaders = initSpliceCanonicalHeaders(headers)
+  const spliceCanonicalHeaders = initSpliceCanonicalHeaders(headers);
 
   return Object.keys(headers)
-    .filter((key) => key.startsWith(prefix))
+    .filter(key => key.startsWith(prefix))
     .sort()
     .map(spliceCanonicalHeaders)
-    .join('\n')
-}
+    .join('\n');
+};

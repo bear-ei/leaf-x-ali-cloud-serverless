@@ -1,9 +1,9 @@
-import { EventType as EventTypeEnum } from './enum/event.enum'
+import {EventType as EventTypeEnum} from './enum/event.enum';
 import {
   HandleEvent,
   HandleEventMethod,
-  HandleGatewayEvent
-} from './interface/event.interface'
+  HandleGatewayEvent,
+} from './interface/event.interface';
 
 const handleGatewayEvent: HandleGatewayEvent = ({
   httpMethod = 'GET',
@@ -11,21 +11,21 @@ const handleGatewayEvent: HandleGatewayEvent = ({
   queryParameters = {},
   pathParameters = {},
   body = {},
-  headers = {}
+  headers = {},
 }) => {
   const requestHeaders = {
     ...(!headers['content-type']
-      ? { 'content-type': 'application/json; charset=utf-8' }
+      ? {'content-type': 'application/json; charset=utf-8'}
       : undefined),
-    ...(!headers.accept ? { accept: '*/*' } : undefined),
-    ...headers
-  } as Record<string, unknown>
+    ...(!headers.accept ? {accept: '*/*'} : undefined),
+    ...headers,
+  } as Record<string, unknown>;
 
   const data = (requestHeaders['content-type'] as string).startsWith(
     'application/json'
   )
     ? JSON.stringify(body)
-    : body
+    : body;
 
   return {
     httpMethod,
@@ -33,14 +33,14 @@ const handleGatewayEvent: HandleGatewayEvent = ({
     queryParameters,
     pathParameters,
     body: data,
-    headers: requestHeaders
-  }
-}
+    headers: requestHeaders,
+  };
+};
 
-export const handleEvent: HandleEvent = ({ type, data }) => {
+export const handleEvent: HandleEvent = ({type, data}) => {
   const handleEventMethod: HandleEventMethod = Object.freeze({
-    gateway: handleGatewayEvent
-  })
+    gateway: handleGatewayEvent,
+  });
 
-  return handleEventMethod[EventTypeEnum[type]](data)
-}
+  return handleEventMethod[EventTypeEnum[type]](data);
+};

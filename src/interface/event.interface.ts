@@ -1,7 +1,7 @@
 /**
  * Event type.
  */
-export type EventType = 'GATEWAY'
+export type EventType = 'GATEWAY';
 
 /**
  * Trigger events.
@@ -10,12 +10,12 @@ export interface TriggerEvent {
   /**
    * Event type.
    */
-  type: EventType
+  type: EventType;
 
   /**
    * Handle gateway event options.
    */
-  data: HandleGatewayEventOptions
+  data: HandleGatewayEventOptions;
 }
 
 /**
@@ -31,7 +31,7 @@ export type HttpMethod =
   | 'PATCH'
   | 'PURGE'
   | 'LINK'
-  | 'UNLINK'
+  | 'UNLINK';
 
 /**
  * Handle event.
@@ -40,7 +40,7 @@ export type HttpMethod =
  * @return HandleGatewayEventOptions
  */
 export interface HandleEvent {
-  (options: TriggerEvent): HandleGatewayEventOptions
+  (options: TriggerEvent): HandleGatewayEventOptions;
 }
 
 /**
@@ -50,32 +50,32 @@ export interface HandleGatewayEventOptions {
   /**
    * HTTP request method.
    */
-  httpMethod?: HttpMethod
+  httpMethod?: HttpMethod;
 
   /**
    * Whether to base64 encode the request body or not.
    */
-  isBase64Encoded?: boolean
+  isBase64Encoded?: boolean;
 
   /**
    * Query parameters.
    */
-  queryParameters?: Record<string, unknown>
+  queryParameters?: Record<string, unknown>;
 
   /**
    * Path parameters.
    */
-  pathParameters?: Record<string, string>
+  pathParameters?: Record<string, string>;
 
   /**
    * Request body.
    */
-  body?: unknown
+  body?: unknown;
 
   /**
    * Request headers.
    */
-  headers?: Record<string, unknown>
+  headers?: Record<string, unknown>;
 }
 
 /**
@@ -85,7 +85,7 @@ export interface HandleEventMethod {
   /**
    * Handle gateway event.
    */
-  readonly gateway: HandleGatewayEvent
+  readonly gateway: HandleGatewayEvent;
 }
 
 /**
@@ -95,5 +95,5 @@ export interface HandleEventMethod {
  * @return HandleGatewayEventOptions
  */
 export interface HandleGatewayEvent {
-  (options: HandleGatewayEventOptions): HandleGatewayEventOptions
+  (options: HandleGatewayEventOptions): HandleGatewayEventOptions;
 }

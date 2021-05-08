@@ -5,22 +5,22 @@ export interface HandleErrorOptions {
   /**
    * Service name.
    */
-  serviceName: string
+  serviceName: string;
 
   /**
    * Function name.
    */
-  functionName: string
+  functionName: string;
 
   /**
    * Current runtime environment.
    */
-  env: string
+  env: string;
 
   /**
    * Request ID.
    */
-  requestId?: string
+  requestId?: string;
 }
 
 /**
@@ -32,27 +32,27 @@ export interface HandleErrorResult extends HandleErrorOptions {
   /**
    * Error response status code.
    */
-  status: number
+  status: number;
 
   /**
    * Error business status code.
    */
-  code: number
+  code: number;
 
   /**
    * Error message.
    */
-  message: string
+  message: string;
 
   /**
    * Error details.
    */
-  details?: unknown
+  details?: unknown;
 
   /**
    * The function invoke chain where the error occurred.
    */
-  apis?: HandleErrorOptions[]
+  apis?: HandleErrorOptions[];
 }
 
 /**
@@ -66,7 +66,7 @@ export interface HandleError {
   (
     error: Record<string, unknown>,
     options: HandleErrorOptions
-  ): HandleErrorResult
+  ): HandleErrorResult;
 }
 
 /**
@@ -76,7 +76,7 @@ export interface HandleError {
  * @return HandleError
  */
 export interface InitHandleServerlessError {
-  (options: HandleErrorOptions): HandleServerError
+  (options: HandleErrorOptions): HandleServerError;
 }
 
 /**
@@ -86,5 +86,5 @@ export interface InitHandleServerlessError {
  * @return never
  */
 export interface HandleServerError {
-  (error: Record<string, unknown>): never
+  (error: Record<string, unknown>): never;
 }

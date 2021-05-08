@@ -1,41 +1,42 @@
-import { initHandleServerlessError } from './error'
-import { handleEvent } from './event'
-import { getRequestHeaders } from './headers'
+import {initHandleServerlessError} from './error';
+import {handleEvent} from './event';
+import {getRequestHeaders} from './headers';
 import {
   ExecInvoke,
   InitInvoke,
   InitInvokeError,
-  InitRetryInvoke
-} from './interface/invoke.interface'
-import { request } from './request'
-import { response } from './response'
-import { getToken } from './token'
+  InitRetryInvoke,
+} from './interface/invoke.interface';
+import {request} from './request';
+import {response} from './response';
+import {getToken} from './token';
 
-const execInvoke: ExecInvoke = (retryNumber, { url, options }) => {
-  const retryInvoke = initRetryInvoke(retryNumber, { url, options })
+const execInvoke: ExecInvoke = (retryNumber, {url, options}) => {
+  const retryInvoke = initRetryInvoke(retryNumber, {url, options});
 
-  return request(url, options).catch(retryInvoke)
-}
+  return request(url, options).catch(retryInvoke);
+};
 
-const initRetryInvoke: InitRetryInvoke = (retryNumber, { url, options }) => (
-  error
-) => {
+const initRetryInvoke: InitRetryInvoke = (
+  retryNumber,
+  {url, options}
+) => error => {
   if (retryNumber > 0) {
-    retryNumber--
+    retryNumber--;
 
-    return execInvoke(retryNumber, { url, options })
+    return execInvoke(retryNumber, {url, options});
   }
 
-  throw error
-}
+  throw error;
+};
 
-const initInvokeError: InitInvokeError = (options) => (error) => {
+const initInvokeError: InitInvokeError = options => error => {
   const requestId = (error as Record<string, Record<string, unknown>>).headers[
     'x-fc-request-id'
-  ] as string
+  ] as string;
 
-  return initHandleServerlessError({ ...options, requestId })(error)
-}
+  return initHandleServerlessError({...options, requestId})(error);
+};
 
 export const initInvoke: InitInvoke = ({
   qualifier,
@@ -45,44 +46,44 @@ export const initInvoke: InitInvoke = ({
   accountId,
   accessSecretKey,
   accessId,
-  timeout
-}) => async ({ serviceName, functionName, async = false, event }) => {
-  const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`
-  const url = `${endpoint}/${version}${path}`
-  const method = 'POST'
-  const body = JSON.stringify(handleEvent(event))
+  timeout,
+}) => async ({serviceName, functionName, async = false, event}) => {
+  const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`;
+  const url = `${endpoint}/${version}${path}`;
+  const method = 'POST';
+  const body = JSON.stringify(handleEvent(event));
   const requestHeaders = getRequestHeaders({
     content: body,
     host,
     accountId,
-    async
-  })
+    async,
+  });
 
   const authorization = getToken({
     accessId,
     accessSecretKey,
     method,
     url,
-    headers: requestHeaders
-  })
+    headers: requestHeaders,
+  });
 
   const execInvokeOptions = {
     url,
     options: {
       method,
-      headers: { authorization, ...requestHeaders },
+      headers: {authorization, ...requestHeaders},
       body,
-      timeout
-    }
-  }
+      timeout,
+    },
+  };
 
   const invokeError = initInvokeError({
     serviceName,
     functionName,
-    env: qualifier
-  })
+    env: qualifier,
+  });
 
-  const result = await execInvoke(3, execInvokeOptions).catch(invokeError)
+  const result = await execInvoke(3, execInvokeOptions).catch(invokeError);
 
-  return response({ type: event.type, response: result })
-}
+  return response({type: event.type, response: result});
+};

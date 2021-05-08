@@ -1,5 +1,5 @@
-import { HandleResponseResult } from '@leaf-x/fetch'
-import { EventType } from './event.interface'
+import {HandleResponseResult} from '@leaf-x/fetch';
+import {EventType} from './event.interface';
 
 /**
  * Response event.
@@ -8,12 +8,12 @@ export interface ResponseEvent {
   /**
    * Event type.
    */
-  type: EventType
+  type: EventType;
 
   /**
    * Handle the request response result.
    */
-  response: HandleResponseResult
+  response: HandleResponseResult;
 }
 
 /**
@@ -23,17 +23,17 @@ export interface ResponseResult {
   /**
    * Response data.
    */
-  data: unknown
+  data: unknown;
 
   /**
    * Response status code.
    */
-  status: number
+  status: number;
 
   /**
    * Response headers.
    */
-  headers: Record<string, unknown>
+  headers: Record<string, unknown>;
 }
 
 /**
@@ -43,7 +43,7 @@ export interface ResponseResult {
  * @return ResponseResult | HandleResponseResult
  */
 export interface Response {
-  (options: ResponseEvent): ResponseResult | HandleResponseResult
+  (options: ResponseEvent): ResponseResult | HandleResponseResult;
 }
 
 /**
@@ -53,22 +53,22 @@ export interface HandleGatewayResponseOptions {
   /**
    * Gateway response status code.
    */
-  statusCode: number
+  statusCode: number;
 
   /**
    * Whether to base64 encode the request body or not.
    */
-  isBase64Encoded: boolean
+  isBase64Encoded: boolean;
 
   /**
    * Gateway response headers.
    */
-  headers: Record<string, unknown>
+  headers: Record<string, unknown>;
 
   /**
    * Gateway response body.
    */
-  body: unknown
+  body: unknown;
 }
 
 /**
@@ -78,7 +78,7 @@ export interface HandleResponseMethod {
   /**
    * Handle gateway response.
    */
-  readonly gateway: HandleGatewayResponse
+  readonly gateway: HandleGatewayResponse;
 }
 
 /**
@@ -88,5 +88,5 @@ export interface HandleResponseMethod {
  * @return ResponseResult
  */
 export interface HandleGatewayResponse {
-  (options: HandleGatewayResponseOptions): ResponseResult
+  (options: HandleGatewayResponseOptions): ResponseResult;
 }
