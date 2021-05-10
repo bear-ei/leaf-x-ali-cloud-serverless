@@ -20,7 +20,8 @@ export const handleError: HandleError = (
     ? currentApis.concat(err.apis)
     : currentApis;
 
-  return Object.assign({}, err, {
+  return {
+    ...err,
     status,
     code,
     serviceName,
@@ -29,7 +30,7 @@ export const handleError: HandleError = (
     message,
     env,
     apis,
-  });
+  };
 };
 
 export const initHandleServerlessError: InitHandleServerlessError = options => error => {
