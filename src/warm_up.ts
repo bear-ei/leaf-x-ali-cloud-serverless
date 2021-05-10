@@ -13,7 +13,7 @@ const initExecWarmUp: InitExecWarmUp = ({serviceName, options}) => {
         data: {httpMethod: 'OPTIONS', headers: {'x-warm-up': 'warmUp'}},
       },
     })
-      .then(result => Object.assign({}, result, {serviceName, functionName}))
+      .then(result => ({...result, serviceName, functionName}))
       .catch(error => error);
 };
 
