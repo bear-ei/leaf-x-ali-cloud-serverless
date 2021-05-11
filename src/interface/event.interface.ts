@@ -36,11 +36,11 @@ export type HttpMethod =
 /**
  * Handle event.
  *
- * @param options TriggerEvent
+ * @param events TriggerEvent
  * @return HandleGatewayEventOptions
  */
 export interface HandleEvent {
-  (options: TriggerEvent): HandleGatewayEventOptions;
+  (events: TriggerEvent): HandleGatewayEventOptions;
 }
 
 /**

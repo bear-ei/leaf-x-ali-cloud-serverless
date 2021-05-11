@@ -24,6 +24,10 @@ export interface InvokeOptions {
   async?: boolean;
 }
 
+export interface InitExecInvoke {
+  (options: InitInvokeOptions): ExecInvoke;
+}
+
 /**
  * Execute invoke options.
  */
@@ -31,7 +35,12 @@ export interface ExecInvokeOptions {
   /**
    * Initialize the fetch options.
    */
-  options: FetchOptions;
+  options: FetchOptions & {
+    /**
+     * Whether to perform asynchronous invoke.
+     * */
+    async?: boolean;
+  };
 
   /**
    * Invoke URL address.
@@ -62,6 +71,21 @@ export interface ExecInvoke {
 }
 
 /**
+ * Initialize the retry invoke options.
+ */
+export interface InitRetryInvokeOptions {
+  /**
+   * The number of retries after failed invoke.
+   */
+  retryNumber: number;
+
+  /**
+   * Initialize invoke options.
+   */
+  initInvokeOptions: InitInvokeOptions;
+}
+
+/**
  * Initialize the retry invoke.
  *
  * @param retryOptions  RetryOptions
@@ -69,7 +93,7 @@ export interface ExecInvoke {
  * @return RetryInvoke
  */
 export interface InitRetryInvoke {
-  (retryOptions: RetryOptions, options: ExecInvokeOptions): RetryInvoke;
+  (init: InitRetryInvokeOptions, options: ExecInvokeOptions): RetryInvoke;
 }
 
 /**
@@ -144,7 +168,7 @@ export interface Invoke {
  * @return Invoke
  */
 export interface InitInvoke {
-  (config: InitInvokeOptions): Invoke;
+  (options: InitInvokeOptions): Invoke;
 }
 
 /**

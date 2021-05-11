@@ -39,11 +39,11 @@ export interface ResponseResult {
 /**
  * Response.
  *
- * @param options ResponseEvent
+ * @param events ResponseEvent
  * @return ResponseResult | HandleResponseResult
  */
 export interface Response {
-  (options: ResponseEvent): ResponseResult | HandleResponseResult;
+  (events: ResponseEvent): ResponseResult | HandleResponseResult;
 }
 
 /**

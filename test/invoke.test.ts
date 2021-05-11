@@ -5,9 +5,15 @@ import * as request from '../src/request';
 
 describe('test/invoke.test.ts', () => {
   it('should be the result of an asynchronous invoke', async () => {
-    sinon
-      .stub(request, 'request')
-      .resolves({status: 202, data: '', headers: {}, statusText: '', url: ''});
+    sinon.stub(request, 'initRequest').returns(async () => {
+      return {
+        status: 202,
+        data: '',
+        headers: {},
+        statusText: '',
+        url: '',
+      };
+    });
 
     const result = await initInvoke({
       qualifier: 'PROD',
@@ -36,7 +42,7 @@ describe('test/invoke.test.ts', () => {
   });
 
   it('should be the correct response to the request', async () => {
-    sinon.stub(request, 'request').resolves({
+    sinon.stub(request, 'initRequest').returns(async () => ({
       status: 200,
       data: {
         statusCode: 200,
@@ -49,7 +55,7 @@ describe('test/invoke.test.ts', () => {
       headers: {'content-type': 'application/json; charset=utf-8'},
       statusText: '',
       url: '',
-    });
+    }));
 
     const result = await initInvoke({
       qualifier: 'PROD',
@@ -78,7 +84,7 @@ describe('test/invoke.test.ts', () => {
   });
 
   it('should be the result of an abnormal request response', async () => {
-    sinon.stub(request, 'request').resolves({
+    sinon.stub(request, 'initRequest').returns(async () => ({
       status: 200,
       data: {
         statusCode: 400,
@@ -91,7 +97,7 @@ describe('test/invoke.test.ts', () => {
       headers: {'content-type': 'application/json; charset=utf-8'},
       statusText: '',
       url: '',
-    });
+    }));
 
     try {
       await initInvoke({
@@ -121,16 +127,18 @@ describe('test/invoke.test.ts', () => {
   });
 
   it('should be the result of response to service error request', async () => {
-    sinon.stub(request, 'request').rejects({
-      status: 404,
-      data: {ErrorMessage: 'Bad Request.'},
-      headers: {
-        'content-type': 'application/json; charset=utf-8',
-        'x-fc-request-id': '87af2ed2-5205-4a13-9ee1-90ceaf51eee3',
-      },
-      statusText: '',
-      url: '',
-    });
+    sinon.stub(request, 'initRequest').returns(async () =>
+      Promise.reject({
+        status: 404,
+        data: {ErrorMessage: 'Bad Request.'},
+        headers: {
+          'content-type': 'application/json; charset=utf-8',
+          'x-fc-request-id': '87af2ed2-5205-4a13-9ee1-90ceaf51eee3',
+        },
+        statusText: '',
+        url: '',
+      })
+    );
 
     try {
       await initInvoke({
