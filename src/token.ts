@@ -16,7 +16,7 @@ const getSignString: GetSignString = ({method, url, headers}) => {
     {prefix: 'x-fc-'},
     headers
   );
-  const pathname = decodeURIComponent(new URL(url).pathname);
+  const pathname = encodeURI(new URL(url).pathname);
 
   return [
     method,
