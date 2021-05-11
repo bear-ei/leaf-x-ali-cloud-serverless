@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import {initRequest} from '../src/request';
 
 describe('test/request.test.ts', () => {
-  it('should be the result of response status 200', async () => {
+  it('should be the result of a default option request', async () => {
     const result = await initRequest({
       host: '',
       accountId: '213',
@@ -13,7 +13,7 @@ describe('test/request.test.ts', () => {
     assert(result.status === 200);
   });
 
-  it('should be the result of response status 200 xxx', async () => {
+  it('should be the result of a custom option request', async () => {
     const result = await initRequest({
       host: '',
       accountId: '213',

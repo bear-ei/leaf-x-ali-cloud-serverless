@@ -16,7 +16,6 @@ const getSignString: GetSignString = ({method, url, headers}) => {
     {prefix: 'x-fc-'},
     headers
   );
-  const pathname = encodeURI(new URL(url).pathname);
 
   return [
     method,
@@ -24,7 +23,7 @@ const getSignString: GetSignString = ({method, url, headers}) => {
     headers['content-type'],
     headers['date'],
     canonicalHeaderString,
-    pathname,
+    encodeURI(new URL(url).pathname),
   ].join('\n');
 };
 

@@ -17,11 +17,9 @@ const initExecWarmUp: InitExecWarmUp = ({serviceName, options}) => {
       .catch(error => error);
 };
 
-export const initWarmUp: InitWarmUp = invokeOptions => (
-  serviceName,
-  options
-) => {
-  const execWarmUp = initExecWarmUp({serviceName, options: invokeOptions});
+export const initWarmUp: InitWarmUp =
+  invokeOptions => (serviceName, options) => {
+    const execWarmUp = initExecWarmUp({serviceName, options: invokeOptions});
 
-  return Promise.all(options.map(execWarmUp));
-};
+    return Promise.all(options.map(execWarmUp));
+  };

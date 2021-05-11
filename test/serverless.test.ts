@@ -32,32 +32,4 @@ describe('test/serverless.test.ts', () => {
     assert(typeof result.invoke === 'function');
     assert(typeof result.warmUp === 'function');
   });
-
-  //   it('Should be the result of cc.', async () => {
-  //     const {invoke: i} = serverless({
-  //       accountId: '1513153060849486',
-  //       accessId: 'LTAI4Fd5Chf5FFaQBCatShm3',
-  //       accessSecretKey: '24GBZFnD1FL6a6vSpBcxnc2S3tPjDk',
-  //       region: 'cn-shanghai',
-  //       internal: false,
-  //       qualifier: 'DEV',
-  //     });
-
-  //     const result = await i({
-  //       serviceName: 'ThalloAttendances',
-  //       functionName: 'attendanceIndex',
-  //       event: {
-  //         type: 'GATEWAY',
-  //         data: {
-  //           httpMethod: 'GET',
-  //           queryParameters: {isCount: false},
-  //           pathParameters: {},
-  //           headers: {'x-service': 'service'},
-  //         },
-  //       },
-  //       async: false,
-  //     }).catch(err => console.info(err));
-
-  //     console.info(result);
-  //   });
 });

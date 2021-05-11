@@ -33,6 +33,7 @@ export const handleError: HandleError = (
   };
 };
 
-export const initHandleServerlessError: InitHandleServerlessError = options => error => {
-  throw handleError(error, options);
-};
+export const initHandleServerlessError: InitHandleServerlessError =
+  options => error => {
+    throw handleError(error, options);
+  };

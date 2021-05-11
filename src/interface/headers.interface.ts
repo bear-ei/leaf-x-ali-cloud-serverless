@@ -30,7 +30,7 @@ export interface GetRequestHeadersOptions {
  * @return Record<string, string>
  */
 export interface GetRequestHeaders {
-  (options: GetRequestHeadersOptions): Record<string, unknown>;
+  (options: GetRequestHeadersOptions): Record<string, string>;
 }
 
 /**
@@ -46,12 +46,12 @@ export interface PrefixOptions {
 /**
  * Get the canonical request string.
  *
- * @param prefixOptions     PrefixOptions
- * @param headers           Request headers.
+ * @param prefix     PrefixOptions
+ * @param headers    Request headers.
  * @return string
  */
 export interface GetCanonicalHeadersString {
-  (prefixOptions: PrefixOptions, headers: Record<string, unknown>): string;
+  (prefix: PrefixOptions, headers: Record<string, unknown>): string;
 }
 
 /**

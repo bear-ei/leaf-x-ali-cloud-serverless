@@ -2,10 +2,10 @@ import {Invoke} from './invoke.interface';
 import {WarmUp} from './warm_up.interface';
 
 /**
- * Serverless options.
+ * Ali cloud options.
  */
-export interface ServerlessOptions {
-  /**
+export interface AliCloudOptions {
+  /*
    * Ali cloud account ID.
    */
   accountId: string;
@@ -19,7 +19,14 @@ export interface ServerlessOptions {
    * Ali cloud access key.
    */
   accessSecretKey: string;
+}
 
+/**
+ * Serverless options.
+ *
+ * @extends AliCloudOptions
+ */
+export interface ServerlessOptions extends AliCloudOptions {
   /**
    * Region where serverless is located.
    */

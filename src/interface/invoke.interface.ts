@@ -1,11 +1,16 @@
 import {FetchOptions, HandleResponseResult} from '@leaf-x/fetch';
 import {TriggerEvent} from './event.interface';
+import {InitRequestOptions} from './request.interface';
 import {ResponseResult} from './response.interface';
+import {AliCloudOptions} from './serverless.interface';
 
 /**
  * Invoke options.
  */
 export interface InvokeOptions {
+  /**
+   * Trigger events.
+   */
   event: TriggerEvent;
 
   /**
@@ -24,8 +29,14 @@ export interface InvokeOptions {
   async?: boolean;
 }
 
+/**
+ * Initialize the execute invoke.
+ *
+ * @param options InitRequestOptions
+ * @return ExecInvoke
+ */
 export interface InitExecInvoke {
-  (options: InitInvokeOptions): ExecInvoke;
+  (options: InitRequestOptions): ExecInvoke;
 }
 
 /**
@@ -48,10 +59,12 @@ export interface ExecInvokeOptions {
   url: string;
 }
 
+/**
+ * Retry options.
+ */
 export interface RetryOptions {
   /**
    * The number of retries after failed invoke.
-   *
    */
   retryNumber: number;
 }
@@ -59,13 +72,13 @@ export interface RetryOptions {
 /**
  * Execute the invoke.
  *
- * @param retryOptions  RetryOptions
+ * @param retry         RetryOptions
  * @param options       ExecInvokeOptions
  * @return HandleResponseResult
  */
 export interface ExecInvoke {
   (
-    retryOptions: RetryOptions,
+    retry: RetryOptions,
     options: ExecInvokeOptions
   ): Promise<HandleResponseResult>;
 }
@@ -80,20 +93,20 @@ export interface InitRetryInvokeOptions {
   retryNumber: number;
 
   /**
-   * Initialize invoke options.
+   * Initialize request options.
    */
-  initInvokeOptions: InitInvokeOptions;
+  initRequestOptions: InitRequestOptions;
 }
 
 /**
  * Initialize the retry invoke.
  *
- * @param retryOptions  RetryOptions
+ * @param retry         InitRetryInvokeOptions
  * @param options       ExecInvokeOptions
  * @return RetryInvoke
  */
 export interface InitRetryInvoke {
-  (init: InitRetryInvokeOptions, options: ExecInvokeOptions): RetryInvoke;
+  (retry: InitRetryInvokeOptions, options: ExecInvokeOptions): RetryInvoke;
 }
 
 /**
@@ -108,23 +121,10 @@ export interface RetryInvoke {
 
 /**
  * Initialize invoke options.
+ *
+ * @extends AliCloudOptions
  */
-export interface InitInvokeOptions {
-  /**
-   * Ali cloud account ID.
-   */
-  accountId: string;
-
-  /**
-   * Ali cloud access ID.
-   */
-  accessId: string;
-
-  /**
-   * Ali cloud access key.
-   */
-  accessSecretKey: string;
-
+export interface InitInvokeOptions extends AliCloudOptions {
   /**
    * Serverless qualifier.
    */

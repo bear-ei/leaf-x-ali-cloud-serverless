@@ -1,28 +1,16 @@
 import {FetchOptions, HandleResponseResult} from '@leaf-x/fetch';
+import {AliCloudOptions} from './serverless.interface';
 
 /**
  * Initialize request options.
+ *
+ * @extends AliCloudOptions
  */
-export interface InitRequestOptions {
+export interface InitRequestOptions extends AliCloudOptions {
   /**
    * Serverless host.
    */
   host: string;
-
-  /**
-   * Ali cloud account ID.
-   */
-  accountId: string;
-
-  /**
-   * Ali cloud access key.
-   */
-  accessSecretKey: string;
-
-  /**
-   * Ali cloud access ID.
-   */
-  accessId: string;
 }
 
 /**

@@ -11,19 +11,15 @@ const handleGatewayEvent: HandleGatewayEvent = ({
   queryParameters = {},
   pathParameters = {},
   body = {},
-  headers = {},
+  headers,
 }) => {
-  const requestHeaders = {
-    ...(!headers['content-type']
-      ? {'content-type': 'application/json; charset=utf-8'}
-      : undefined),
-    ...(!headers.accept ? {accept: '*/*'} : undefined),
-    ...headers,
-  } as Record<string, unknown>;
+  const {
+    'content-type': contentType = 'application/json; charset=utf-8',
+    accept = '*/*',
+    ...args
+  } = headers ?? {};
 
-  const data = (requestHeaders['content-type'] as string).startsWith(
-    'application/json'
-  )
+  const data = (contentType as string).startsWith('application/json')
     ? JSON.stringify(body)
     : body;
 
@@ -33,7 +29,7 @@ const handleGatewayEvent: HandleGatewayEvent = ({
     queryParameters,
     pathParameters,
     body: data,
-    headers: requestHeaders,
+    headers: {'content-type': contentType, accept, ...args},
   };
 };
 
