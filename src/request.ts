@@ -6,7 +6,7 @@ import {getToken} from './token';
 
 export const initRequest: InitRequest =
   ({host, accountId, accessSecretKey, accessId}) =>
-  (url, options) => {
+  async (url, options) => {
     const {method = 'GET', body = '', timeout, async} = options ?? {};
     const headers = getRequestHeaders({
       content: body as string,

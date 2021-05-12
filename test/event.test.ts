@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import {handleEvent} from '../src/event';
 
 describe('test/event.test.ts', () => {
-  it('should be the result of the default input of the gateway event', async () => {
+  it('should be the result of a default gateway event', async () => {
     const result = handleEvent({type: 'GATEWAY', data: {}});
 
     assert(typeof result === 'object');
@@ -18,7 +18,7 @@ describe('test/event.test.ts', () => {
     assert(result.headers['accept'] === '*/*');
   });
 
-  it('should be the result of custom input for gateway event', async () => {
+  it('should be the result of a custom gateway event', async () => {
     const result = handleEvent({
       type: 'GATEWAY',
       data: {

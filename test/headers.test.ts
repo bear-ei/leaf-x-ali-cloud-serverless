@@ -6,14 +6,14 @@ describe('test/headers.test.ts', () => {
     const content = Buffer.from(JSON.stringify({data: 'This is request.'}));
     const result = getRequestHeaders({
       content,
-      host: 'https://github.com/',
+      host: 'github.com',
       accountId: '1787993',
     });
 
     assert(typeof result === 'object');
     assert(result['accept'] === '*/*');
     assert(typeof result['date'] === 'string');
-    assert(result['host'] === 'https://github.com/');
+    assert(result['host'] === 'github.com');
     assert((result['user-agent'] as string).startsWith('Node.js'));
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
@@ -25,7 +25,7 @@ describe('test/headers.test.ts', () => {
     const content = JSON.stringify({data: 'This is request.'});
     const result = getRequestHeaders({
       content,
-      host: 'https://github.com/',
+      host: 'github.com',
       accountId: '1787993',
       async: true,
     });
@@ -33,7 +33,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result === 'object');
     assert(result['accept'] === '*/*');
     assert(typeof result['date'] === 'string');
-    assert(result['host'] === 'https://github.com/');
+    assert(result['host'] === 'github.com');
     assert((result['user-agent'] as string).startsWith('Node.js'));
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
@@ -48,7 +48,7 @@ describe('test/headers.test.ts', () => {
       {
         accept: 'application/json; charset=utf-8',
         date: new Date().toUTCString(),
-        host: 'https://github.com/',
+        host: 'github.com',
         'user-agent': `Node.js/${process.version}`,
         'x-fc-account-id': '1787993',
         'content-type': 'application/octet-stream',

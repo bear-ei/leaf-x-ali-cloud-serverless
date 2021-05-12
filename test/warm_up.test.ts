@@ -13,9 +13,9 @@ describe('test/warmUp.test.ts', () => {
       headers: {'content-type': 'application/json; charset=utf-8'},
     }));
 
-    const result = await initWarmUp({
+    await initWarmUp({
       qualifier: 'PROD',
-      endpoint: 'https://github.com/',
+      endpoint: 'https://leaf-x.app',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
@@ -25,18 +25,18 @@ describe('test/warmUp.test.ts', () => {
     })('leaf-x@snowflake', [
       {type: 'GATEWAY', functionName: 'snowflake'},
       {type: 'GATEWAY', functionName: 'snowflakeIndex'},
-    ]);
+    ]).then(result => {
+      sinon.restore();
 
-    sinon.restore();
+      assert(Array.isArray(result));
+      assert(
+        result.some(result => {
+          const {status, data, headers} = result as ResponseResult;
 
-    assert(Array.isArray(result));
-    assert(
-      result.some(result => {
-        const {status, data, headers} = result as ResponseResult;
-
-        return status === 200 && data === '' && typeof headers === 'object';
-      })
-    );
+          return status === 200 && data === '' && typeof headers === 'object';
+        })
+      );
+    });
   });
 
   it('should be the result of failed warm-up', async () => {
@@ -48,9 +48,9 @@ describe('test/warmUp.test.ts', () => {
       };
     });
 
-    const result = await initWarmUp({
+    await initWarmUp({
       qualifier: 'PROD',
-      endpoint: 'https://github.com/',
+      endpoint: 'https://leaf-x.app',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
@@ -60,17 +60,19 @@ describe('test/warmUp.test.ts', () => {
     })('leaf-x@snowflake', [
       {type: 'GATEWAY', functionName: 'snowflake'},
       {type: 'GATEWAY', functionName: 'snowflakeIndex'},
-    ]);
+    ]).then(result => {
+      sinon.restore();
 
-    sinon.restore();
+      assert(Array.isArray(result));
+      assert(
+        result.some(result => {
+          const {status, code, message} = result as HandleErrorResult;
 
-    assert(Array.isArray(result));
-    assert(
-      result.some(result => {
-        const {status, code, message} = result as HandleErrorResult;
-
-        return status === 400 && code === 4000000 && message === 'Bad Request.';
-      })
-    );
+          return (
+            status === 400 && code === 4000000 && message === 'Bad Request.'
+          );
+        })
+      );
+    });
   });
 });

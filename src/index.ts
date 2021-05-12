@@ -13,6 +13,9 @@ export * from './interface/warm_up.interface';
 export * from './invoke';
 export * from './request';
 export * from './response';
-export * from './serverless';
 export * from './token';
 export * from './warm_up';
+export {serverless};
+import {serverless as relServerless} from './serverless';
+
+const serverless = relServerless;
