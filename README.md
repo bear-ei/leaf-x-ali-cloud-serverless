@@ -26,25 +26,22 @@ Ali cloud serverless access.
 import { serverless } from '@leaf-x/ali-cloud-serverless'
 
 const { invoke, warmUp } = serverless({
-  accountId: '89785723912113',
-  accessId: 'ODk3ODU3MjM5MTIxMTM=',
-  accessSecretKey: 'MTU4MzczNDMyNzMzMg==',
-  region: 'cn-chengdu'
+    accountId: '89785723912113',
+    accessId: 'ODk3ODU3MjM5MTIxMTM=',
+    accessSecretKey: 'MTU4MzczNDMyNzMzMg==',
+    region: 'cn-chengdu'
 })
 
 const invokeResult = invoke({
-    serviceName:"snowflake",
-    functionName:"IndexSnowflake"
+    serviceName: "snowflake",
+    functionName: "IndexSnowflake"
     type: 'GATEWAY',
     data: { queryParameters: { name: 'snowflake' } }
 })
-  .then((response) => response)
-  .catch((error) => error)
+    .then((result) => console.info(result))
 
- const warmUpResult = warmUp('snowflake', [
+
+const warmUpResult = warmUp('snowflake', [
     { type: 'GATEWAY', functionName: 'snowflake' }
-  ])
-
-console.info(invokeResult)
-console.info(warmUpResult)
+]).then((result) => console.info(result))
 ```
