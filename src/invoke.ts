@@ -35,7 +35,8 @@ const initRetryInvoke: InitRetryInvoke = (
 };
 
 const initInvokeError: InitInvokeError = options => error => {
-  const requestId = (error as Record<string, Record<string, unknown>>).headers[
+  console.info(error);
+  const requestId = (error as Record<string, Record<string, unknown>>)?.headers[
     'x-fc-request-id'
   ] as string;
 
@@ -46,6 +47,7 @@ export const initInvoke: InitInvoke = ({
   qualifier,
   endpoint,
   version,
+  timeout,
   ...args
 }) => async ({serviceName, functionName, async = false, event}) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`;
@@ -59,7 +61,7 @@ export const initInvoke: InitInvoke = ({
 
   const result = await initExecInvoke(args)(
     {retryNumber: 3},
-    {url, options: {method: 'POST', body, async}}
+    {url, options: {method: 'POST', body, async, timeout}}
   ).catch(invokeError);
 
   return response({type: event.type, response: result});

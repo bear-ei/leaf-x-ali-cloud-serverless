@@ -1,35 +1,18 @@
 import {fetch} from '@leaf-x/fetch';
-import {getRequestHeaders} from './headers';
-import {HttpMethod} from './interface/event.interface';
+import {initGetRequestHeaders} from './headers';
 import {InitRequest} from './interface/request.interface';
-import {getToken} from './token';
 
-export const initRequest: InitRequest = ({
-  host,
-  accountId,
-  accessSecretKey,
-  accessId,
-}) => async (url, options) => {
+export const initRequest: InitRequest = initRequestOptions => async (
+  url,
+  options
+) => {
   const {method = 'GET', body = '', timeout, async} = options ?? {};
-  const headers = getRequestHeaders({
+  const headers = initGetRequestHeaders(initRequestOptions)({
+    url,
+    method,
     content: body as string,
-    host,
-    accountId,
     async,
   });
 
-  const authorization = getToken({
-    accessId,
-    accessSecretKey,
-    method: method as HttpMethod,
-    url,
-    headers,
-  });
-
-  return fetch(url, {
-    method,
-    headers: {authorization, ...headers},
-    ...(body ? {body} : undefined),
-    timeout,
-  });
+  return fetch(url, {method, headers, ...(body ? {body} : undefined), timeout});
 };

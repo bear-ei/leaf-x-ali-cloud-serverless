@@ -1,3 +1,6 @@
+import {FetchOptions} from '@leaf-x/fetch';
+import {InitRequestOptions} from './request.interface';
+
 /**
  * Get request headers options.
  */
@@ -7,20 +10,28 @@ export interface GetRequestHeadersOptions {
    */
   content: string | Buffer;
 
-  /**
-   * Request host.
-   */
-  host: string;
+  method: FetchOptions['method'];
 
-  /**
-   * Ali cloud account ID.
-   */
-  accountId: string;
+  url: string;
+
+  //   /**
+  //    * Request host.
+  //    */
+  //   host: string;
+
+  //   /**
+  //    * Ali cloud account ID.
+  //    */
+  //   accountId: string;
 
   /**
    * Whether to perform asynchronous requests.
    */
   async?: boolean;
+}
+
+export interface InitGetRequestHeaders {
+  (options: InitRequestOptions): GetRequestHeaders;
 }
 
 /**

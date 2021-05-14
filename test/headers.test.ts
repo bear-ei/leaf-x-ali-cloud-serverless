@@ -1,45 +1,57 @@
 import * as assert from 'assert';
-import {getCanonicalHeadersString, getRequestHeaders} from '../src/headers';
+import {getCanonicalHeadersString, initGetRequestHeaders} from '../src/headers';
 
 describe('test/headers.test.ts', () => {
   it('should be the result of synchronous request headers', async () => {
     const content = Buffer.from(JSON.stringify({data: 'This is request.'}));
-    const result = getRequestHeaders({
-      content,
-      host: 'github.com',
+    const result = initGetRequestHeaders({
+      host: 'leaf-x.app',
       accountId: '1787993',
+      accessSecretKey: '5556123',
+      accessId: '58575729',
+    })({
+      url: 'https://leaf-x.app',
+      method: 'GET',
+      content,
     });
 
     assert(typeof result === 'object');
     assert(result['accept'] === '*/*');
     assert(typeof result['date'] === 'string');
-    assert(result['host'] === 'github.com');
+    assert(result['host'] === 'leaf-x.app');
     assert((result['user-agent'] as string).startsWith('Node.js'));
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
     assert(typeof result['content-md5'] === 'string');
     assert(result['content-type'] === 'application/json; charset=utf-8');
+    assert(typeof result['authorization'] === 'string');
   });
 
   it('should be the result of an asynchronous request headers', async () => {
     const content = JSON.stringify({data: 'This is request.'});
-    const result = getRequestHeaders({
-      content,
-      host: 'github.com',
+    const result = initGetRequestHeaders({
+      host: 'leaf-x.app',
       accountId: '1787993',
+      accessSecretKey: '5556123',
+      accessId: '58575729',
+    })({
+      url: 'https://leaf-x.app',
+      method: 'GET',
+      content,
       async: true,
     });
 
     assert(typeof result === 'object');
     assert(result['accept'] === '*/*');
     assert(typeof result['date'] === 'string');
-    assert(result['host'] === 'github.com');
+    assert(result['host'] === 'leaf-x.app');
     assert((result['user-agent'] as string).startsWith('Node.js'));
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
     assert(typeof result['content-md5'] === 'string');
     assert(result['x-fc-invocation-type'] === 'Async');
     assert(result['content-type'] === 'application/json; charset=utf-8');
+    assert(typeof result['authorization'] === 'string');
   });
 
   it('should be the result of getting canonical request string', async () => {
