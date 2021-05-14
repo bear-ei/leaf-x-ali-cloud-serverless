@@ -1,4 +1,4 @@
-# Serverless
+# Ali Cloud Serverless
 
 Ali cloud serverless access.
 
@@ -20,7 +20,7 @@ Ali cloud serverless access.
 | secure          | Boolean | false         | Whether to enable request protection, <br>if enabled https requests will be used, otherwise http requests will be used.</br> |
 | version         | String  | 2016-08-15    | Serverless api version.                                                                                                      |
 
-## Usage
+## Use
 
 ```typescript
 import { serverless } from '@leaf-x/ali-cloud-serverless'
