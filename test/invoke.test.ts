@@ -158,4 +158,34 @@ describe('test/invoke.test.ts', () => {
       assert(error.code === 404);
     });
   });
+
+  it('should be a timeout error', async () => {
+    sinon.stub(fetch, 'fetch').rejects({
+      message: {ErrorMessage: 'Bad Request.'},
+    });
+
+    await initInvoke({
+      qualifier: 'PROD',
+      endpoint: 'https://leaf-x.app',
+      version: '2016-10-17',
+      host: 'github.com',
+      accountId: '1235555677',
+      accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
+      accessSecretKey: 'MTIzNTU1NTY3Nw==',
+      timeout: 3000,
+    })({
+      serviceName: 'leaf-x@snowflake',
+      functionName: 'snowflake',
+      event: {
+        type: 'GATEWAY',
+        data: {queryParameters: {name: 'snowflake'}},
+      },
+    }).catch(error => {
+      sinon.restore();
+
+      assert(typeof error === 'object');
+      assert(error.status === 500);
+      assert(error.code === 500);
+    });
+  });
 });

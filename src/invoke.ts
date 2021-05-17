@@ -35,10 +35,8 @@ const initRetryInvoke: InitRetryInvoke = (
 };
 
 const initInvokeError: InitInvokeError = options => error => {
-  console.info(error);
-  const requestId = (error as Record<string, Record<string, unknown>>)?.headers[
-    'x-fc-request-id'
-  ] as string;
+  const headers = (error.headers ?? {}) as Record<string, unknown>;
+  const requestId = headers['x-fc-request-id'] as string;
 
   return initHandleServerlessError({...options, requestId})(error);
 };

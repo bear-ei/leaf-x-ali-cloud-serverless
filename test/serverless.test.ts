@@ -34,31 +34,32 @@ describe('test/serverless.test.ts', () => {
   });
 });
 
-it('Should be the result of cc.', async () => {
-  const {invoke: i} = serverless({
-    accountId: '1513153060849486',
-    accessId: 'LTAI4Fd5Chf5FFaQBCatShm3',
-    accessSecretKey: '24GBZFnD1FL6a6vSpBcxnc2S3tPjDk',
-    region: 'cn-shanghai',
-    internal: false,
-    qualifier: 'DEV',
-    timeout: 1,
-  });
+// it('Should be the result of cc.', async () => {
+//   const {invoke: i} = serverless({
+//     accountId: '1513153060849486',
+//     accessId: 'LTAI4Fd5Chf5FFaQBCatShm3',
+//     accessSecretKey: '24GBZFnD1FL6a6vSpBcxnc2S3tPjDk',
+//     region: 'cn-shanghai',
+//     internal: false,
+//     qualifier: 'DEV',
+//     timeout: 1,
+//   });
 
-  const result = await i({
-    serviceName: 'ThalloAttendances',
-    functionName: 'attendanceIndex',
-    event: {
-      type: 'GATEWAY',
-      data: {
-        httpMethod: 'GET',
-        queryParameters: {isCount: false},
-        pathParameters: {},
-        headers: {'x-service': 'service'},
-      },
-    },
-    async: false,
-  }).catch(err => console.info(err));
-
-  console.info(result);
-});
+//   await i({
+//     serviceName: 'ThalloAttendances',
+//     functionName: 'attendanceIndex',
+//     event: {
+//       type: 'GATEWAY',
+//       data: {
+//         httpMethod: 'GET',
+//         queryParameters: {isCount: false},
+//         pathParameters: {},
+//         headers: {
+//           'x-service': 'service',
+//           requestId: '4e0b374a-aae2-42ff-a9bd-e1a01904eb80',
+//         },
+//       },
+//     },
+//     async: false,
+//   }).catch(err => console.info(err));
+// });
