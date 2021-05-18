@@ -1,5 +1,5 @@
 /**
- * Handle the error options.
+ * Handle the wrong options.
  */
 export interface HandleErrorOptions {
   /**
@@ -13,29 +13,27 @@ export interface HandleErrorOptions {
   functionName: string;
 
   /**
-   * Current runtime environment.
+   * Runtime environment.
    */
   env: string;
 
   /**
-   * Request ID.
+   * Current request ID.
    */
   requestId?: string;
 }
 
 /**
- * Handle the error result.
- *
- * @extends HandleErrorOptions
+ * Handle error results.
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
-   * Error response status code.
+   * Response status code.
    */
   status: number;
 
   /**
-   * Error business status code.
+   * Error code.
    */
   code: number;
 
@@ -50,7 +48,7 @@ export interface HandleErrorResult extends HandleErrorOptions {
   details?: unknown;
 
   /**
-   * The function invoke chain where the error occurred.
+   * An error occurred in the API call chain.
    */
   apis?: HandleErrorOptions[];
 }
@@ -58,8 +56,8 @@ export interface HandleErrorResult extends HandleErrorOptions {
 /**
  * Handle error.
  *
- * @param error     Error.
- * @param options   HandleErrorOptions
+ * @param error Record<string, unknown>
+ * @param options HandleErrorOptions
  * @return HandleErrorResult
  */
 export interface HandleError {
@@ -70,21 +68,21 @@ export interface HandleError {
 }
 
 /**
- * Initialize the handle serverless error.
+ * Initialize to handle serverless error.
  *
  * @param options HandleErrorOptions
- * @return HandleError
+ * @return HandleServerError
  */
 export interface InitHandleServerlessError {
-  (options: HandleErrorOptions): HandleServerError;
+  (options: HandleErrorOptions): HandleServerlessError;
 }
 
 /**
  * Handle serverless error.
  *
- * @param error Error.
- * @return never
+ * @param error Record<string, unknown>
+ * @return void
  */
-export interface HandleServerError {
-  (error: Record<string, unknown>): never;
+export interface HandleServerlessError {
+  (error: Record<string, unknown>): void;
 }
