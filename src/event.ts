@@ -1,8 +1,8 @@
-import {EventType as EventTypeEnum} from './enum/event.enum';
+import {EventType} from './enum/event.enum';
 import {
-  HandleEvent,
-  HandleEventMethod,
   HandleGatewayEvent,
+  HandleTriggerEvent,
+  HandleTriggerEventMethod,
 } from './interface/event.interface';
 
 const handleGatewayEvent: HandleGatewayEvent = ({
@@ -33,10 +33,10 @@ const handleGatewayEvent: HandleGatewayEvent = ({
   };
 };
 
-export const handleEvent: HandleEvent = ({type, data}) => {
-  const handleEventMethod: HandleEventMethod = Object.freeze({
+export const handleTriggerEvent: HandleTriggerEvent = ({type, data}) => {
+  const handleEventMethod: HandleTriggerEventMethod = Object.freeze({
     gateway: handleGatewayEvent,
   });
 
-  return handleEventMethod[EventTypeEnum[type]](data);
+  return handleEventMethod[EventType[type]](data);
 };

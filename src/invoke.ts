@@ -1,13 +1,13 @@
 import {initHandleServerlessError} from './error';
-import {handleEvent} from './event';
+import {handleTriggerEvent} from './event';
 import {
   InitExecInvoke,
+  InitHandleInvokeError,
   InitInvoke,
-  InitInvokeError,
   InitRetryInvoke,
 } from './interface/invoke.interface';
 import {initRequest} from './request';
-import {response} from './response';
+import {handleResponse} from './response';
 
 const initExecInvoke: InitExecInvoke = initRequestOptions => (
   {retryNumber},
@@ -34,7 +34,7 @@ const initRetryInvoke: InitRetryInvoke = (
   throw error;
 };
 
-const initInvokeError: InitInvokeError = options => error => {
+const initHandleInvokeError: InitHandleInvokeError = options => error => {
   const headers = (error.headers ?? {}) as Record<string, unknown>;
   const requestId = headers['x-fc-request-id'] as string;
 
@@ -50,8 +50,8 @@ export const initInvoke: InitInvoke = ({
 }) => async ({serviceName, functionName, async = false, event}) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`;
   const url = `${endpoint}/${version}${path}`;
-  const body = JSON.stringify(handleEvent(event));
-  const invokeError = initInvokeError({
+  const body = JSON.stringify(handleTriggerEvent(event));
+  const handleInvokeError = initHandleInvokeError({
     serviceName,
     functionName,
     env: qualifier,
@@ -60,7 +60,7 @@ export const initInvoke: InitInvoke = ({
   const result = await initExecInvoke(args)(
     {retryNumber: 3},
     {url, options: {method: 'POST', body, async, timeout}}
-  ).catch(invokeError);
+  ).catch(handleInvokeError);
 
-  return response({type: event.type, response: result});
+  return handleResponse({type: event.type, response: result});
 };

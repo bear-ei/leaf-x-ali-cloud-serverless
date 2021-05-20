@@ -1,9 +1,9 @@
 import * as assert from 'assert';
-import {handleEvent} from '../src/event';
+import {handleTriggerEvent} from '../src/event';
 
 describe('test/event.test.ts', () => {
-  it('should be the result of a default gateway event', async () => {
-    const result = handleEvent({type: 'GATEWAY', data: {}});
+  it('should be the default gateway event', async () => {
+    const result = handleTriggerEvent({type: 'GATEWAY', data: {}});
 
     assert(typeof result === 'object');
     assert(result.httpMethod === 'GET');
@@ -18,8 +18,8 @@ describe('test/event.test.ts', () => {
     assert(result.headers['accept'] === '*/*');
   });
 
-  it('should be the result of a custom gateway event', async () => {
-    const result = handleEvent({
+  it('should be the correct gateway event', async () => {
+    const result = handleTriggerEvent({
       type: 'GATEWAY',
       data: {
         headers: {

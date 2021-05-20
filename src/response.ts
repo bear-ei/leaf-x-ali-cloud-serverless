@@ -1,9 +1,9 @@
-import {EventType as EventTypeEnum} from './enum/event.enum';
+import {EventType} from './enum/event.enum';
 import {
   HandleGatewayResponse,
   HandleGatewayResponseOptions,
+  HandleResponse,
   HandleResponseMethod,
-  Response,
 } from './interface/response.interface';
 
 const handleGatewayResponse: HandleGatewayResponse = ({
@@ -16,9 +16,7 @@ const handleGatewayResponse: HandleGatewayResponse = ({
     ? Buffer.from(body as string, 'base64').toString()
     : body;
 
-  const data = (headers['content-type'] as string)?.startsWith(
-    'application/json'
-  )
+  const data = headers['content-type']?.startsWith('application/json')
     ? JSON.parse(originalBody as string)
     : originalBody;
 
@@ -26,13 +24,13 @@ const handleGatewayResponse: HandleGatewayResponse = ({
   const error = result.status < 200 || result.status >= 300;
 
   if (error) {
-    throw data;
+    throw Object.assign(new Error('Invalid response.'), {...data});
   }
 
   return result;
 };
 
-export const response: Response = ({type, response}) => {
+export const handleResponse: HandleResponse = ({type, response}) => {
   const handleResponseMethod: HandleResponseMethod = Object.freeze({
     gateway: handleGatewayResponse,
   });
@@ -41,7 +39,7 @@ export const response: Response = ({type, response}) => {
     return response;
   }
 
-  return handleResponseMethod[EventTypeEnum[type]](
+  return handleResponseMethod[EventType[type]](
     response.data as HandleGatewayResponseOptions
   );
 };

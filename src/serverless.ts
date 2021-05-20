@@ -26,5 +26,8 @@ export const serverless: Serverless = ({
     ...args,
   };
 
-  return {invoke: initInvoke(options), warmUp: initWarmUp(options)};
+  return Object.freeze({
+    invoke: initInvoke(options),
+    warmUp: initWarmUp(options),
+  });
 };

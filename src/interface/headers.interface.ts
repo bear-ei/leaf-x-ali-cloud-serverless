@@ -6,36 +6,38 @@ import {InitRequestOptions} from './request.interface';
  */
 export interface GetRequestHeadersOptions {
   /**
-   * Request content.
+   * Request body content.
    */
   content: string | Buffer;
 
+  /**
+   * HTTP request method.
+   */
   method: FetchOptions['method'];
 
+  /**
+   * Request URL.
+   */
   url: string;
 
-  //   /**
-  //    * Request host.
-  //    */
-  //   host: string;
-
-  //   /**
-  //    * Ali cloud account ID.
-  //    */
-  //   accountId: string;
-
   /**
-   * Whether to perform asynchronous requests.
+   * Whether the request is asynchronous or not.
    */
   async?: boolean;
 }
 
+/**
+ * Initialize the get request headers.
+ *
+ * @param options InitRequestOptions
+ * @return GetRequestHeaders
+ */
 export interface InitGetRequestHeaders {
   (options: InitRequestOptions): GetRequestHeaders;
 }
 
 /**
- * Get the request headers.
+ * Get request headers.
  *
  * @param options GetRequestHeadersOptions
  * @return Record<string, string>
@@ -45,42 +47,22 @@ export interface GetRequestHeaders {
 }
 
 /**
- * Canonical headers prefix options.
+ * Prefix options for the canonical request headers.
  */
-export interface PrefixOptions {
+export interface CanonicalPrefixOptions {
   /**
-   * Canonical headers prefix.
+   * Canonical request header prefix.
    */
   prefix: string;
 }
 
 /**
- * Get the canonical request string.
+ * Get the canonical request headers string.
  *
- * @param prefix     PrefixOptions
- * @param headers    Request headers.
+ * @param prefix CanonicalPrefixOptions
+ * @param headers Record<string, string>
  * @return string
  */
 export interface GetCanonicalHeadersString {
-  (prefix: PrefixOptions, headers: Record<string, unknown>): string;
-}
-
-/**
- * Initialize the splice canonical request headers.
- *
- * @param headers Request headers.
- * @return SpliceCanonicalHeaders
- */
-export interface InitSpliceCanonicalHeaders {
-  (headers: Record<string, unknown>): SpliceCanonicalHeaders;
-}
-
-/**
- * Splice canonical request headers.
- *
- * @param key Canonical request header key.
- * @return string
- */
-export interface SpliceCanonicalHeaders {
-  (key: string): string;
+  (prefix: CanonicalPrefixOptions, headers: Record<string, string>): string;
 }

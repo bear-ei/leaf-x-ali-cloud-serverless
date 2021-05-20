@@ -25,18 +25,20 @@ export interface InitRequest {
 
 /**
  * Request options.
+ *
+ * @extends FetchOptions
  */
 export interface RequestOptions extends FetchOptions {
   /**
-   * Whether to perform asynchronous invoke.
+   * Whether to request asynchronously or not.
    */
   async?: boolean;
 }
 
 /**
- * Request.
+ * Request API.
  *
- * @param url Request URL address.
+ * @param url Request URL.
  * @param options RequestOptions
  * @return Promise<HandleResponseResult>
  */

@@ -1,17 +1,17 @@
 import {HandleResponseResult} from '@leaf-x/fetch';
-import {EventType} from './event.interface';
+import {EventTypeString} from '../enum/event.enum';
 
 /**
  * Response event.
  */
 export interface ResponseEvent {
   /**
-   * Event type.
+   * Response event type.
    */
-  type: EventType;
+  type: EventTypeString;
 
   /**
-   * Handle the request response result.
+   * Response.
    */
   response: HandleResponseResult;
 }
@@ -33,17 +33,17 @@ export interface ResponseResult {
   /**
    * Response headers.
    */
-  headers: Record<string, unknown>;
+  headers: Record<string, string>;
 }
 
 /**
- * Response.
+ * Handle responses.
  *
- * @param events ResponseEvent
+ * @param response ResponseEvent
  * @return ResponseResult | HandleResponseResult
  */
-export interface Response {
-  (events: ResponseEvent): ResponseResult | HandleResponseResult;
+export interface HandleResponse {
+  (responseEvent: ResponseEvent): ResponseResult | HandleResponseResult;
 }
 
 /**
@@ -51,22 +51,22 @@ export interface Response {
  */
 export interface HandleGatewayResponseOptions {
   /**
-   * Gateway response status code.
+   * Response status code.
    */
   statusCode: number;
 
   /**
-   * Whether to base64 encode the request body or not.
+   * Whether to base64 encode the response body or not.
    */
   isBase64Encoded: boolean;
 
   /**
-   * Gateway response headers.
+   * Response headers.
    */
-  headers: Record<string, unknown>;
+  headers: Record<string, string>;
 
   /**
-   * Gateway response body.
+   * Response body.
    */
   body: unknown;
 }

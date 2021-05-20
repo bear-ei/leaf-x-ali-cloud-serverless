@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import {getCanonicalHeadersString, initGetRequestHeaders} from '../src/headers';
 
 describe('test/headers.test.ts', () => {
-  it('should be the result of synchronous request headers', async () => {
+  it('should be a synchronization request headers', async () => {
     const content = Buffer.from(JSON.stringify({data: 'This is request.'}));
     const result = initGetRequestHeaders({
       host: 'leaf-x.app',
@@ -19,7 +19,7 @@ describe('test/headers.test.ts', () => {
     assert(result['accept'] === '*/*');
     assert(typeof result['date'] === 'string');
     assert(result['host'] === 'leaf-x.app');
-    assert((result['user-agent'] as string).startsWith('Node.js'));
+    assert(result['user-agent'].startsWith('Node.js'));
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
     assert(typeof result['content-md5'] === 'string');
@@ -27,7 +27,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result['authorization'] === 'string');
   });
 
-  it('should be the result of an asynchronous request headers', async () => {
+  it('should be an asynchronous request headers', async () => {
     const content = JSON.stringify({data: 'This is request.'});
     const result = initGetRequestHeaders({
       host: 'leaf-x.app',
@@ -54,7 +54,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result['authorization'] === 'string');
   });
 
-  it('should be the result of getting canonical request string', async () => {
+  it('should get the canonical request header string', async () => {
     const result = getCanonicalHeadersString(
       {prefix: 'x-fc-'},
       {

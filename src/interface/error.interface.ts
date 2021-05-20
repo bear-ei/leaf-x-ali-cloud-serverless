@@ -1,5 +1,5 @@
 /**
- * Handle the wrong options.
+ * Handle the error options.
  */
 export interface HandleErrorOptions {
   /**
@@ -56,7 +56,7 @@ export interface HandleErrorResult extends HandleErrorOptions {
 /**
  * Handle error.
  *
- * @param error Record<string, unknown>
+ * @param error Error.
  * @param options HandleErrorOptions
  * @return HandleErrorResult
  */
@@ -81,8 +81,8 @@ export interface InitHandleServerlessError {
  * Handle serverless error.
  *
  * @param error Record<string, unknown>
- * @return void
+ * @return never
  */
 export interface HandleServerlessError {
-  (error: Record<string, unknown>): void;
+  (error: Record<string, unknown>): never;
 }

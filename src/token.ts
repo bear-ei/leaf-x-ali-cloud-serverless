@@ -1,6 +1,10 @@
 import * as crypto from 'crypto';
 import {getCanonicalHeadersString} from './headers';
-import {GetSignString, GetToken, InitSign} from './interface/token.interface';
+import {
+  GetRequestToken,
+  GetSignString,
+  InitSign,
+} from './interface/token.interface';
 
 const initSign: InitSign = secret => signString => {
   const buffer = crypto
@@ -27,7 +31,11 @@ const getSignString: GetSignString = ({method, url, headers}) => {
   ].join('\n');
 };
 
-export const getToken: GetToken = ({accessId, accessSecretKey, ...args}) => {
+export const getRequestToken: GetRequestToken = ({
+  accessId,
+  accessSecretKey,
+  ...args
+}) => {
   const signString = getSignString(args);
 
   return `FC ${accessId}:${initSign(accessSecretKey)(signString)}`;

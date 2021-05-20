@@ -4,7 +4,7 @@ import * as sinon from 'sinon';
 import {initInvoke} from '../src/invoke';
 
 describe('test/invoke.test.ts', () => {
-  it('should be the result of an asynchronous invoke', async () => {
+  it('should be invoke asynchronously', async () => {
     sinon.stub(fetch, 'fetch').resolves({
       status: 202,
       data: '',
@@ -25,6 +25,7 @@ describe('test/invoke.test.ts', () => {
     })({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
+      async: true,
       event: {
         type: 'GATEWAY',
         data: {queryParameters: {name: 'snowflake'}},
@@ -39,7 +40,7 @@ describe('test/invoke.test.ts', () => {
     });
   });
 
-  it('should be the right invoke.', async () => {
+  it('should be invoke correctly', async () => {
     sinon.stub(fetch, 'fetch').resolves({
       status: 200,
       data: {
@@ -81,7 +82,7 @@ describe('test/invoke.test.ts', () => {
     });
   });
 
-  it('should be the result of a invoke error', async () => {
+  it('should be an error invoke', async () => {
     sinon.stub(fetch, 'fetch').resolves({
       status: 200,
       data: {
@@ -122,7 +123,7 @@ describe('test/invoke.test.ts', () => {
     });
   });
 
-  it('should be the result of a response error', async () => {
+  it('should be a response error', async () => {
     sinon.stub(fetch, 'fetch').rejects({
       status: 404,
       data: {ErrorMessage: 'Bad Request.'},
@@ -159,7 +160,7 @@ describe('test/invoke.test.ts', () => {
     });
   });
 
-  it('should be a timeout error', async () => {
+  it('should be a invoke timeout', async () => {
     sinon.stub(fetch, 'fetch').rejects({
       message: {ErrorMessage: 'Bad Request.'},
     });

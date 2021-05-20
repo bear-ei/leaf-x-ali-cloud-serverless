@@ -6,7 +6,7 @@ import * as invoke from '../src/invoke';
 import {initWarmUp} from '../src/warm_up';
 
 describe('test/warmUp.test.ts', () => {
-  it('should be the result of warm-up', async () => {
+  it('should be a successful warm-up', async () => {
     sinon.stub(invoke, 'initInvoke').returns(async () => ({
       data: '',
       status: 200,
@@ -30,8 +30,8 @@ describe('test/warmUp.test.ts', () => {
 
       assert(Array.isArray(result));
       assert(
-        result.some(result => {
-          const {status, data, headers} = result as ResponseResult;
+        result.some(item => {
+          const {status, data, headers} = item as ResponseResult;
 
           return status === 200 && data === '' && typeof headers === 'object';
         })
@@ -39,13 +39,13 @@ describe('test/warmUp.test.ts', () => {
     });
   });
 
-  it('should be the result of failed warm-up', async () => {
+  it('should be a warm-up failure', async () => {
     sinon.stub(invoke, 'initInvoke').returns(async () => {
-      throw {
+      throw Object.assign(new Error('Invalid invoke'), {
         code: 4000000,
         status: 400,
         message: 'Bad Request.',
-      };
+      });
     });
 
     await initWarmUp({
@@ -65,8 +65,8 @@ describe('test/warmUp.test.ts', () => {
 
       assert(Array.isArray(result));
       assert(
-        result.some(result => {
-          const {status, code, message} = result as HandleErrorResult;
+        result.some(item => {
+          const {status, code, message} = item as HandleErrorResult;
 
           return (
             status === 400 && code === 4000000 && message === 'Bad Request.'

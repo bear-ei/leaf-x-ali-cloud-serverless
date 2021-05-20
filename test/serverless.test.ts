@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import {serverless} from '../src/serverless';
 
 describe('test/serverless.test.ts', () => {
-  it('should be the result of the serverless default options', async () => {
+  it('should be the default options serverless', async () => {
     const result = serverless({
       accountId: '1234455',
       accessId: 'MTIzNDQ1NQ==',
@@ -15,7 +15,7 @@ describe('test/serverless.test.ts', () => {
     assert(typeof result.warmUp === 'function');
   });
 
-  it('should be the result of the serverless customization options', async () => {
+  it('should be the custom options serverless', async () => {
     const result = serverless({
       accountId: '1234455',
       accessId: 'MTIzMjEzMTQ1NQ==',
@@ -33,33 +33,3 @@ describe('test/serverless.test.ts', () => {
     assert(typeof result.warmUp === 'function');
   });
 });
-
-// it('Should be the result of cc.', async () => {
-//   const {invoke: i} = serverless({
-//     accountId: '1513153060849486',
-//     accessId: 'LTAI4Fd5Chf5FFaQBCatShm3',
-//     accessSecretKey: '24GBZFnD1FL6a6vSpBcxnc2S3tPjDk',
-//     region: 'cn-shanghai',
-//     internal: false,
-//     qualifier: 'DEV',
-//     timeout: 1,
-//   });
-
-//   await i({
-//     serviceName: 'ThalloAttendances',
-//     functionName: 'attendanceIndex',
-//     event: {
-//       type: 'GATEWAY',
-//       data: {
-//         httpMethod: 'GET',
-//         queryParameters: {isCount: false},
-//         pathParameters: {},
-//         headers: {
-//           'x-service': 'service',
-//           requestId: '4e0b374a-aae2-42ff-a9bd-e1a01904eb80',
-//         },
-//       },
-//     },
-//     async: false,
-//   }).catch(err => console.info(err));
-// });

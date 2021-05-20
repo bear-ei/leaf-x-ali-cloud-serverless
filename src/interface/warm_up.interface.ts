@@ -1,16 +1,16 @@
+import {EventTypeString} from '../enum/event.enum';
 import {HandleErrorResult} from './error.interface';
-import {EventType} from './event.interface';
 import {InitInvokeOptions} from './invoke.interface';
 import {ResponseResult} from './response.interface';
 
 /**
- * Warm-up options.
+ * Warm-up serverless options.
  */
 export interface WarmUpOptions {
   /**
    * Event type.
    */
-  type: EventType;
+  type: EventTypeString;
 
   /**
    * Function name.
@@ -19,13 +19,14 @@ export interface WarmUpOptions {
 }
 
 /**
- * Warm-up result.
+ * Warm-up serverless results.
  *
  * @extends ResponseResult
  */
 export interface WarmUpResult extends ResponseResult {
   /**
    * Service name.
+   *
    */
   serviceName: string;
 
@@ -36,7 +37,7 @@ export interface WarmUpResult extends ResponseResult {
 }
 
 /**
- * Initialize warm-up.
+ * Initialize warm-up serverless.
  *
  * @param options InitInvokeOptions
  * @return WarmUp
@@ -59,28 +60,14 @@ export interface WarmUp {
 }
 
 /**
- * Execute the warm-up options.
- */
-export interface ExecWarmUpOptions {
-  /**
-   * Initialize invoke options.
-   */
-  options: InitInvokeOptions;
-
-  /**
-   * Service name.
-   */
-  serviceName: string;
-}
-
-/**
- * Initialize the execute warm-up.
+ * Initialize the execute of the warm-up serverless.
  *
  * @param serviceName Service name.
+ * @param options InitInvokeOptions
  * @return ExecWarmUp
  */
 export interface InitExecWarmUp {
-  (options: ExecWarmUpOptions): ExecWarmUp;
+  (serviceName: string, options: InitInvokeOptions): ExecWarmUp;
 }
 
 /**

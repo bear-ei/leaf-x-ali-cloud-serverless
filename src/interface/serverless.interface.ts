@@ -5,18 +5,18 @@ import {WarmUp} from './warm_up.interface';
  * Ali cloud options.
  */
 export interface AliCloudOptions {
-  /*
+  /**
    * Ali cloud account ID.
    */
   accountId: string;
 
   /**
-   * Ali cloud access ID.
+   * Ali cloud serverless access ID.
    */
   accessId: string;
 
   /**
-   * Ali cloud access key.
+   * Ali cloud serverless access key.
    */
   accessSecretKey: string;
 }
@@ -28,43 +28,43 @@ export interface AliCloudOptions {
  */
 export interface ServerlessOptions extends AliCloudOptions {
   /**
-   * Region where serverless is located.
+   * Serverless region.
    */
   region: string;
 
   /**
-   * Invoke timeout time in milliseconds.
+   * Timeout time, in milliseconds.
    *
-   * Default 3000ms
+   * Default:30000ms
    */
   timeout?: number;
 
   /**
    * Serverless qualifier.
    *
-   * Default: LATEST
+   * Default:LATEST
    */
   qualifier?: string;
 
   /**
-   * Whether to invoke the serverless through the intranet.
+   * Whether to invoke through the intranet.
    *
-   * Default: true
+   * Default:true
    */
   internal?: boolean;
 
   /**
-   * Whether to turn on invoke protection, if so will use https invoke,
-   * otherwise use http.
+   * Whether to open the secure invoke, if open will use HTTPS invoke,otherwise
+   * use HTTP invoke.
    *
-   * Default: true
+   * Default:true
    */
   secure?: boolean;
 
   /**
    * Serverless API version.
    *
-   * Default: 2016-08-15
+   * Default:2016-08-15
    */
   version?: string;
 }
@@ -74,14 +74,14 @@ export interface ServerlessOptions extends AliCloudOptions {
  */
 export interface ServerlessResult {
   /**
-   * Invoke serverless.
+   *  Invoke serverless.
    */
-  invoke: Invoke;
+  readonly invoke: Invoke;
 
   /**
    * Warm-up serverless.
    */
-  warmUp: WarmUp;
+  readonly warmUp: WarmUp;
 }
 
 /**

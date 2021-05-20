@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as nock from 'nock';
 import * as request from '../src/request';
 
-const result = {
+const response = {
   status: 200,
   data: '',
   headers: {},
@@ -12,11 +12,11 @@ const result = {
 
 describe('test/request.test.ts', () => {
   before(async () => {
-    nock('https://leaf-x.app').get('/default/succeed').reply(200, result);
-    nock('https://leaf-x.app').post('/custom/succeed').reply(200, result);
+    nock('https://leaf-x.app').get('/default/succeed').reply(200, response);
+    nock('https://leaf-x.app').post('/custom/succeed').reply(200, response);
   });
 
-  it('should be the result of a default option request', async () => {
+  it('should be the default request', async () => {
     await request
       .initRequest({
         host: '',
@@ -27,7 +27,7 @@ describe('test/request.test.ts', () => {
       .then(result => assert(result.status === 200));
   });
 
-  it('should be the result of a custom option request', async () => {
+  it('should be the correct request', async () => {
     await request
       .initRequest({
         host: '',

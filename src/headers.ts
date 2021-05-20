@@ -3,12 +3,8 @@ import {HttpMethod} from './interface/event.interface';
 import {
   GetCanonicalHeadersString,
   InitGetRequestHeaders,
-  InitSpliceCanonicalHeaders,
 } from './interface/headers.interface';
-import {getToken} from './token';
-
-const initSpliceCanonicalHeaders: InitSpliceCanonicalHeaders = headers => key =>
-  `${key}:${headers[key]}`;
+import {getRequestToken} from './token';
 
 export const initGetRequestHeaders: InitGetRequestHeaders = ({
   host,
@@ -30,7 +26,7 @@ export const initGetRequestHeaders: InitGetRequestHeaders = ({
     ...(async ? {'x-fc-invocation-type': 'Async'} : undefined),
   };
 
-  const authorization = getToken({
+  const authorization = getRequestToken({
     accessId,
     accessSecretKey,
     method: method as HttpMethod,
@@ -44,12 +40,9 @@ export const initGetRequestHeaders: InitGetRequestHeaders = ({
 export const getCanonicalHeadersString: GetCanonicalHeadersString = (
   {prefix},
   headers
-) => {
-  const spliceCanonicalHeaders = initSpliceCanonicalHeaders(headers);
-
-  return Object.keys(headers)
+) =>
+  Object.keys(headers)
     .filter(key => key.startsWith(prefix))
     .sort()
-    .map(spliceCanonicalHeaders)
+    .map(key => `${key}:${headers[key]}`)
     .join('\n');
-};

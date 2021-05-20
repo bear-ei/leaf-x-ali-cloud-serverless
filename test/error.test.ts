@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import {handleError, initHandleServerlessError} from '../src/error';
 
 describe('test/error.test.ts', () => {
-  it('should be the result of a 500 error', async () => {
+  it('should be an internal service error', async () => {
     const result = handleError(
       {message: 'Internal service error.'},
       {
@@ -25,7 +25,7 @@ describe('test/error.test.ts', () => {
     assert(typeof result.details === 'object');
   });
 
-  it('should be the result of a 422 error', async () => {
+  it('should be a parameter validation error', async () => {
     const result = handleError(
       {
         status: 422,
@@ -58,7 +58,7 @@ describe('test/error.test.ts', () => {
     assert(Array.isArray(result.apis));
   });
 
-  it('should be the result of a service error', async () => {
+  it('should be a invoke serverless error', async () => {
     try {
       initHandleServerlessError({
         serviceName: 'leaf-x@snowflake',

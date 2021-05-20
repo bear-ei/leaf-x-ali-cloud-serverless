@@ -5,11 +5,11 @@ import {ResponseResult} from './response.interface';
 import {AliCloudOptions} from './serverless.interface';
 
 /**
- * Invoke options.
+ * Invoke the serverless options.
  */
 export interface InvokeOptions {
   /**
-   * Trigger events.
+   * Trigger event.
    */
   event: TriggerEvent;
 
@@ -24,13 +24,13 @@ export interface InvokeOptions {
   functionName: string;
 
   /**
-   * Whether to perform asynchronous invoke.
+   * Whether to invoke serverless asynchronously.
    */
   async?: boolean;
 }
 
 /**
- * Initialize the execute invoke.
+ * Initialize the execution to invoke serverless.
  *
  * @param options InitRequestOptions
  * @return ExecInvoke
@@ -40,41 +40,41 @@ export interface InitExecInvoke {
 }
 
 /**
- * Execute invoke options.
+ * Execute the invoke serverless options.
  */
 export interface ExecInvokeOptions {
   /**
-   * Initialize the fetch options.
+   * Fetch options.
    */
   options: FetchOptions & {
     /**
-     * Whether to perform asynchronous invoke.
-     * */
+     * Whether the request is asynchronous or not.
+     */
     async?: boolean;
   };
 
   /**
-   * Invoke URL address.
+   * Request URL.
    */
   url: string;
 }
 
 /**
- * Retry options.
+ * Retry the invoke serverless options.
  */
 export interface RetryOptions {
   /**
-   * The number of retries after failed invoke.
+   * Number of retries.
    */
   retryNumber: number;
 }
 
 /**
- * Execute the invoke.
+ * Execute invoke serverless.
  *
- * @param retry         RetryOptions
- * @param options       ExecInvokeOptions
- * @return HandleResponseResult
+ * @param retry RetryOptions
+ * @param options ExecInvokeOptions
+ * @return Promise<HandleResponseResult>
  */
 export interface ExecInvoke {
   (
@@ -84,14 +84,11 @@ export interface ExecInvoke {
 }
 
 /**
- * Initialize the retry invoke options.
+ * Initialize the retry invoke serverless options.
+ *
+ * @extends RetryOptions
  */
-export interface InitRetryInvokeOptions {
-  /**
-   * The number of retries after failed invoke.
-   */
-  retryNumber: number;
-
+export interface InitRetryInvokeOptions extends RetryOptions {
   /**
    * Initialize request options.
    */
@@ -99,10 +96,10 @@ export interface InitRetryInvokeOptions {
 }
 
 /**
- * Initialize the retry invoke.
+ * Initialize the retry invoke serverless.
  *
- * @param retry         InitRetryInvokeOptions
- * @param options       ExecInvokeOptions
+ * @param retry InitRetryInvokeOptions
+ * @param options ExecInvokeOptions
  * @return RetryInvoke
  */
 export interface InitRetryInvoke {
@@ -110,7 +107,7 @@ export interface InitRetryInvoke {
 }
 
 /**
- * Retry the invoke.
+ * Retry the invoke serverless.
  *
  * @param error Error.
  * @return Promise<HandleResponseResult>
@@ -120,33 +117,33 @@ export interface RetryInvoke {
 }
 
 /**
- * Initialize invoke options.
+ * Initialize invoke serverless options.
  *
  * @extends AliCloudOptions
  */
 export interface InitInvokeOptions extends AliCloudOptions {
   /**
-   * Serverless qualifier.
+   * Invoke serverless qualifier.
    */
   qualifier: string;
 
   /**
-   * Serverless host.
+   * Invoke serverless host.
    */
   host: string;
 
   /**
-   * Invoke timeout time in milliseconds.
+   * Timeout time.
    */
   timeout: number;
 
   /**
-   * Serverless endpoint.
+   * Invoke the serverless endpoint.
    */
   endpoint: string;
 
   /**
-   * Serverless API version.
+   * Invoke the serverless API version.
    */
   version: string;
 }
@@ -162,9 +159,9 @@ export interface Invoke {
 }
 
 /**
- * Initialize invoke serverless.
+ * Initialize the invoke to serverless.
  *
- * @param InitInvokeOptions
+ * @param options InitInvokeOptions
  * @return Invoke
  */
 export interface InitInvoke {
@@ -172,9 +169,9 @@ export interface InitInvoke {
 }
 
 /**
- * Invoke the error options.
+ * Handle the invoke serverless error options.
  */
-export interface InvokeErrorOptions {
+export interface HandleInvokeErrorOptions {
   /**
    * Service name.
    */
@@ -186,27 +183,27 @@ export interface InvokeErrorOptions {
   functionName: string;
 
   /**
-   * Current runtime environment.
+   * Invoke the serverless runtime environment.
    */
   env: string;
 }
 
 /**
- * Initialize invoke error.
+ * Initialize to handle serverless invoke errors.
  *
- * @param options InvokeErrorOptions
- * @return InvokeError
+ * @param options HandleInvokeErrorOptions
+ * @return HandleInvokeError
  */
-export interface InitInvokeError {
-  (options: InvokeErrorOptions): InvokeError;
+export interface InitHandleInvokeError {
+  (options: HandleInvokeErrorOptions): HandleInvokeError;
 }
 
 /**
- * Invoke error.
+ * Handle invoke serverless errors.
  *
  * @param error Error.
  * @return never
  */
-export interface InvokeError {
+export interface HandleInvokeError {
   (error: Record<string, unknown>): never;
 }

@@ -1,11 +1,11 @@
 /**
- * Event type.
+ * Serverless event type.
  */
 export enum EventType {
   GATEWAY = 'gateway',
 }
 
 /**
- * Event type string.
+ * Serverless event type string.
  */
 export type EventTypeString = 'GATEWAY';

@@ -34,5 +34,7 @@ export const handleError: HandleError = (
 };
 
 export const initHandleServerlessError: InitHandleServerlessError = options => error => {
-  throw handleError(error, options);
+  throw Object.assign(new Error('Invalid invoke.'), {
+    ...handleError(error, options),
+  });
 };

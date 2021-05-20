@@ -1,9 +1,9 @@
 import * as assert from 'assert';
-import {response} from '../src/response';
+import {handleResponse} from '../src/response';
 
 describe('test/response.test.ts', () => {
-  it('should be the result of an asynchronous request response', async () => {
-    const result = response({
+  it('should be an asynchronous response', async () => {
+    const result = handleResponse({
       type: 'GATEWAY',
       response: {
         status: 202,
@@ -23,8 +23,8 @@ describe('test/response.test.ts', () => {
     );
   });
 
-  it('should be the result of response to gateway event', async () => {
-    const result = response({
+  it('should be a gateway response', async () => {
+    const result = handleResponse({
       type: 'GATEWAY',
       response: {
         status: 200,
@@ -48,8 +48,8 @@ describe('test/response.test.ts', () => {
     assert(typeof result.headers === 'object');
   });
 
-  it('should be the result of Base64 gateway event response', async () => {
-    const result = response({
+  it('should be a gateway base64 response', async () => {
+    const result = handleResponse({
       type: 'GATEWAY',
       response: {
         status: 200,
@@ -73,9 +73,9 @@ describe('test/response.test.ts', () => {
     assert(typeof result.headers === 'object');
   });
 
-  it('should be the result of gateway event error response', async () => {
+  it('should be a gateway error response', async () => {
     try {
-      response({
+      handleResponse({
         type: 'GATEWAY',
         response: {
           status: 200,
@@ -99,8 +99,8 @@ describe('test/response.test.ts', () => {
     }
   });
 
-  it('should be the result of an unresponsive type of gateway event', async () => {
-    const result = response({
+  it('should be a gateway with no content type response', async () => {
+    const result = handleResponse({
       type: 'GATEWAY',
       response: {
         status: 200,
