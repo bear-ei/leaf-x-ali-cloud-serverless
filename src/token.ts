@@ -3,10 +3,10 @@ import {getCanonicalHeadersString} from './headers';
 import {
   GetRequestToken,
   GetSignString,
-  InitSign,
+  Sign,
 } from './interface/token.interface';
 
-const initSign: InitSign = secret => signString => {
+const sign: Sign = ({secret, signString}) => {
   const buffer = crypto
     .createHmac('sha256', secret)
     .update(signString, 'utf8')
@@ -38,5 +38,5 @@ export const getRequestToken: GetRequestToken = ({
 }) => {
   const signString = getSignString(args);
 
-  return `FC ${accessId}:${initSign(accessSecretKey)(signString)}`;
+  return `FC ${accessId}:${sign({secret: accessSecretKey, signString})}`;
 };
