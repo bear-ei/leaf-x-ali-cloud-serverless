@@ -11,13 +11,13 @@ const handleGatewayEvent: HandleGatewayEvent = ({
   queryParameters = {},
   pathParameters = {},
   body = {},
-  headers,
+  headers = {},
 }) => {
   const {
     'content-type': contentType = 'application/json; charset=utf-8',
     accept = '*/*',
     ...args
-  } = headers ?? {};
+  } = headers;
 
   const data = (contentType as string).startsWith('application/json')
     ? JSON.stringify(body)

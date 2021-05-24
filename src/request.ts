@@ -4,9 +4,9 @@ import {InitRequest} from './interface/request.interface';
 
 export const initRequest: InitRequest = initRequestOptions => async (
   url,
-  options
+  options = {}
 ) => {
-  const {method = 'GET', body = '', timeout, async} = options ?? {};
+  const {method = 'GET', body = '', timeout, async} = options;
   const headers = initGetRequestHeaders(initRequestOptions)({
     url,
     method,
