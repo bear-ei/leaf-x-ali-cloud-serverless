@@ -2,7 +2,7 @@ import {FetchOptions} from '@leaf-x/fetch';
 import {InitRequestOptions} from './request.interface';
 
 /**
- * Get request headers options.
+ * Get options for the request headers.
  */
 export interface GetRequestHeadersOptions {
   /**
@@ -16,7 +16,7 @@ export interface GetRequestHeadersOptions {
   method: FetchOptions['method'];
 
   /**
-   * Request URL.
+   * URL of the request.
    */
   url: string;
 
@@ -27,7 +27,7 @@ export interface GetRequestHeadersOptions {
 }
 
 /**
- * Initialize the get request headers.
+ * Initialize the function that gets the request headers.
  *
  * @param options InitRequestOptions
  * @return GetRequestHeaders
@@ -37,7 +37,7 @@ export interface InitGetRequestHeaders {
 }
 
 /**
- * Get request headers.
+ * Get the request headers.
  *
  * @param options GetRequestHeadersOptions
  * @return Record<string, string>
@@ -47,11 +47,11 @@ export interface GetRequestHeaders {
 }
 
 /**
- * Prefix options for the canonical request headers.
+ * Options to canonical the request headers prefix.
  */
 export interface CanonicalPrefixOptions {
   /**
-   * Canonical request header prefix.
+   * Canonical request headers prefix.
    */
   prefix: string;
 }
@@ -60,7 +60,7 @@ export interface CanonicalPrefixOptions {
  * Get the canonical request headers string.
  *
  * @param prefix CanonicalPrefixOptions
- * @param headers Record<string, string>
+ * @param headers Request headers.
  * @return string
  */
 export interface GetCanonicalHeadersString {

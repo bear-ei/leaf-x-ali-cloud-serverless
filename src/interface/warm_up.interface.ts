@@ -4,40 +4,40 @@ import {InitInvokeOptions} from './invoke.interface';
 import {ResponseResult} from './response.interface';
 
 /**
- * Warm-up serverless options.
+ * Warm-up the serverless options.
  */
 export interface WarmUpOptions {
   /**
-   * Event type.
+   * Serverless event type.
    */
   type: EventTypeString;
 
   /**
-   * Function name.
+   * Serverless function name.
    */
   functionName: string;
 }
 
 /**
- * Warm-up serverless results.
+ * Warm-up serverless result.
  *
  * @extends ResponseResult
  */
 export interface WarmUpResult extends ResponseResult {
   /**
-   * Service name.
+   * Serverless service name.
    *
    */
   serviceName: string;
 
   /**
-   * Function name.
+   * Serverless function name.
    */
   functionName: string;
 }
 
 /**
- * Initialize warm-up serverless.
+ * Initialize the function that warm-up serverless.
  *
  * @param options InitInvokeOptions
  * @return WarmUp
@@ -49,7 +49,7 @@ export interface InitWarmUp {
 /**
  * Warm-up serverless.
  *
- * @param serviceName Service name.
+ * @param serviceName Serverless service name.
  * @param options WarmUpOptions[]
  * @return Promise<(HandleErrorResult | WarmUpResult)[]>
  */
@@ -60,9 +60,9 @@ export interface WarmUp {
 }
 
 /**
- * Initialize the execute of the warm-up serverless.
+ * Initialize the function that execute the warm-up of serverless.
  *
- * @param serviceName Service name.
+ * @param serviceName Serverless service name.
  * @param options InitInvokeOptions
  * @return ExecWarmUp
  */
@@ -71,7 +71,7 @@ export interface InitExecWarmUp {
 }
 
 /**
- * Execute warm-up.
+ * Execute warm-up serverless.
  *
  * @param options WarmUpOptions
  * @return Promise<HandleErrorResult | WarmUpResult>

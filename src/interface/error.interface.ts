@@ -1,19 +1,19 @@
 /**
- * Handle the error options.
+ * Options for handle error.
  */
 export interface HandleErrorOptions {
   /**
-   * Service name.
+   * Current request serverless service name.
    */
   serviceName: string;
 
   /**
-   * Function name.
+   * Current request serverless function name.
    */
   functionName: string;
 
   /**
-   * Runtime environment.
+   * Current serverless runtime environment.
    */
   env: string;
 
@@ -24,16 +24,18 @@ export interface HandleErrorOptions {
 }
 
 /**
- * Handle error results.
+ * The result of the handle error.
+ *
+ * @extends HandleErrorOptions
  */
 export interface HandleErrorResult extends HandleErrorOptions {
   /**
-   * Response status code.
+   * Serverless response status code.
    */
   status: number;
 
   /**
-   * Error code.
+   * Customized business error codes.
    */
   code: number;
 
@@ -43,7 +45,7 @@ export interface HandleErrorResult extends HandleErrorOptions {
   message: string;
 
   /**
-   * Error details.
+   * Error message details.
    */
   details?: unknown;
 
@@ -68,7 +70,7 @@ export interface HandleError {
 }
 
 /**
- * Initialize to handle serverless error.
+ * Initialize the function that handle serverless error.
  *
  * @param options HandleErrorOptions
  * @return HandleServerError
@@ -80,7 +82,7 @@ export interface InitHandleServerlessError {
 /**
  * Handle serverless error.
  *
- * @param error Record<string, unknown>
+ * @param error Error.
  * @return never
  */
 export interface HandleServerlessError {

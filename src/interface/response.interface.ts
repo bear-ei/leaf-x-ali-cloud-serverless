@@ -2,52 +2,52 @@ import {HandleResponseResult} from '@leaf-x/fetch';
 import {EventTypeString} from '../enum/event.enum';
 
 /**
- * Response event.
+ * Serverless responds to event.
  */
 export interface ResponseEvent {
   /**
-   * Response event type.
+   * Serverless response event type.
    */
   type: EventTypeString;
 
   /**
-   * Response.
+   * Serverless response.
    */
   response: HandleResponseResult;
 }
 
 /**
- * Response result.
+ * Serverless response result.
  */
 export interface ResponseResult {
   /**
-   * Response data.
+   * Serverless response data.
    */
   data: unknown;
 
   /**
-   * Response status code.
+   * Serverless response status code.
    */
   status: number;
 
   /**
-   * Response headers.
+   * Serverless response headers.
    */
   headers: Record<string, string>;
 }
 
 /**
- * Handle responses.
+ * Handle serverless response.
  *
  * @param response ResponseEvent
  * @return ResponseResult | HandleResponseResult
  */
 export interface HandleResponse {
-  (responseEvent: ResponseEvent): ResponseResult | HandleResponseResult;
+  (response: ResponseEvent): ResponseResult | HandleResponseResult;
 }
 
 /**
- * Handle gateway response options.
+ * Options for Handle API gateway response.
  */
 export interface HandleGatewayResponseOptions {
   /**
@@ -72,17 +72,17 @@ export interface HandleGatewayResponseOptions {
 }
 
 /**
- * Handle response method.
+ * Handle serverless response method.
  */
 export interface HandleResponseMethod {
   /**
-   * Handle gateway response.
+   * Handle API gateway response.
    */
   readonly gateway: HandleGatewayResponse;
 }
 
 /**
- * Handle gateway response.
+ * Handle API gateway response.
  *
  * @param options HandleGatewayResponseOptions
  * @return ResponseResult

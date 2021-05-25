@@ -2,7 +2,7 @@ import {FetchOptions, HandleResponseResult} from '@leaf-x/fetch';
 import {AliCloudOptions} from './serverless.interface';
 
 /**
- * Initialize request options.
+ * Options for initialize request.
  *
  * @extends AliCloudOptions
  */
@@ -14,7 +14,7 @@ export interface InitRequestOptions extends AliCloudOptions {
 }
 
 /**
- * Initialize request.
+ * The function that initialize the request.
  *
  * @param options InitRequestOptions
  * @return Request
@@ -24,7 +24,7 @@ export interface InitRequest {
 }
 
 /**
- * Request options.
+ * The request options.
  *
  * @extends FetchOptions
  */
@@ -38,7 +38,7 @@ export interface RequestOptions extends FetchOptions {
 /**
  * Request API.
  *
- * @param url Request URL.
+ * @param url URL of the request.
  * @param options RequestOptions
  * @return Promise<HandleResponseResult>
  */

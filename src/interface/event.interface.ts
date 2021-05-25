@@ -1,16 +1,16 @@
 import {EventTypeString} from '../enum/event.enum';
 
 /**
- * Trigger event.
+ * Serverless trigger event.
  */
 export interface TriggerEvent {
   /**
-   * Trigger event type.
+   * Serverless trigger event type.
    */
   type: EventTypeString;
 
   /**
-   * Trigger event data.
+   * Serverless trigger event data.
    */
   data: HandleGatewayEventOptions;
 }
@@ -31,7 +31,7 @@ export type HttpMethod =
   | 'UNLINK';
 
 /**
- * Handle trigger event.
+ * Handle serverless trigger event.
  *
  * @param event  TriggerEvent
  * @return HandleGatewayEventOptions
@@ -41,7 +41,7 @@ export interface HandleTriggerEvent {
 }
 
 /**
- * Handle gateway trigger event options.
+ * Options for handle API gateway trigger event.
  */
 export interface HandleGatewayEventOptions {
   /**
@@ -72,21 +72,21 @@ export interface HandleGatewayEventOptions {
   /**
    * Request headers.
    */
-  headers?: Record<string, unknown>;
+  headers?: Record<string, string>;
 }
 
 /**
- * Handle the trigger event method.
+ * Handle the serverless trigger event method.
  */
 export interface HandleTriggerEventMethod {
   /**
-   * Handle gateway event.
+   * Handle API gateway event.
    */
   readonly gateway: HandleGatewayEvent;
 }
 
 /**
- * Handle gateway event.
+ * Handle API gateway event.
  *
  * @param options HandleGatewayEventOptions
  * @return HandleGatewayEventOptions

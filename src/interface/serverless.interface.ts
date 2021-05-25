@@ -22,7 +22,7 @@ export interface AliCloudOptions {
 }
 
 /**
- * Serverless options.
+ * Options for serverless API.
  *
  * @extends AliCloudOptions
  */
@@ -33,44 +33,35 @@ export interface ServerlessOptions extends AliCloudOptions {
   region: string;
 
   /**
-   * Timeout time, in milliseconds.
-   *
-   * Default:30000ms
+   * Set the request timeout in milliseconds. The default timeout is 3000
+   * milliseconds.
    */
   timeout?: number;
 
   /**
-   * Serverless qualifier.
-   *
-   * Default:LATEST
+   *  Serverless qualifier. default is LATEST.
    */
   qualifier?: string;
 
   /**
-   * Whether to invoke through the intranet.
-   *
-   * Default:true
+   * Whether to invoke through the intranet. default is true.
    */
   internal?: boolean;
 
   /**
    * Whether to open the secure invoke, if open will use HTTPS invoke,otherwise
-   * use HTTP invoke.
-   *
-   * Default:true
+   * use HTTP invoke. default is true.
    */
   secure?: boolean;
 
   /**
-   * Serverless API version.
-   *
-   * Default:2016-08-15
+   * Serverless API version. default is 2016-08-15.
    */
   version?: string;
 }
 
 /**
- * Serverless result.
+ * The result of the serverless API.
  */
 export interface ServerlessResult {
   /**

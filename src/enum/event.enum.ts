@@ -1,5 +1,5 @@
 /**
- * Serverless event type.
+ * Enumerates serverless event types.
  */
 export enum EventType {
   GATEWAY = 'gateway',

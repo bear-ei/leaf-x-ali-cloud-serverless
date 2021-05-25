@@ -1,7 +1,7 @@
 import {HttpMethod} from './event.interface';
 
 /**
- * Get request token options.
+ * The options to get the request token.
  */
 export interface GetRequestTokenOptions {
   /**
@@ -20,7 +20,7 @@ export interface GetRequestTokenOptions {
   method: HttpMethod;
 
   /**
-   * Request URL.
+   * URL of the request.
    */
   url: string;
 
@@ -41,7 +41,7 @@ export interface GetRequestToken {
 }
 
 /**
- * Get signature string options.
+ * The options to get the signature string.
  */
 export interface GetSignStringOptions {
   /**
@@ -50,7 +50,7 @@ export interface GetSignStringOptions {
   method: HttpMethod;
 
   /**
-   * Request URL.
+   * URL of the request.
    */
   url: string;
 
@@ -71,7 +71,7 @@ export interface GetSignString {
 }
 
 /**
- * Signature options.
+ * The options to sign.
  */
 export interface SignOptions {
   /**
