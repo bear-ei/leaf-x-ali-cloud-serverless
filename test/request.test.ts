@@ -2,16 +2,16 @@ import * as assert from 'assert';
 import * as nock from 'nock';
 import * as request from '../src/request';
 
-const response = {
-  status: 200,
-  data: '',
-  headers: {},
-  statusText: '',
-  url: '',
-};
-
 describe('test/request.test.ts', () => {
   before(async () => {
+    const response = {
+      status: 200,
+      data: '',
+      headers: {},
+      statusText: '',
+      url: '',
+    };
+
     nock('https://leaf-x.app').get('/default/succeed').reply(200, response);
     nock('https://leaf-x.app').post('/custom/succeed').reply(200, response);
   });
