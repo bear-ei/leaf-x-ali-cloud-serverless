@@ -60,9 +60,28 @@ export interface ExecInvokeOptions {
 }
 
 /**
- * Retry the options to invoke serverless.
+ * Execute the invoke to serverless.
+ *
+ * @param retryNumber Number of retries.
+ * @param options ExecInvokeOptions
+ * @return Promise<HandleResponseResult>
  */
-export interface RetryOptions {
+export interface ExecInvoke {
+  (
+    retryNumber: number,
+    options: ExecInvokeOptions
+  ): Promise<HandleResponseResult>;
+}
+
+/**
+ * Initialize the options to retry invoke to serverless.
+ */
+export interface InitRetryInvokeOptions {
+  /**
+   * Options for initialize request.
+   */
+  initRequestOptions: InitRequestOptions;
+
   /**
    * Number of retries.
    */
@@ -70,40 +89,17 @@ export interface RetryOptions {
 }
 
 /**
- * Execute the invoke to serverless.
- *
- * @param retry RetryOptions
- * @param options ExecInvokeOptions
- * @return Promise<HandleResponseResult>
- */
-export interface ExecInvoke {
-  (
-    retry: RetryOptions,
-    options: ExecInvokeOptions
-  ): Promise<HandleResponseResult>;
-}
-
-/**
- * Initialize the options to retry invoke to serverless.
- *
- * @extends RetryOptions
- */
-export interface InitRetryInvokeOptions extends RetryOptions {
-  /**
-   * Options for initialize request.
-   */
-  initRequestOptions: InitRequestOptions;
-}
-
-/**
  * Initialize and retry the function that invoke serverless.
  *
- * @param retry InitRetryInvokeOptions
+ * @param initRetryInvoke InitRetryInvokeOptions.
  * @param options ExecInvokeOptions
  * @return RetryInvoke
  */
 export interface InitRetryInvoke {
-  (retry: InitRetryInvokeOptions, options: ExecInvokeOptions): RetryInvoke;
+  (
+    initRetryInvoke: InitRetryInvokeOptions,
+    options: ExecInvokeOptions
+  ): RetryInvoke;
 }
 
 /**

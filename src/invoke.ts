@@ -10,7 +10,7 @@ import {initRequest} from './request';
 import {handleResponse} from './response';
 
 const initExecInvoke: InitExecInvoke = initRequestOptions => (
-  {retryNumber},
+  retryNumber,
   {url, options}
 ) => {
   const retryInvoke = initRetryInvoke(
@@ -28,7 +28,10 @@ const initRetryInvoke: InitRetryInvoke = (
   if (retryNumber > 0) {
     retryNumber--;
 
-    return initExecInvoke(initRequestOptions)({retryNumber}, {url, options});
+    return initExecInvoke(initRequestOptions)(retryNumber, {
+      url,
+      options,
+    });
   }
 
   throw error;
@@ -57,10 +60,10 @@ export const initInvoke: InitInvoke = ({
     env: qualifier,
   });
 
-  const result = await initExecInvoke(args)(
-    {retryNumber: 3},
-    {url, options: {method: 'POST', body, async, timeout}}
-  ).catch(handleInvokeError);
+  const result = await initExecInvoke(args)(/** Number of retries */ 3, {
+    url,
+    options: {method: 'POST', body, async, timeout},
+  }).catch(handleInvokeError);
 
   return handleResponse({type: event.type, response: result});
 };
