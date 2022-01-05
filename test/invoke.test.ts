@@ -5,7 +5,7 @@ import {initInvoke} from '../src/invoke';
 
 describe('test/invoke.test.ts', () => {
   it('should be invoke asynchronously', async () => {
-    sinon.stub(fetch, 'default').resolves({
+    sinon.stub(fetch, 'fetch').resolves({
       status: 202,
       data: '',
       headers: {},
@@ -41,7 +41,7 @@ describe('test/invoke.test.ts', () => {
   });
 
   it('should be invoke correctly', async () => {
-    sinon.stub(fetch, 'default').resolves({
+    sinon.stub(fetch, 'fetch').resolves({
       status: 200,
       data: {
         statusCode: 200,
@@ -83,7 +83,7 @@ describe('test/invoke.test.ts', () => {
   });
 
   it('should be an error invoke', async () => {
-    sinon.stub(fetch, 'default').resolves({
+    sinon.stub(fetch, 'fetch').resolves({
       status: 200,
       data: {
         statusCode: 400,
@@ -124,7 +124,7 @@ describe('test/invoke.test.ts', () => {
   });
 
   it('should be a response error', async () => {
-    sinon.stub(fetch, 'default').rejects({
+    sinon.stub(fetch, 'fetch').rejects({
       status: 404,
       data: {ErrorMessage: 'Bad Request.'},
       headers: {
@@ -161,7 +161,7 @@ describe('test/invoke.test.ts', () => {
   });
 
   it('should be a invoke timeout', async () => {
-    sinon.stub(fetch, 'default').rejects({
+    sinon.stub(fetch, 'fetch').rejects({
       message: {ErrorMessage: 'Bad Request.'},
     });
 

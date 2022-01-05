@@ -1,95 +1,10 @@
-import {HandleResponseResult} from '@leaf-x/fetch';
-import {EventType, EventTypeString} from './event';
-
-/**
- * Options for Handle API gateway response.
- */
-export interface HandleGatewayResponseOptions {
-  /**
-   * Response status code.
-   */
-  statusCode: number;
-
-  /**
-   * Whether to base64 encode the response body or not.
-   */
-  isBase64Encoded: boolean;
-
-  /**
-   * Response headers.
-   */
-  headers: Record<string, string>;
-
-  /**
-   * Response body.
-   */
-  body: unknown;
-}
-
-/**
- * Serverless response result.
- */
-export interface ResponseResult {
-  /**
-   * Serverless response data.
-   */
-  data: unknown;
-
-  /**
-   * Serverless response status code.
-   */
-  status: number;
-
-  /**
-   * Serverless response headers.
-   */
-  headers: Record<string, string>;
-}
-
-/**
- * Handle API gateway response.
- *
- * @param options HandleGatewayResponseOptions
- * @return ResponseResult
- */
-export interface HandleGatewayResponse {
-  (options: HandleGatewayResponseOptions): ResponseResult;
-}
-
-/**
- * Handle serverless response method.
- */
-export interface HandleResponseMethod {
-  /**
-   * Handle API gateway response.
-   */
-  readonly gateway: HandleGatewayResponse;
-}
-
-/**
- * Serverless responds to event.
- */
-export interface ResponseEvent {
-  /**
-   * Serverless response event type.
-   */
-  type: EventTypeString;
-
-  /**
-   * Serverless response.
-   */
-  response: HandleResponseResult;
-}
-
-/**
- * Handle serverless response.
- *
- * @param response ResponseEvent
- * @return ResponseResult | HandleResponseResult
- */
-export interface HandleResponse {
-  (response: ResponseEvent): ResponseResult | HandleResponseResult;
-}
+import {EventType} from './enum/event.enum';
+import {
+  HandleGatewayResponse,
+  HandleGatewayResponseOptions,
+  HandleResponse,
+  HandleResponseMethod,
+} from './interface/response.interface';
 
 const handleGatewayResponse: HandleGatewayResponse = ({
   statusCode,
