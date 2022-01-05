@@ -1,9 +1,9 @@
 import * as assert from 'assert';
 import * as sinon from 'sinon';
-import {HandleErrorResult} from '../src/interface/error.interface';
-import {ResponseResult} from '../src/interface/response.interface';
 import * as invoke from '../src/invoke';
 import {initWarmUp} from '../src/warm_up';
+import {HandleErrorResult} from './../src/error';
+import {ResponseResult} from './../src/response';
 
 describe('test/warmUp.test.ts', () => {
   it('should be a successful warm-up', async () => {
