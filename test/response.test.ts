@@ -93,9 +93,11 @@ describe('test/response.test.ts', () => {
         },
       });
     } catch (error) {
+      const err = error as Record<string, unknown>;
+
       assert(typeof error === 'object');
-      assert(error.statusCode === 400);
-      assert(error.message === 'Bad Request.');
+      assert(err.statusCode === 400);
+      assert(err.message === 'Bad Request.');
     }
   });
 
