@@ -23,7 +23,7 @@ Ali cloud serverless access.
 ## Use
 
 ```typescript
-import { serverless } from '@leaf-x/ali-cloud-serverless'
+import serverless from '@leaf-x/ali-cloud-serverless'
 
 const { invoke, warmUp } = serverless({
     accountId: '89785723912113',
