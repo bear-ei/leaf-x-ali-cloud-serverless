@@ -1,102 +1,77 @@
-import {HandleResponseResult} from '@leaf-x/fetch';
+import {FetchOptions} from '@leaf-x/fetch';
 import {EventType, EventTypeString} from './event';
 
 /**
- * Options for Handle API gateway response.
+ * Handles API gateway response options.
  */
 export interface HandleGatewayResponseOptions {
   /**
-   * Response status code.
+   * API gateway response status code.
    */
   statusCode: number;
 
   /**
-   * Whether to base64 encode the response body or not.
+   * Whether to encode the request body in base64 or not.
    */
   isBase64Encoded: boolean;
 
   /**
-   * Response headers.
+   * API gateway response headers information.
    */
   headers: Record<string, string>;
 
   /**
-   * Response body.
+   * API gateway response body.
    */
   body: unknown;
 }
 
 /**
- * Serverless response result.
+ * Response events.
  */
-export interface ResponseResult {
+export interface ResponseEvent {
   /**
-   * Serverless response data.
+   * Request response Body.
    */
   data: unknown;
 
   /**
-   * Serverless response status code.
+   * Fetch options.
+   */
+  options: FetchOptions;
+
+  /**
+   * Request response headers.
+   */
+  headers: Record<string, string>;
+
+  /**
+   * Request response status code.
    */
   status: number;
 
   /**
-   * Serverless response headers.
+   * Request response status code text description.
    */
-  headers: Record<string, string>;
+  statusText: string;
+
+  /**
+   * Request URL.
+   */
+  url: string;
 }
 
 /**
- * Handle API gateway response.
+ * Handle API gateway responses.
  *
- * @param options HandleGatewayResponseOptions
- * @return ResponseResult
+ * @param options Handles API gateway response options.
  */
-export interface HandleGatewayResponse {
-  (options: HandleGatewayResponseOptions): ResponseResult;
-}
-
-/**
- * Handle serverless response method.
- */
-export interface HandleResponseMethod {
-  /**
-   * Handle API gateway response.
-   */
-  readonly gateway: HandleGatewayResponse;
-}
-
-/**
- * Serverless responds to event.
- */
-export interface ResponseEvent {
-  /**
-   * Serverless response event type.
-   */
-  type: EventTypeString;
-
-  /**
-   * Serverless response.
-   */
-  response: HandleResponseResult;
-}
-
-/**
- * Handle serverless response.
- *
- * @param response ResponseEvent
- * @return ResponseResult | HandleResponseResult
- */
-export interface HandleResponse {
-  (response: ResponseEvent): ResponseResult | HandleResponseResult;
-}
-
-const handleGatewayResponse: HandleGatewayResponse = ({
+const handleGatewayResponse = ({
   statusCode,
   headers,
   body,
   isBase64Encoded,
-}) => {
+}: HandleGatewayResponseOptions) => {
   const originalBody = isBase64Encoded
     ? Buffer.from(body as string, 'base64').toString()
     : body;
@@ -106,17 +81,26 @@ const handleGatewayResponse: HandleGatewayResponse = ({
     : originalBody;
 
   const result = {status: statusCode, headers, data};
-  const error = result.status < 200 || result.status >= 300;
+  const isBusinessError = result.status < 200 || result.status >= 300;
 
-  if (error) {
+  if (isBusinessError) {
     throw Object.assign(new Error('Invalid response.'), {...data});
   }
 
   return result;
 };
 
-export const handleResponse: HandleResponse = ({type, response}) => {
-  const handleResponseMethod: HandleResponseMethod = Object.freeze({
+/**
+ * Handle response.
+ *
+ * @param type Event type string.
+ * @param response Response events.
+ */
+export const handleResponse = (
+  type: EventTypeString,
+  response: ResponseEvent
+) => {
+  const handleResponseMethod = Object.freeze({
     gateway: handleGatewayResponse,
   });
 

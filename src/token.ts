@@ -1,73 +1,54 @@
 import * as crypto from 'crypto';
 import {HttpMethod} from './event';
-import {getCanonicalHeadersString} from './headers';
+import {handleCanonicalHeadersString} from './headers';
 
 /**
- * The options to sign.
+ * Signature options.
  */
 export interface SignOptions {
   /**
    * Signature string.
+   *
    */
   signString: string;
 
   /**
-   * Secret key.
+   * Ali cloud access key.
    */
   secret: string;
 }
 
 /**
- * Signature.
- *
- * @param options SignOptions
- * @return string
+ * Handle signature string options.
  */
-export interface Sign {
-  (options: SignOptions): string;
-}
-
-/**
- * The options to get the signature string.
- */
-export interface GetSignStringOptions {
+export interface HandleSignStringOptions {
   /**
    * HTTP request method.
    */
   method: HttpMethod;
 
   /**
-   * URL of the request.
+   * Request URL.
    */
   url: string;
 
   /**
-   * Request headers.
+   * Request headers information.
    */
   headers: Record<string, string>;
 }
 
 /**
- * Get the signature string.
- *
- * @param options GetSignStringOptions
- * @return string
+ * Handle the request token options.
  */
-export interface GetSignString {
-  (options: GetSignStringOptions): string;
-}
-
-/**
- * The options to get the request token.
- */
-export interface GetRequestTokenOptions {
+export interface HandleRequestTokenOptions {
   /**
-   * Ali cloud serverless access ID.
+   * Ali cloud account ID.
    */
   accessId: string;
 
   /**
-   * Ali cloud serverless access key.
+   * Ali cloud access key.
    */
   accessSecretKey: string;
 
@@ -77,27 +58,22 @@ export interface GetRequestTokenOptions {
   method: HttpMethod;
 
   /**
-   * URL of the request.
+   * Request URL.
    */
   url: string;
 
   /**
-   * Request headers.
+   * Request headers information.
    */
   headers: Record<string, string>;
 }
 
 /**
- * Get the request token.
+ * Signature.
  *
- * @param options GetRequestTokenOptions
- * @return string
+ * @param options Signature options.
  */
-export interface GetRequestToken {
-  (options: GetRequestTokenOptions): string;
-}
-
-const sign: Sign = ({secret, signString}) => {
+const sign = ({secret, signString}: SignOptions) => {
   const buffer = crypto
     .createHmac('sha256', secret)
     .update(signString, 'utf8')
@@ -106,9 +82,14 @@ const sign: Sign = ({secret, signString}) => {
   return Buffer.from(buffer).toString('base64');
 };
 
-const getSignString: GetSignString = ({method, url, headers}) => {
-  const canonicalHeaderString = getCanonicalHeadersString(
-    {prefix: 'x-fc-'},
+/**
+ * Handle signature strings.
+ *
+ * @param options Handle signature string options.
+ */
+const handleSignString = ({method, url, headers}: HandleSignStringOptions) => {
+  const canonicalHeaderString = handleCanonicalHeadersString(
+    /** Canonical request headers prefix. */ 'x-fc-',
     headers
   );
 
@@ -122,12 +103,17 @@ const getSignString: GetSignString = ({method, url, headers}) => {
   ].join('\n');
 };
 
-export const getRequestToken: GetRequestToken = ({
+/**
+ * Handle the request token.
+ *
+ * @param options Handle the request token options.
+ */
+export const handleRequestToken = ({
   accessId,
   accessSecretKey,
   ...args
-}) => {
-  const signString = getSignString(args);
+}: HandleRequestTokenOptions) => {
+  const signString = handleSignString(args);
 
   return `FC ${accessId}:${sign({secret: accessSecretKey, signString})}`;
 };

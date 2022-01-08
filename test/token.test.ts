@@ -1,9 +1,9 @@
 import * as assert from 'assert';
-import {getRequestToken} from '../src/token';
+import {handleRequestToken} from '../src/token';
 
 describe('test/token.test.ts', () => {
   it('should get the request token', async () => {
-    const result = getRequestToken({
+    const result = handleRequestToken({
       accessId: '123456',
       accessSecretKey: 'MTIz',
       method: 'GET',

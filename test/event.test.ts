@@ -3,7 +3,7 @@ import {handleTriggerEvent} from '../src/event';
 
 describe('test/event.test.ts', () => {
   it('should be the default gateway event', async () => {
-    const result = handleTriggerEvent({type: 'GATEWAY', data: {}});
+    const result = handleTriggerEvent('GATEWAY', {});
 
     assert(typeof result === 'object');
     assert(result.httpMethod === 'GET');
@@ -19,15 +19,12 @@ describe('test/event.test.ts', () => {
   });
 
   it('should be the correct gateway event', async () => {
-    const result = handleTriggerEvent({
-      type: 'GATEWAY',
-      data: {
-        headers: {
-          'content-type': 'application/text',
-          accept: 'application/text',
-        },
-        body: 'data',
+    const result = handleTriggerEvent('GATEWAY', {
+      headers: {
+        'content-type': 'application/text',
+        accept: 'application/text',
       },
+      body: 'data',
     });
 
     assert(typeof result === 'object');

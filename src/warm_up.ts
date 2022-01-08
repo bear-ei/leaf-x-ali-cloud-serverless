@@ -1,104 +1,81 @@
-import {HandleErrorResult} from './error';
 import {EventTypeString} from './event';
 import {initInvoke, InitInvokeOptions} from './invoke';
-import {ResponseResult} from './response';
 
 /**
- * Warm-up the serverless options.
+ * Function warm-up options.
  */
 export interface WarmUpOptions {
   /**
-   * Serverless event type.
+   * Event type string.
    */
   type: EventTypeString;
 
   /**
-   * Serverless function name.
+   * Function name.
    */
   functionName: string;
 }
 
 /**
- * Warm-up serverless result.
+ * Execute function warm-up.
  *
- * @extends ResponseResult
+ * @param serviceName
+ * @param warmUpOptions Function warm-up options.
+ * @param options Initialize the options for invoke the function.
  */
-export interface WarmUpResult extends ResponseResult {
-  /**
-   * Serverless service name.
-   *
-   */
-  serviceName: string;
-
-  /**
-   * Serverless function name.
-   */
-  functionName: string;
-}
-
-/**
- * Execute warm-up serverless.
- *
- * @param options WarmUpOptions
- * @return Promise<HandleErrorResult | WarmUpResult>
- */
-export interface ExecWarmUp {
-  (options: WarmUpOptions): Promise<HandleErrorResult | WarmUpResult>;
-}
-
-/**
- * Initialize the function that execute the warm-up of serverless.
- *
- * @param serviceName Serverless service name.
- * @param options InitInvokeOptions
- * @return ExecWarmUp
- */
-export interface InitExecWarmUp {
-  (serviceName: string, options: InitInvokeOptions): ExecWarmUp;
-}
-
-/**
- * Warm-up serverless.
- *
- * @param serviceName Serverless service name.
- * @param options WarmUpOptions[]
- * @return Promise<(HandleErrorResult | WarmUpResult)[]>
- */
-export interface WarmUp {
-  (serviceName: string, options: WarmUpOptions[]): Promise<
-    (HandleErrorResult | WarmUpResult)[]
-  >;
-}
-
-/**
- * Initialize the function that warm-up serverless.
- *
- * @param options InitInvokeOptions
- * @return WarmUp
- */
-export interface InitWarmUp {
-  (options: InitInvokeOptions): WarmUp;
-}
-
-const initExecWarmUp: InitExecWarmUp = (serviceName, options) => {
+const execWarmUp = (
+  serviceName: string,
+  {type, functionName}: WarmUpOptions,
+  options: InitInvokeOptions
+) => {
   const invoke = initInvoke(options);
 
-  return ({functionName, type}) =>
-    invoke({
-      serviceName,
-      functionName,
-      event: {
-        type,
-        data: {httpMethod: 'OPTIONS', headers: {'x-warm-up': 'warmUp'}},
-      },
-    })
-      .then(result => ({...result, serviceName, functionName}))
-      .catch(error => error);
+  return invoke({
+    serviceName,
+    functionName,
+    event: {
+      type,
+      data: {httpMethod: 'OPTIONS', headers: {'x-warm-up': 'warmUp'}},
+    },
+  })
+    .then(result => ({...result, serviceName, functionName}))
+    .catch(error => error);
 };
 
-export const initWarmUp: InitWarmUp =
-  invokeOptions => (serviceName, options) => {
-    const execWarmUp = initExecWarmUp(serviceName, invokeOptions);
+/**
+ * Initialize the function that performs the function warm-up.
+ *
+ * @param serviceName Service name.
+ * @param options Initialize the options for invoke the function.
+ */
+const initExecWarmUp =
+  (serviceName: string, options: InitInvokeOptions) =>
+  (warmUpOptions: WarmUpOptions) =>
+    execWarmUp(serviceName, warmUpOptions, options);
 
-    return Promise.all(options.map(execWarmUp));
-  };
+/**
+ * Function warm-up.
+ *
+ * @param serviceName Service name.
+ * @param options Function warm-up options.
+ * @param invokeOptions Initialize the options for invoke the function.
+ */
+const warmUp = (
+  serviceName: string,
+  options: WarmUpOptions[],
+  invokeOptions: InitInvokeOptions
+) => {
+  const execWarmUp = initExecWarmUp(serviceName, invokeOptions);
+
+  return Promise.all(options.map(execWarmUp));
+};
+
+/**
+ * Initialize the function to warm up the function.
+ *
+ * @param invokeOptions Initialize the options for invoke the function.
+ */
+export const initWarmUp =
+  (invokeOptions: InitInvokeOptions) =>
+  (serviceName: string, options: WarmUpOptions[]) =>
+    warmUp(serviceName, options, invokeOptions);

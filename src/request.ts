@@ -1,67 +1,62 @@
-import fetch, {FetchOptions, HandleResponseResult} from '@leaf-x/fetch';
-import {initGetRequestHeaders} from './headers';
+import fetch, {FetchOptions} from '@leaf-x/fetch';
+import {initHandleRequestHeaders} from './headers';
 import {AliCloudOptions} from './serverless';
 
 /**
- * Options for initialize request.
- *
- * @extends AliCloudOptions
+ * Options for initializing the request function.
  */
 export interface InitRequestOptions extends AliCloudOptions {
   /**
-   * Serverless host.
+   * Request host address.
    */
   host: string;
 }
 
 /**
- * The request options.
- *
- * @extends FetchOptions
+ * Request options.
  */
 export interface RequestOptions extends FetchOptions {
   /**
-   * Whether to request asynchronously or not.
+   * Whether to execute asynchronous requests.
    */
   async?: boolean;
 }
 
 /**
- * Request API.
+ * Request.
  *
- * @param url URL of the request.
- * @param options RequestOptions
- * @return Promise<HandleResponseResult>
+ * @param url Request URL.
+ * @param [options={}] Request options.
+ * @param initRequestOptions Options for initializing the request function.
  */
-export interface Request {
-  (url: string, options?: RequestOptions): Promise<HandleResponseResult>;
-}
+const request = (
+  url: string,
+  options: RequestOptions = {},
+  initRequestOptions: InitRequestOptions
+) => {
+  const {method = 'GET', body = '', timeout, async} = options;
+  const handleRequestHeaders = initHandleRequestHeaders(initRequestOptions);
+  const headers = handleRequestHeaders({
+    url,
+    method,
+    content: body as string,
+    async,
+  });
+
+  return fetch(url, {
+    method,
+    headers,
+    ...(body ? {body} : undefined),
+    timeout,
+  });
+};
 
 /**
- * The function that initialize the request.
+ * Initialize the request function.
  *
- * @param options InitRequestOptions
- * @return Request
+ * @param initRequestOptions Options for initializing the request function.
  */
-export interface InitRequest {
-  (options: InitRequestOptions): Request;
-}
-
-export const initRequest: InitRequest =
-  initRequestOptions =>
-  async (url, options = {}) => {
-    const {method = 'GET', body = '', timeout, async} = options;
-    const headers = initGetRequestHeaders(initRequestOptions)({
-      url,
-      method,
-      content: body as string,
-      async,
-    });
-
-    return fetch(url, {
-      method,
-      headers,
-      ...(body ? {body} : undefined),
-      timeout,
-    });
-  };
+export const initRequest =
+  (initRequestOptions: InitRequestOptions) =>
+  (url: string, options: RequestOptions = {}) =>
+    request(url, options, initRequestOptions);

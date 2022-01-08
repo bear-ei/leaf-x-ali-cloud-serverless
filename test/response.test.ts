@@ -3,15 +3,13 @@ import {handleResponse} from '../src/response';
 
 describe('test/response.test.ts', () => {
   it('should be an asynchronous response', async () => {
-    const result = handleResponse({
-      type: 'GATEWAY',
-      response: {
-        status: 202,
-        data: '',
-        headers: {'content-type': 'application/json; charset=utf-8'},
-        statusText: '',
-        url: '',
-      },
+    const result = handleResponse('GATEWAY', {
+      options: {},
+      status: 202,
+      data: '',
+      headers: {'content-type': 'application/json; charset=utf-8'},
+      statusText: '',
+      url: '',
     });
 
     assert(typeof result === 'object');
@@ -24,22 +22,20 @@ describe('test/response.test.ts', () => {
   });
 
   it('should be a gateway response', async () => {
-    const result = handleResponse({
-      type: 'GATEWAY',
-      response: {
-        status: 200,
-        data: {
-          statusCode: 200,
-          body: JSON.stringify({message: 'json'}),
-          isBase64Encoded: false,
-          headers: {
-            'content-type': 'application/json; charset=utf-8',
-          },
+    const result = handleResponse('GATEWAY', {
+      status: 200,
+      options: {},
+      data: {
+        statusCode: 200,
+        body: JSON.stringify({message: 'json'}),
+        isBase64Encoded: false,
+        headers: {
+          'content-type': 'application/json; charset=utf-8',
         },
-        headers: {'content-type': 'application/json; charset=utf-8'},
-        statusText: '',
-        url: '',
       },
+      headers: {'content-type': 'application/json; charset=utf-8'},
+      statusText: '',
+      url: '',
     });
 
     assert(typeof result === 'object');
@@ -49,22 +45,20 @@ describe('test/response.test.ts', () => {
   });
 
   it('should be a gateway base64 response', async () => {
-    const result = handleResponse({
-      type: 'GATEWAY',
-      response: {
-        status: 200,
-        data: {
-          statusCode: 200,
-          body: Buffer.from('text').toString('base64'),
-          isBase64Encoded: true,
-          headers: {
-            'content-type': 'application/text',
-          },
+    const result = handleResponse('GATEWAY', {
+      status: 200,
+      options: {},
+      data: {
+        statusCode: 200,
+        body: Buffer.from('text').toString('base64'),
+        isBase64Encoded: true,
+        headers: {
+          'content-type': 'application/text',
         },
-        headers: {'content-type': 'application/json; charset=utf-8'},
-        statusText: '',
-        url: '',
       },
+      headers: {'content-type': 'application/json; charset=utf-8'},
+      statusText: '',
+      url: '',
     });
 
     assert(typeof result === 'object');
@@ -75,22 +69,20 @@ describe('test/response.test.ts', () => {
 
   it('should be a gateway error response', async () => {
     try {
-      handleResponse({
-        type: 'GATEWAY',
-        response: {
-          status: 200,
-          data: {
-            statusCode: 400,
-            body: JSON.stringify({statusCode: 400, message: 'Bad Request.'}),
-            isBase64Encoded: false,
-            headers: {
-              'content-type': 'application/json; charset=utf-8',
-            },
+      handleResponse('GATEWAY', {
+        options: {},
+        status: 200,
+        data: {
+          statusCode: 400,
+          body: JSON.stringify({statusCode: 400, message: 'Bad Request.'}),
+          isBase64Encoded: false,
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
           },
-          headers: {'content-type': 'application/json; charset=utf-8'},
-          statusText: '',
-          url: '',
         },
+        headers: {'content-type': 'application/json; charset=utf-8'},
+        statusText: '',
+        url: '',
       });
     } catch (error) {
       const err = error as Record<string, unknown>;
@@ -102,20 +94,18 @@ describe('test/response.test.ts', () => {
   });
 
   it('should be a gateway with no content type response', async () => {
-    const result = handleResponse({
-      type: 'GATEWAY',
-      response: {
-        status: 200,
-        data: {
-          statusCode: 200,
-          body: JSON.stringify({message: 'json'}),
-          isBase64Encoded: false,
-          headers: {},
-        },
-        headers: {'content-type': 'application/json; charset=utf-8'},
-        statusText: '',
-        url: '',
+    const result = handleResponse('GATEWAY', {
+      options: {},
+      status: 200,
+      data: {
+        statusCode: 200,
+        body: JSON.stringify({message: 'json'}),
+        isBase64Encoded: false,
+        headers: {},
       },
+      headers: {'content-type': 'application/json; charset=utf-8'},
+      statusText: '',
+      url: '',
     });
 
     assert(typeof result === 'object');

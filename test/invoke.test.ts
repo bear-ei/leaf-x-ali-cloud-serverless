@@ -6,6 +6,7 @@ import {initInvoke} from '../src/invoke';
 describe('test/invoke.test.ts', () => {
   it('should be invoke asynchronously', async () => {
     sinon.stub(fetch, 'default').resolves({
+      options: {},
       status: 202,
       data: '',
       headers: {},
@@ -42,6 +43,7 @@ describe('test/invoke.test.ts', () => {
 
   it('should be invoke correctly', async () => {
     sinon.stub(fetch, 'default').resolves({
+      options: {},
       status: 200,
       data: {
         statusCode: 200,
@@ -84,6 +86,7 @@ describe('test/invoke.test.ts', () => {
 
   it('should be an error invoke', async () => {
     sinon.stub(fetch, 'default').resolves({
+      options: {},
       status: 200,
       data: {
         statusCode: 400,

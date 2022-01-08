@@ -1,110 +1,54 @@
 /**
- * Options for handle error.
+ * Handle the error options.
  */
 export interface HandleErrorOptions {
   /**
-   * Current request serverless service name.
+   * The name of the requested service.
    */
   serviceName: string;
 
   /**
-   * Current request serverless function name.
+   * The name of the requested function.
    */
   functionName: string;
 
   /**
-   * Current serverless runtime environment.
+   * The requested deployment environment.
    */
   env: string;
 
   /**
-   * Current request ID.
+   * Request ID.
    */
   requestId?: string;
 }
-
 /**
- * The result of the handle error.
- *
- * @extends HandleErrorOptions
- */
-export interface HandleErrorResult extends HandleErrorOptions {
-  /**
-   * Serverless response status code.
-   */
-  status: number;
-
-  /**
-   * Customized business error codes.
-   */
-  code: number;
-
-  /**
-   * Error message.
-   */
-  message: string;
-
-  /**
-   * Error message details.
-   */
-  details?: unknown;
-
-  /**
-   * An error occurred in the API call chain.
-   */
-  apis?: HandleErrorOptions[];
-}
-
-/**
- * Handle error.
+ * Handle errors.
  *
  * @param error Error.
- * @param options HandleErrorOptions
- * @return HandleErrorResult
+ * @param options Handle the error options.
  */
-export interface HandleError {
-  (
-    error: Record<string, unknown>,
-    options: HandleErrorOptions
-  ): HandleErrorResult;
-}
-
-/**
- * Handle serverless error.
- *
- * @param error Error.
- * @return never
- */
-export interface HandleServerlessError {
-  (error: Record<string, unknown>): never;
-}
-
-/**
- * Initialize the function that handle serverless error.
- *
- * @param options HandleErrorOptions
- * @return HandleServerError
- */
-export interface InitHandleServerlessError {
-  (options: HandleErrorOptions): HandleServerlessError;
-}
-
-export const handleError: HandleError = (
-  error,
-  {serviceName, functionName, requestId, env}
+export const handleError = (
+  error: unknown,
+  {serviceName, functionName, requestId, env}: HandleErrorOptions
 ) => {
-  const status = (error.status ?? 500) as number;
+  const relError = error as Record<string, unknown>;
+  const status = (relError.status ?? 500) as number;
   const code =
-    error.code && typeof error.code === 'number' ? error.code : status;
+    relError.code && typeof relError.code === 'number' ? relError.code : status;
 
-  const err = error.status && error.code ? error : {details: error};
+  const err = (
+    relError.status && relError.code ? relError : {details: relError}
+  ) as Record<string, unknown> & {details?: Record<string, unknown>};
+
   const currentApis = [{serviceName, functionName, requestId, env}];
-  const message = (error.message ??
+  const message = (relError.message ??
     `${serviceName} ${functionName} invoke failed.`) as string;
 
-  const apis = Array.isArray(err.apis)
-    ? currentApis.concat(err.apis)
-    : currentApis;
+  const apis =
+    err.apis && Array.isArray(err.apis)
+      ? currentApis.concat(err.apis)
+      : currentApis;
 
   return {
     ...err,
@@ -119,10 +63,24 @@ export const handleError: HandleError = (
   };
 };
 
-export const initHandleServerlessError: InitHandleServerlessError =
-  options => error => {
-    throw Object.assign(
-      new Error('Invalid invoke.'),
-      handleError(error, options)
-    );
-  };
+/**
+ * Handle serverless errors.
+ *
+ * @param error Error.
+ * @param options Handle the error options.
+ */
+const handleServerlessError = (error: unknown, options: HandleErrorOptions) => {
+  throw Object.assign(
+    new Error('Invalid invoke.'),
+    handleError(error, options)
+  );
+};
+
+/**
+ * Initialize the function that handles serverless errors.
+ *
+ * @param options Handle the error options.
+ */
+export const initHandleServerlessError =
+  (options: HandleErrorOptions) => (error: unknown) =>
+    handleServerlessError(error, options);

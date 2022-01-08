@@ -1,16 +1,20 @@
-import {FetchOptions, HandleResponseResult} from '@leaf-x/fetch';
+import {FetchOptions} from '@leaf-x/fetch';
 import {initHandleServerlessError} from './error';
-import {handleTriggerEvent, TriggerEvent} from './event';
+import {
+  EventTypeString,
+  HandleGatewayEventOptions,
+  handleTriggerEvent,
+} from './event';
 import {initRequest, InitRequestOptions} from './request';
-import {handleResponse, ResponseResult} from './response';
+import {handleResponse} from './response';
 import {AliCloudOptions} from './serverless';
 
 /**
- * Initialize the options to retry invoke to serverless.
+ * Initialize options for retrying function invoke.
  */
 export interface InitRetryInvokeOptions {
   /**
-   * Options for initialize request.
+   * Options for initializing the request function.
    */
   initRequestOptions: InitRequestOptions;
 
@@ -21,239 +25,248 @@ export interface InitRetryInvokeOptions {
 }
 
 /**
- * Initialize the execution of the function that invoke serverless.
- *
- * @param options InitRequestOptions
- * @return ExecInvoke
- */
-export interface InitExecInvoke {
-  (options: InitRequestOptions): ExecInvoke;
-}
-
-/**
- * Execute the options to invoke serverless.
+ * Execute the invoke function options.
  */
 export interface ExecInvokeOptions {
   /**
-   * Options for the Fetch API.
+   * Fetch options.
    */
   options: FetchOptions & {
     /**
-     * Whether the request is asynchronous or not.
+     * Whether to execute asynchronous requests.
      */
     async?: boolean;
   };
 
   /**
-   * URL of the request.
+   * Request URL.
    */
   url: string;
 }
 
 /**
- * Execute the invoke to serverless.
- *
- * @param retryNumber Number of retries.
- * @param options ExecInvokeOptions
- * @return Promise<HandleResponseResult>
- */
-export interface ExecInvoke {
-  (
-    retryNumber: number,
-    options: ExecInvokeOptions
-  ): Promise<HandleResponseResult>;
-}
-
-/**
- * Initialize and retry the function that invoke serverless.
- *
- * @param initRetryInvoke InitRetryInvokeOptions.
- * @param options ExecInvokeOptions
- * @return RetryInvoke
- */
-export interface InitRetryInvoke {
-  (
-    initRetryInvoke: InitRetryInvokeOptions,
-    options: ExecInvokeOptions
-  ): RetryInvoke;
-}
-
-/**
- * Retry the invoke to serverless.
- *
- * @param error Error.
- * @return Promise<HandleResponseResult>
- */
-export interface RetryInvoke {
-  (error: Record<string, unknown>): Promise<HandleResponseResult>;
-}
-
-/**
- * Options to handle invoke serverless error .
+ * Handle function request error options.
  */
 export interface HandleInvokeErrorOptions {
   /**
-   * Current request serverless service name.
+   * Service name.
    */
   serviceName: string;
 
   /**
-   * Current request serverless function name.
+   * Function name.
    */
   functionName: string;
 
   /**
-   * Current serverless runtime environment.
+   * Invoke function deployment environment.
    */
   env: string;
 }
 
 /**
- * Initialize the function to handle invoke error.
- *
- * @param options HandleInvokeErrorOptions
- * @return HandleInvokeError
- */
-export interface InitHandleInvokeError {
-  (options: HandleInvokeErrorOptions): HandleInvokeError;
-}
-
-/**
- * Handle invoke serverless error.
- *
- * @param error Error.
- * @return never
- */
-export interface HandleInvokeError {
-  (error: Record<string, unknown>): never;
-}
-
-/**
- * Initialize the options to invoke serverless.
- *
- * @extends AliCloudOptions
+ * Initialize the options for invoke the function.
  */
 export interface InitInvokeOptions extends AliCloudOptions {
   /**
-   * Invoke serverless qualifier.
+   * The qualifier of the function to invoke.
    */
   qualifier: string;
 
   /**
-   * Invoke serverless host.
+   * The address of the host where the function is invoke.
    */
   host: string;
 
   /**
-   * Set the request timeout in milliseconds.
+   * The timeout for invoke the function.
    */
   timeout: number;
 
   /**
-   * Invoke the serverless endpoint.
+   * The endpoint of the invoke to the function.
    */
   endpoint: string;
 
   /**
-   * Invoke the serverless API version.
+   * Invoke the API version of this function.
    */
   version: string;
 }
 
 /**
- * Initialize the function that invoke serverless.
- *
- * @param options InitInvokeOptions
- * @return Invoke
- */
-export interface InitInvoke {
-  (options: InitInvokeOptions): Invoke;
-}
-
-/**
- * The options to invoke serverless.
+ * Options for invoke the function.
  */
 export interface InvokeOptions {
   /**
-   * Serverless trigger event.
+   * Invoke events.
    */
-  event: TriggerEvent;
+  event: {
+    /**
+     * Event type string.
+     */
+    type: EventTypeString;
+
+    /**
+     * Options for handle API gateway trigger event.
+     */
+    data: HandleGatewayEventOptions;
+  };
 
   /**
-   * Current request serverless service name.
+   * Service name.
    */
   serviceName: string;
 
   /**
-   * Current request serverless function name.
+   * Function name.
    */
   functionName: string;
 
   /**
-   * Whether to invoke serverless asynchronously.
+   * Whether to execute asynchronous requests. default is false.
    */
   async?: boolean;
 }
 
 /**
- * Invoke serverless.
+ * Execute function invoke.
  *
- * @param options InvokeOptions
- * @return Promise<ResponseResult>
+ * @param retryNumber Number of retries.
+ * @param execInvokeOptions Execute the invoke function options.
+ * @param initRequestOptions Options for initializing the request function.
  */
-export interface Invoke {
-  (options: InvokeOptions): Promise<ResponseResult>;
-}
+const execInvoke = (
+  retryNumber: number,
+  {url, options}: ExecInvokeOptions,
+  initRequestOptions: InitRequestOptions
+): Promise<{
+  data: unknown;
+  options: FetchOptions;
+  headers: Record<string, string>;
+  status: number;
+  statusText: string;
+  url: string;
+}> => {
+  const request = initRequest(initRequestOptions);
+  const retryInvoke = initRetryInvoke(
+    {initRequestOptions, retryNumber},
+    {url, options}
+  );
 
-const initExecInvoke: InitExecInvoke =
-  initRequestOptions =>
-  (retryNumber, {url, options}) => {
-    const retryInvoke = initRetryInvoke(
-      {initRequestOptions, retryNumber},
-      {url, options}
-    );
-
-    return initRequest(initRequestOptions)(url, options).catch(retryInvoke);
-  };
-
-const initRetryInvoke: InitRetryInvoke =
-  ({retryNumber, initRequestOptions}, {url, options}) =>
-  error => {
-    if (retryNumber > 0) {
-      retryNumber--;
-
-      return initExecInvoke(initRequestOptions)(retryNumber, {
-        url,
-        options,
-      });
-    }
-
-    throw error;
-  };
-
-const initHandleInvokeError: InitHandleInvokeError = options => error => {
-  const headers = (error.headers ?? {}) as Record<string, unknown>;
-  const requestId = headers['x-fc-request-id'] as string;
-
-  return initHandleServerlessError({...options, requestId})(error);
+  return request(url, options).catch(retryInvoke);
 };
 
-export const initInvoke: InitInvoke =
-  ({qualifier, endpoint, version, timeout, ...args}) =>
-  async ({serviceName, functionName, async = false, event}) => {
-    const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`;
-    const url = `${endpoint}/${version}${path}`;
-    const body = JSON.stringify(handleTriggerEvent(event));
-    const handleInvokeError = initHandleInvokeError({
-      serviceName,
-      functionName,
-      env: qualifier,
-    });
+/**
+ * Initializes the function to execute the function invoke.
+ *
+ * @param initRequestOptions Options for initializing the request function.
+ */
+const initExecInvoke =
+  (initRequestOptions: InitRequestOptions) =>
+  (retryNumber: number, options: ExecInvokeOptions) =>
+    execInvoke(retryNumber, options, initRequestOptions);
 
-    return initExecInvoke(args)(/** Number of retries */ 3, {
-      url,
-      options: {method: 'POST', body, async, timeout},
-    })
-      .catch(handleInvokeError)
-      .then(response => handleResponse({type: event.type, response}));
-  };
+/**
+ * Retry function invoke.
+ *
+ * @param error Error.
+ * @param execInvokeOptions Execute the invoke function options.
+ * @param initRetryInvokeOptions Initialize options for retrying function invoke.
+ */
+const retryInvoke = (
+  error: unknown,
+  {url, options}: ExecInvokeOptions,
+  {retryNumber, initRequestOptions}: InitRetryInvokeOptions
+) => {
+  if (retryNumber > 0) {
+    retryNumber--;
+
+    const execInvoke = initExecInvoke(initRequestOptions);
+
+    return execInvoke(retryNumber, {url, options});
+  }
+
+  throw error;
+};
+
+/**
+ * Initialize the function to be invoke by the retry function.
+ *
+ * @param initRetryInvokeOptions Initialize options for retrying function invoke.
+ * @param execInvokeOptions Execute the invoke function options.
+ */
+const initRetryInvoke =
+  (
+    initRetryInvokeOptions: InitRetryInvokeOptions,
+    execInvokeOptions: ExecInvokeOptions
+  ) =>
+  (error: unknown) =>
+    retryInvoke(error, execInvokeOptions, initRetryInvokeOptions);
+
+/**
+ * Handle function invoke errors.
+ *
+ * @param error Error.
+ * @param options Handle function request error options.
+ */
+const handleInvokeError = (
+  error: unknown,
+  options: HandleInvokeErrorOptions
+) => {
+  const relError = error as Record<string, unknown>;
+  const headers = (relError.headers ?? {}) as Record<string, string>;
+  const requestId = headers['x-fc-request-id'];
+  const handleServerlessError = initHandleServerlessError({
+    ...options,
+    requestId,
+  });
+
+  return handleServerlessError(error);
+};
+
+/**
+ * Initialize the function that handles function invoke errors.
+ *
+ * @param options Handle function request error options.
+ */
+const initHandleInvokeError =
+  (options: HandleInvokeErrorOptions) => (error: unknown) =>
+    handleInvokeError(error, options);
+
+/**
+ * Function invoke.
+ *
+ * @param invokeOptions Options for invoke the function.
+ * @param initInvokeOptions Initialize the options for invoke the function.
+ */
+const invoke = (
+  {serviceName, functionName, async = false, event}: InvokeOptions,
+  {qualifier, endpoint, version, timeout, ...args}: InitInvokeOptions
+) => {
+  const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`;
+  const url = `${endpoint}/${version}${path}`;
+  const body = JSON.stringify(handleTriggerEvent(event.type, event.data));
+  const execInvoke = initExecInvoke(args);
+  const handleInvokeError = initHandleInvokeError({
+    serviceName,
+    functionName,
+    env: qualifier,
+  });
+
+  return execInvoke(/** Number of retries */ 3, {
+    url,
+    options: {method: 'POST', body, async, timeout},
+  })
+    .catch(handleInvokeError)
+    .then(response => handleResponse(event.type, response));
+};
+
+/**
+ * Initializes the function invoke by the function.
+ *
+ * @param initInvokeOptions Initialize the options for invoke the function.
+ */
+export const initInvoke =
+  (initInvokeOptions: InitInvokeOptions) => (options: InvokeOptions) =>
+    invoke(options, initInvokeOptions);

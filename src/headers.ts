@@ -2,105 +2,87 @@ import {FetchOptions} from '@leaf-x/fetch';
 import * as crypto from 'crypto';
 import {HttpMethod} from './event';
 import {InitRequestOptions} from './request';
-import {getRequestToken} from './token';
+import {handleRequestToken} from './token';
 
 /**
- * Get options for the request headers.
+ * Handle request headers options.
  */
-export interface GetRequestHeadersOptions {
+export interface HandleRequestHeadersOptions {
   /**
-   * Request body content.
+   * Request content.
    */
   content: string | Buffer;
 
   /**
-   * HTTP request method.
+   * A string to set request's method.
    */
   method: FetchOptions['method'];
 
   /**
-   * URL of the request.
+   * Request URL.
    */
   url: string;
 
   /**
-   * Whether the request is asynchronous or not.
+   * Whether to execute asynchronous requests.
    */
   async?: boolean;
 }
 
 /**
- * Get the request headers.
+ * Handle request headers.
  *
- * @param options GetRequestHeadersOptions
- * @return Record<string, string>
+ * @param handleRequestHeadersOptions Handle request headers options.
+ * @param initRequestOptions Options for initializing the request function.
  */
-export interface GetRequestHeaders {
-  (options: GetRequestHeadersOptions): Record<string, string>;
-}
-
-/**
- * Initialize the function that gets the request headers.
- *
- * @param options InitRequestOptions
- * @return GetRequestHeaders
- */
-export interface InitGetRequestHeaders {
-  (options: InitRequestOptions): GetRequestHeaders;
-}
-
-/**
- * Options to canonical the request headers prefix.
- */
-export interface CanonicalPrefixOptions {
-  /**
-   * Canonical request headers prefix.
-   */
-  prefix: string;
-}
-
-/**
- * Get the canonical request headers string.
- *
- * @param prefix CanonicalPrefixOptions
- * @param headers Request headers.
- * @return string
- */
-export interface GetCanonicalHeadersString {
-  (prefix: CanonicalPrefixOptions, headers: Record<string, string>): string;
-}
-
-export const initGetRequestHeaders: InitGetRequestHeaders =
-  ({host, accountId, accessSecretKey, accessId}) =>
-  ({content, method, url, async}) => {
-    const headers = {
-      accept: '*/*',
-      date: new Date().toUTCString(),
-      host,
-      'user-agent': `Node.js(${process.version}) OS(${process.platform}/${process.arch})`,
-      'x-fc-account-id': accountId,
-      'content-type': 'application/json; charset=utf-8',
-      'content-md5': crypto.createHash('md5').update(content).digest('hex'),
-      'content-length': Buffer.isBuffer(content)
-        ? `${content.length}`
-        : `${Buffer.from(content).length}`,
-      ...(async ? {'x-fc-invocation-type': 'Async'} : undefined),
-    };
-
-    const authorization = getRequestToken({
-      accessId,
-      accessSecretKey,
-      method: method as HttpMethod,
-      url,
-      headers,
-    });
-
-    return {authorization, ...headers};
+const handleRequestHeaders = (
+  {content, method, url, async}: HandleRequestHeadersOptions,
+  {host, accountId, accessSecretKey, accessId}: InitRequestOptions
+) => {
+  const headers = {
+    accept: '*/*',
+    date: new Date().toUTCString(),
+    host,
+    'user-agent': `Node.js(${process.version}) OS(${process.platform}/${process.arch})`,
+    'x-fc-account-id': accountId,
+    'content-type': 'application/json; charset=utf-8',
+    'content-md5': crypto.createHash('md5').update(content).digest('hex'),
+    'content-length': Buffer.isBuffer(content)
+      ? `${content.length}`
+      : `${Buffer.from(content).length}`,
+    ...(async ? {'x-fc-invocation-type': 'Async'} : undefined),
   };
 
-export const getCanonicalHeadersString: GetCanonicalHeadersString = (
-  {prefix},
-  headers
+  const authorization = handleRequestToken({
+    accessId,
+    accessSecretKey,
+    method: method as HttpMethod,
+    url,
+    headers,
+  });
+
+  return {authorization, ...headers};
+};
+
+/**
+ * Initialize the request handling function.
+ *
+ * @param initRequestOptions Options for initializing the request function.
+ */
+export const initHandleRequestHeaders =
+  (initRequestOptions: InitRequestOptions) =>
+  (options: HandleRequestHeadersOptions) =>
+    handleRequestHeaders(options, initRequestOptions);
+
+/**
+ * Handle canonical request headers strings.
+ *
+ * @param prefix Canonical request headers prefix.
+ * @param headers Request headers information.
+ */
+export const handleCanonicalHeadersString = (
+  prefix: string,
+  headers: Record<string, string>
 ) =>
   Object.keys(headers)
     .filter(key => key.startsWith(prefix))

@@ -1,12 +1,12 @@
 /**
- * Enumerates serverless event types.
+ * Event type enumeration.
  */
 export enum EventType {
   GATEWAY = 'gateway',
 }
 
 /**
- * Serverless event type string.
+ * Event type string.
  */
 export type EventTypeString = 'GATEWAY';
 
@@ -26,7 +26,7 @@ export type HttpMethod =
   | 'UNLINK';
 
 /**
- * Options for handle API gateway trigger event.
+ * Handle API gateway event options.
  */
 export interface HandleGatewayEventOptions {
   /**
@@ -40,12 +40,12 @@ export interface HandleGatewayEventOptions {
   isBase64Encoded?: boolean;
 
   /**
-   * Query parameters.
+   * Request query parameters.
    */
   queryParameters?: Record<string, unknown>;
 
   /**
-   * Path parameters.
+   * Request path parameters.
    */
   pathParameters?: Record<string, string>;
 
@@ -55,71 +55,31 @@ export interface HandleGatewayEventOptions {
   body?: unknown;
 
   /**
-   * Request headers.
+   * Request headers information.
    */
   headers?: Record<string, string>;
 }
 
 /**
- * Serverless trigger event.
- */
-export interface TriggerEvent {
-  /**
-   * Serverless trigger event type.
-   */
-  type: EventTypeString;
-
-  /**
-   * Serverless trigger event data.
-   */
-  data: HandleGatewayEventOptions;
-}
-
-/**
- * Handle serverless trigger event.
+ * Handles API gateway events.
  *
- * @param event  TriggerEvent
- * @return HandleGatewayEventOptions
+ * @param options Handle API gateway event options.
  */
-export interface HandleTriggerEvent {
-  (event: TriggerEvent): HandleGatewayEventOptions;
-}
-
-/**
- * Handle API gateway event.
- *
- * @param options HandleGatewayEventOptions
- * @return HandleGatewayEventOptions
- */
-export interface HandleGatewayEvent {
-  (options: HandleGatewayEventOptions): HandleGatewayEventOptions;
-}
-
-/**
- * Handle the serverless trigger event method.
- */
-export interface HandleTriggerEventMethod {
-  /**
-   * Handle API gateway event.
-   */
-  readonly gateway: HandleGatewayEvent;
-}
-
-const handleGatewayEvent: HandleGatewayEvent = ({
+const handleGatewayEvent = ({
   httpMethod = 'GET',
   isBase64Encoded = false,
   queryParameters = {},
   pathParameters = {},
   body = {},
   headers = {},
-}) => {
+}: HandleGatewayEventOptions) => {
   const {
     'content-type': contentType = 'application/json; charset=utf-8',
     accept = '*/*',
     ...args
   } = headers;
 
-  const data = (contentType as string).startsWith('application/json')
+  const data = contentType.startsWith('application/json')
     ? JSON.stringify(body)
     : body;
 
@@ -133,8 +93,17 @@ const handleGatewayEvent: HandleGatewayEvent = ({
   };
 };
 
-export const handleTriggerEvent: HandleTriggerEvent = ({type, data}) => {
-  const handleEventMethod: HandleTriggerEventMethod = Object.freeze({
+/**
+ * Handle trigger events.
+ *
+ * @param options Event type string.
+ * @param data Handle API gateway event options.
+ */
+export const handleTriggerEvent = (
+  type: EventTypeString,
+  data: HandleGatewayEventOptions
+) => {
+  const handleEventMethod = Object.freeze({
     gateway: handleGatewayEvent,
   });
 

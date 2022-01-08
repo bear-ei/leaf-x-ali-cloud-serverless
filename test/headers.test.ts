@@ -1,10 +1,13 @@
 import * as assert from 'assert';
-import {getCanonicalHeadersString, initGetRequestHeaders} from '../src/headers';
+import {
+  handleCanonicalHeadersString,
+  initHandleRequestHeaders,
+} from './../src/headers';
 
 describe('test/headers.test.ts', () => {
   it('should be a synchronization request headers', async () => {
     const content = Buffer.from(JSON.stringify({data: 'This is request.'}));
-    const result = initGetRequestHeaders({
+    const result = initHandleRequestHeaders({
       host: 'leaf-x.app',
       accountId: '1787993',
       accessSecretKey: '5556123',
@@ -29,7 +32,7 @@ describe('test/headers.test.ts', () => {
 
   it('should be an asynchronous request headers', async () => {
     const content = JSON.stringify({data: 'This is request.'});
-    const result = initGetRequestHeaders({
+    const result = initHandleRequestHeaders({
       host: 'leaf-x.app',
       accountId: '1787993',
       accessSecretKey: '5556123',
@@ -55,20 +58,17 @@ describe('test/headers.test.ts', () => {
   });
 
   it('should get the canonical request header string', async () => {
-    const result = getCanonicalHeadersString(
-      {prefix: 'x-fc-'},
-      {
-        accept: 'application/json; charset=utf-8',
-        date: new Date().toUTCString(),
-        host: 'github.com',
-        'user-agent': `Node.js/${process.version}`,
-        'x-fc-account-id': '1787993',
-        'content-type': 'application/octet-stream',
-        'content-length': '255',
-        'content-md5': 'bf32ca0ebf019d8ba4f95145a5a96865',
-        'x-fc-invocation-type': 'Async',
-      }
-    );
+    const result = handleCanonicalHeadersString('x-fc-', {
+      accept: 'application/json; charset=utf-8',
+      date: new Date().toUTCString(),
+      host: 'github.com',
+      'user-agent': `Node.js/${process.version}`,
+      'x-fc-account-id': '1787993',
+      'content-type': 'application/octet-stream',
+      'content-length': '255',
+      'content-md5': 'bf32ca0ebf019d8ba4f95145a5a96865',
+      'x-fc-invocation-type': 'Async',
+    });
 
     assert(typeof result === 'string');
     assert(

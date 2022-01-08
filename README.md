@@ -23,25 +23,29 @@ Ali cloud serverless access.
 ## Use
 
 ```typescript
-import serverless from '@leaf-x/ali-cloud-serverless'
+import serverless from '@leaf-x/ali-cloud-serverless';
 
-const { invoke, warmUp } = serverless({
-    accountId: '89785723912113',
-    accessId: 'ODk3ODU3MjM5MTIxMTM=',
-    accessSecretKey: 'MTU4MzczNDMyNzMzMg==',
-    region: 'cn-chengdu'
-})
+const {invoke, warmUp} = serverless({
+  accountId: '89785723912113',
+  accessId: 'ODk3ODU3MjM5MTIxMTM=',
+  accessSecretKey: 'MTU4MzczNDMyNzMzMg==',
+  region: 'cn-chengdu',
+});
 
 const invokeResult = invoke({
-    serviceName: "snowflake",
-    functionName: "IndexSnowflake"
+  serviceName: 'snowflake',
+  functionName: 'IndexSnowflake',
+  event: {
     type: 'GATEWAY',
-    data: { queryParameters: { name: 'snowflake' } }
-})
-    .then((result) => console.info(result))
-
+    data: {
+      queryParameters: {
+        name: 'snowflake',
+      },
+    },
+  },
+}).then(result => console.info(result));
 
 const warmUpResult = warmUp('snowflake', [
-    { type: 'GATEWAY', functionName: 'snowflake' }
-]).then((result) => console.info(result))
+  {type: 'GATEWAY', functionName: 'snowflake'},
+]).then(result => console.info(result));
 ```
