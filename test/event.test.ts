@@ -7,10 +7,10 @@ describe('test/event.test.ts', () => {
 
     assert(typeof result === 'object');
     assert(result.httpMethod === 'GET');
-    assert(result.isBase64Encoded === false);
+    assert(result.isBase64Encoded === true);
     assert(typeof result.queryParameters === 'object');
     assert(typeof result.pathParameters === 'object');
-    assert(typeof result.body === 'string');
+    assert(!result.body);
     assert(typeof result.headers === 'object');
     assert(
       result.headers['content-type'] === 'application/json; charset=utf-8'
@@ -29,10 +29,10 @@ describe('test/event.test.ts', () => {
 
     assert(typeof result === 'object');
     assert(result.httpMethod === 'GET');
-    assert(result.isBase64Encoded === false);
+    assert(result.isBase64Encoded === true);
     assert(typeof result.queryParameters === 'object');
     assert(typeof result.pathParameters === 'object');
-    assert(result.body === 'data');
+    assert(result.body === Buffer.from('data').toString('base64'));
     assert(typeof result.headers === 'object');
     assert(result.headers['content-type'] === 'application/text');
     assert(result.headers['accept'] === 'application/text');

@@ -67,10 +67,10 @@ export interface HandleGatewayEventOptions {
  */
 const handleGatewayEvent = ({
   httpMethod = 'GET',
-  isBase64Encoded = false,
+  isBase64Encoded = true,
   queryParameters = {},
   pathParameters = {},
-  body = {},
+  body,
   headers = {},
 }: HandleGatewayEventOptions) => {
   const {
@@ -88,7 +88,7 @@ const handleGatewayEvent = ({
     isBase64Encoded,
     queryParameters,
     pathParameters,
-    body: data,
+    body: data ? Buffer.from(data as string).toString('base64') : data,
     headers: {'content-type': contentType, accept, ...args},
   };
 };

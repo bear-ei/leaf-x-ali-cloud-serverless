@@ -6,12 +6,12 @@ import {initInvoke} from '../src/invoke';
 describe('test/invoke.test.ts', () => {
   it('should be invoke asynchronously', async () => {
     sinon.stub(fetch, 'default').resolves({
-      options: {},
+      options: {url: 'https://leaf-x.app'},
       status: 202,
       data: '',
       headers: {},
       statusText: '',
-      url: '',
+      url: 'https://leaf-x.app',
     });
 
     await initInvoke({
@@ -43,7 +43,7 @@ describe('test/invoke.test.ts', () => {
 
   it('should be invoke correctly', async () => {
     sinon.stub(fetch, 'default').resolves({
-      options: {},
+      options: {url: 'https://leaf-x.app'},
       status: 200,
       data: {
         statusCode: 200,
@@ -55,7 +55,7 @@ describe('test/invoke.test.ts', () => {
       },
       headers: {'content-type': 'application/json; charset=utf-8'},
       statusText: '',
-      url: '',
+      url: 'https://leaf-x.app',
     });
 
     await initInvoke({
@@ -86,7 +86,7 @@ describe('test/invoke.test.ts', () => {
 
   it('should be an error invoke', async () => {
     sinon.stub(fetch, 'default').resolves({
-      options: {},
+      options: {url: 'https://leaf-x.app'},
       status: 200,
       data: {
         statusCode: 400,
@@ -98,7 +98,7 @@ describe('test/invoke.test.ts', () => {
       },
       headers: {'content-type': 'application/json; charset=utf-8'},
       statusText: '',
-      url: '',
+      url: 'https://leaf-x.app',
     });
 
     await initInvoke({
@@ -135,7 +135,7 @@ describe('test/invoke.test.ts', () => {
         'x-fc-request-id': '87af2ed2-5205-4a13-9ee1-90ceaf51eee3',
       },
       statusText: '',
-      url: '',
+      url: 'https://leaf-x.app',
     });
 
     await initInvoke({
