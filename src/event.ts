@@ -97,15 +97,15 @@ const handleGatewayEvent = ({
  * Handle trigger events.
  *
  * @param options Event type string.
- * @param data Handle API gateway event options.
+ * @param options Handle API gateway event options.
  */
 export const handleTriggerEvent = (
   type: EventTypeString,
-  data: HandleGatewayEventOptions
+  options: HandleGatewayEventOptions
 ) => {
   const handleEventMethod = Object.freeze({
     gateway: handleGatewayEvent,
   });
 
-  return handleEventMethod[EventType[type]](data);
+  return handleEventMethod[EventType[type]](options);
 };

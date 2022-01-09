@@ -32,7 +32,7 @@ export interface HandleRequestHeadersOptions {
 /**
  * Handle request headers.
  *
- * @param handleRequestHeadersOptions Handle request headers options.
+ * @param options Handle request headers options.
  * @param initRequestOptions Options for initializing the request function.
  */
 const handleRequestHeaders = (

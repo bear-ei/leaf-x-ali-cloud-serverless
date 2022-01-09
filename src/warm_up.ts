@@ -20,15 +20,15 @@ export interface WarmUpOptions {
  * Execute function warm-up.
  *
  * @param serviceName
- * @param warmUpOptions Function warm-up options.
- * @param options Initialize the options for invoke the function.
+ * @param options Function warm-up options.
+ * @param initInvokeOptions Initialize the options for invoke the function.
  */
 const execWarmUp = (
   serviceName: string,
   {type, functionName}: WarmUpOptions,
-  options: InitInvokeOptions
+  initInvokeOptions: InitInvokeOptions
 ) => {
-  const invoke = initInvoke(options);
+  const invoke = initInvoke(initInvokeOptions);
 
   return invoke({
     serviceName,
@@ -46,26 +46,26 @@ const execWarmUp = (
  * Initialize the function that performs the function warm-up.
  *
  * @param serviceName Service name.
- * @param options Initialize the options for invoke the function.
+ * @param initInvokeOptions Initialize the options for invoke the function.
  */
 const initExecWarmUp =
-  (serviceName: string, options: InitInvokeOptions) =>
-  (warmUpOptions: WarmUpOptions) =>
-    execWarmUp(serviceName, warmUpOptions, options);
+  (serviceName: string, initInvokeOptions: InitInvokeOptions) =>
+  (options: WarmUpOptions) =>
+    execWarmUp(serviceName, options, initInvokeOptions);
 
 /**
  * Function warm-up.
  *
  * @param serviceName Service name.
  * @param options Function warm-up options.
- * @param invokeOptions Initialize the options for invoke the function.
+ * @param initInvokeOptions Initialize the options for invoke the function.
  */
 const warmUp = (
   serviceName: string,
   options: WarmUpOptions[],
-  invokeOptions: InitInvokeOptions
+  initInvokeOptions: InitInvokeOptions
 ) => {
-  const execWarmUp = initExecWarmUp(serviceName, invokeOptions);
+  const execWarmUp = initExecWarmUp(serviceName, initInvokeOptions);
 
   return Promise.all(options.map(execWarmUp));
 };
@@ -73,9 +73,9 @@ const warmUp = (
 /**
  * Initialize the function to warm up the function.
  *
- * @param invokeOptions Initialize the options for invoke the function.
+ * @param initInvokeOptions Initialize the options for invoke the function.
  */
 export const initWarmUp =
-  (invokeOptions: InitInvokeOptions) =>
+  (initInvokeOptions: InitInvokeOptions) =>
   (serviceName: string, options: WarmUpOptions[]) =>
-    warmUp(serviceName, options, invokeOptions);
+    warmUp(serviceName, options, initInvokeOptions);

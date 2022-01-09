@@ -81,9 +81,9 @@ const handleGatewayResponse = ({
     : originalBody;
 
   const result = {status: statusCode, headers, data};
-  const isBusinessError = result.status < 200 || result.status >= 300;
+  const isError = result.status < 200 || result.status >= 300;
 
-  if (isBusinessError) {
+  if (isError) {
     throw Object.assign(new Error('Invalid response.'), {...data});
   }
 

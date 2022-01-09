@@ -133,7 +133,7 @@ export interface InvokeOptions {
  * Execute function invoke.
  *
  * @param retryNumber Number of retries.
- * @param execInvokeOptions Execute the invoke function options.
+ * @param options Execute the invoke function options.
  * @param initRequestOptions Options for initializing the request function.
  */
 const execInvoke = (
@@ -150,8 +150,8 @@ const execInvoke = (
 }> => {
   const request = initRequest(initRequestOptions);
   const retryInvoke = initRetryInvoke(
-    {initRequestOptions, retryNumber},
-    {url, options}
+    {url, options},
+    {initRequestOptions, retryNumber}
   );
 
   return request(url, options).catch(retryInvoke);
@@ -171,7 +171,7 @@ const initExecInvoke =
  * Retry function invoke.
  *
  * @param error Error.
- * @param execInvokeOptions Execute the invoke function options.
+ * @param options Execute the invoke function options.
  * @param initRetryInvokeOptions Initialize options for retrying function invoke.
  */
 const retryInvoke = (
@@ -193,16 +193,16 @@ const retryInvoke = (
 /**
  * Initialize the function to be invoke by the retry function.
  *
+ * @param options Execute the invoke function options.
  * @param initRetryInvokeOptions Initialize options for retrying function invoke.
- * @param execInvokeOptions Execute the invoke function options.
  */
 const initRetryInvoke =
   (
-    initRetryInvokeOptions: InitRetryInvokeOptions,
-    execInvokeOptions: ExecInvokeOptions
+    options: ExecInvokeOptions,
+    initRetryInvokeOptions: InitRetryInvokeOptions
   ) =>
   (error: unknown) =>
-    retryInvoke(error, execInvokeOptions, initRetryInvokeOptions);
+    retryInvoke(error, options, initRetryInvokeOptions);
 
 /**
  * Handle function invoke errors.
@@ -237,7 +237,7 @@ const initHandleInvokeError =
 /**
  * Function invoke.
  *
- * @param invokeOptions Options for invoke the function.
+ * @param options Options for invoke the function.
  * @param initInvokeOptions Initialize the options for invoke the function.
  */
 const invoke = (
