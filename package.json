@@ -1,6 +1,6 @@
 {
   "name": "@leaf-x/ali-cloud-serverless",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "main": "./dist/src/index.js",
   "author": "sound shell <sound_shell@outlook.com>",
   "description": "Ali cloud serverless.",
@@ -14,7 +14,7 @@
     "url": "https://github.com/SoundShell/leaf-x-ali-cloud-serverless/issues"
   },
   "dependencies": {
-    "@leaf-x/fetch": "^2.3.2"
+    "@leaf-x/fetch": "^2.3.3"
   },
   "devDependencies": {
     "@types/mocha": "^8.0.4",

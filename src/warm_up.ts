@@ -65,9 +65,9 @@ const warmUp = (
   options: WarmUpOptions[],
   initInvokeOptions: InitInvokeOptions
 ) => {
-  const execWarmUp = initExecWarmUp(serviceName, initInvokeOptions);
+  const warmUpFun = initExecWarmUp(serviceName, initInvokeOptions);
 
-  return Promise.all(options.map(execWarmUp));
+  return Promise.all(options.map(warmUpFun));
 };
 
 /**

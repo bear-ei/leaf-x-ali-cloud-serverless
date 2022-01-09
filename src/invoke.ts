@@ -149,12 +149,12 @@ const execInvoke = (
   url: string;
 }> => {
   const request = initRequest(initRequestOptions);
-  const retryInvoke = initRetryInvoke(
+  const retry = initRetryInvoke(
     {url, options},
     {initRequestOptions, retryNumber}
   );
 
-  return request(url, options).catch(retryInvoke);
+  return request(url, options).catch(retry);
 };
 
 /**
@@ -182,9 +182,9 @@ const retryInvoke = (
   if (retryNumber > 0) {
     retryNumber--;
 
-    const execInvoke = initExecInvoke(initRequestOptions);
+    const invokeFun = initExecInvoke(initRequestOptions);
 
-    return execInvoke(retryNumber, {url, options});
+    return invokeFun(retryNumber, {url, options});
   }
 
   throw error;
@@ -247,18 +247,18 @@ const invoke = (
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`;
   const url = `${endpoint}/${version}${path}`;
   const body = JSON.stringify(handleTriggerEvent(event.type, event.data));
-  const execInvoke = initExecInvoke(args);
-  const handleInvokeError = initHandleInvokeError({
+  const invokeFun = initExecInvoke(args);
+  const invokeError = initHandleInvokeError({
     serviceName,
     functionName,
     env: qualifier,
   });
 
-  return execInvoke(/** Number of retries */ 3, {
+  return invokeFun(/** Number of retries */ 3, {
     url,
     options: {method: 'POST', body, async, timeout},
   })
-    .catch(handleInvokeError)
+    .catch(invokeError)
     .then(response => handleResponse(event.type, response));
 };
 

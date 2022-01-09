@@ -8,12 +8,11 @@ import {handleCanonicalHeadersString} from './headers';
 export interface SignOptions {
   /**
    * Signature string.
-   *
    */
   signString: string;
 
   /**
-   * Ali cloud access key.
+   * Serverless secret key.
    */
   secret: string;
 }
@@ -41,14 +40,14 @@ export interface HandleSignStringOptions {
 /**
  * Handle the request token options.
  */
-export interface HandleRequestTokenOptions {
+export interface HandleTokenOptions {
   /**
-   * Ali cloud account ID.
+   * Serverless access ID.
    */
   accessId: string;
 
   /**
-   * Ali cloud access key.
+   * Serverless secret key.
    */
   accessSecretKey: string;
 
@@ -108,11 +107,11 @@ const handleSignString = ({method, url, headers}: HandleSignStringOptions) => {
  *
  * @param options Handle the request token options.
  */
-export const handleRequestToken = ({
+export const handleToken = ({
   accessId,
   accessSecretKey,
   ...args
-}: HandleRequestTokenOptions) => {
+}: HandleTokenOptions) => {
   const signString = handleSignString(args);
 
   return `FC ${accessId}:${sign({secret: accessSecretKey, signString})}`;

@@ -11,12 +11,12 @@ export interface AliCloudOptions {
   accountId: string;
 
   /**
-   * Ali cloud access ID.
+   * Serverless access ID.
    */
   accessId: string;
 
   /**
-   * Ali cloud access key.
+   * Serverless secret key.
    */
   accessSecretKey: string;
 }

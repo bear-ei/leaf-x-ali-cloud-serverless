@@ -48,7 +48,7 @@ describe('test/headers.test.ts', () => {
     assert(result['accept'] === '*/*');
     assert(typeof result['date'] === 'string');
     assert(result['host'] === 'leaf-x.app');
-    assert((result['user-agent'] as string).startsWith('Node.js'));
+    assert(result['user-agent'].startsWith('Node.js'));
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
     assert(typeof result['content-md5'] === 'string');

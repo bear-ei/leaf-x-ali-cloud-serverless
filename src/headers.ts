@@ -2,7 +2,7 @@ import {FetchOptions} from '@leaf-x/fetch';
 import * as crypto from 'crypto';
 import {HttpMethod} from './event';
 import {InitRequestOptions} from './request';
-import {handleRequestToken} from './token';
+import {handleToken} from './token';
 
 /**
  * Handle request headers options.
@@ -53,7 +53,7 @@ const handleRequestHeaders = (
     ...(async ? {'x-fc-invocation-type': 'Async'} : undefined),
   };
 
-  const authorization = handleRequestToken({
+  const authorization = handleToken({
     accessId,
     accessSecretKey,
     method: method as HttpMethod,

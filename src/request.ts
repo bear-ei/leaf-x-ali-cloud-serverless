@@ -26,13 +26,13 @@ export interface RequestOptions extends FetchOptions {
  * Request.
  *
  * @param url Request URL.
- * @param [options={}] Request options.
  * @param initRequestOptions Options for initializing the request function.
+ * @param [options={}] Request options.
  */
 const request = (
   url: string,
-  options: RequestOptions = {},
-  initRequestOptions: InitRequestOptions
+  initRequestOptions: InitRequestOptions,
+  options: RequestOptions = {}
 ) => {
   const {method = 'GET', body = '', timeout, async} = options;
   const handleRequestHeaders = initHandleRequestHeaders(initRequestOptions);
@@ -58,5 +58,5 @@ const request = (
  */
 export const initRequest =
   (initRequestOptions: InitRequestOptions) =>
-  (url: string, options: RequestOptions = {}) =>
-    request(url, options, initRequestOptions);
+  (url: string, options?: RequestOptions) =>
+    request(url, initRequestOptions, options);
