@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import {handleTriggerEvent} from '../src/event';
 
 describe('test/event.test.ts', () => {
-  it('should be the default gateway event', async () => {
+  it('should be the API gateway default event', async () => {
     const result = handleTriggerEvent('GATEWAY', {});
 
     assert(typeof result === 'object');
@@ -18,7 +18,7 @@ describe('test/event.test.ts', () => {
     assert(result.headers['accept'] === '*/*');
   });
 
-  it('should be the correct gateway event', async () => {
+  it('should be the correct event for the API gateway', async () => {
     const result = handleTriggerEvent('GATEWAY', {
       headers: {
         'content-type': 'application/text',

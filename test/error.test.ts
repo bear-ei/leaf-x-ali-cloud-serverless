@@ -58,14 +58,16 @@ describe('test/error.test.ts', () => {
     assert(Array.isArray(result.apis));
   });
 
-  it('should be a invoke serverless error', async () => {
+  it('should be a function invoke error', async () => {
     try {
-      initHandleServerlessError({
+      const handleServerlessError = initHandleServerlessError({
         serviceName: 'leaf-x@snowflake',
         functionName: 'snowflake',
         requestId: 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7',
         env: 'PROD',
-      })({
+      });
+
+      handleServerlessError({
         status: 422,
         code: 422000,
         apis: [

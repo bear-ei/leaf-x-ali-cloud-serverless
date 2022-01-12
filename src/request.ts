@@ -3,7 +3,7 @@ import {initHandleRequestHeaders} from './headers';
 import {AliCloudOptions} from './serverless';
 
 /**
- * Options for initializing the request function.
+ * Initialize request options.
  */
 export interface InitRequestOptions extends AliCloudOptions {
   /**
@@ -17,16 +17,16 @@ export interface InitRequestOptions extends AliCloudOptions {
  */
 export interface RequestOptions extends FetchOptions {
   /**
-   * Whether to execute asynchronous requests.
+   * Whether the current request is an asynchronous request.
    */
   async?: boolean;
 }
 
 /**
- * Request.
+ * Initiate a network request.
  *
  * @param url Request URL.
- * @param initRequestOptions Options for initializing the request function.
+ * @param initRequestOptions Initialize request options.
  * @param [options={}] Request options.
  */
 const request = (
@@ -52,9 +52,9 @@ const request = (
 };
 
 /**
- * Initialize the request function.
+ * Initialization request.
  *
- * @param initRequestOptions Options for initializing the request function.
+ * @param initRequestOptions Initialize request options.
  */
 export const initRequest =
   (initRequestOptions: InitRequestOptions) =>

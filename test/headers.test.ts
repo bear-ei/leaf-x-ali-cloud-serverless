@@ -5,15 +5,15 @@ import {
 } from './../src/headers';
 
 describe('test/headers.test.ts', () => {
-  it('should be a synchronization request headers', async () => {
+  it('should be a synchronization request header', async () => {
     const content = Buffer.from(JSON.stringify({data: 'This is request.'}));
     const result = initHandleRequestHeaders({
-      host: 'leaf-x.app',
+      host: 'leaf-x.com',
       accountId: '1787993',
       accessSecretKey: '5556123',
       accessId: '58575729',
     })({
-      url: 'https://leaf-x.app',
+      url: 'https://leaf-x.com',
       method: 'GET',
       content,
     });
@@ -21,7 +21,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result === 'object');
     assert(result['accept'] === '*/*');
     assert(typeof result['date'] === 'string');
-    assert(result['host'] === 'leaf-x.app');
+    assert(result['host'] === 'leaf-x.com');
     assert(result['user-agent'].startsWith('Node.js'));
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
@@ -30,15 +30,15 @@ describe('test/headers.test.ts', () => {
     assert(typeof result['authorization'] === 'string');
   });
 
-  it('should be an asynchronous request headers', async () => {
+  it('should be an asynchronous request header', async () => {
     const content = JSON.stringify({data: 'This is request.'});
     const result = initHandleRequestHeaders({
-      host: 'leaf-x.app',
+      host: 'leaf-x.com',
       accountId: '1787993',
       accessSecretKey: '5556123',
       accessId: '58575729',
     })({
-      url: 'https://leaf-x.app',
+      url: 'https://leaf-x.com',
       method: 'GET',
       content,
       async: true,
@@ -47,7 +47,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result === 'object');
     assert(result['accept'] === '*/*');
     assert(typeof result['date'] === 'string');
-    assert(result['host'] === 'leaf-x.app');
+    assert(result['host'] === 'leaf-x.com');
     assert(result['user-agent'].startsWith('Node.js'));
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
@@ -57,7 +57,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result['authorization'] === 'string');
   });
 
-  it('should get the canonical request header string', async () => {
+  it('should be the canonical request header string', async () => {
     const result = handleCanonicalHeadersString('x-fc-', {
       accept: 'application/json; charset=utf-8',
       date: new Date().toUTCString(),

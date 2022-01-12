@@ -1,9 +1,10 @@
 import * as crypto from 'crypto';
+import {AliCloudOptions} from '.';
 import {HttpMethod} from './event';
 import {handleCanonicalHeadersString} from './headers';
 
 /**
- * Signature options.
+ *  Signature options.
  */
 export interface SignOptions {
   /**
@@ -12,9 +13,9 @@ export interface SignOptions {
   signString: string;
 
   /**
-   * Serverless secret key.
+   * Ali cloud serverless access secret key.
    */
-  secret: string;
+  secret: AliCloudOptions['accessSecretKey'];
 }
 
 /**
@@ -22,7 +23,7 @@ export interface SignOptions {
  */
 export interface HandleSignStringOptions {
   /**
-   * HTTP request method.
+   * Trigger event HTTP request method.
    */
   method: HttpMethod;
 
@@ -32,27 +33,27 @@ export interface HandleSignStringOptions {
   url: string;
 
   /**
-   * Request headers information.
+   * Request header information.
    */
   headers: Record<string, string>;
 }
 
 /**
- * Handle the request token options.
+ * Handle token options.
  */
 export interface HandleTokenOptions {
   /**
-   * Serverless access ID.
+   * Ali cloud serverless access ID.
    */
-  accessId: string;
+  accessId: AliCloudOptions['accessId'];
 
   /**
-   * Serverless secret key.
+   * Ali cloud serverless access secret key.
    */
-  accessSecretKey: string;
+  accessSecretKey: AliCloudOptions['accessSecretKey'];
 
   /**
-   * HTTP request method.
+   *  Trigger event HTTP request method.
    */
   method: HttpMethod;
 
@@ -62,13 +63,13 @@ export interface HandleTokenOptions {
   url: string;
 
   /**
-   * Request headers information.
+   * Request header information.
    */
   headers: Record<string, string>;
 }
 
 /**
- * Signature.
+ * Generate a request signature.
  *
  * @param options Signature options.
  */
@@ -88,7 +89,7 @@ const sign = ({secret, signString}: SignOptions) => {
  */
 const handleSignString = ({method, url, headers}: HandleSignStringOptions) => {
   const canonicalHeaderString = handleCanonicalHeadersString(
-    /** Canonical request headers prefix. */ 'x-fc-',
+    /** Canonical request header prefix. */ 'x-fc-',
     headers
   );
 
@@ -103,9 +104,9 @@ const handleSignString = ({method, url, headers}: HandleSignStringOptions) => {
 };
 
 /**
- * Handle the request token.
+ * Handle token.
  *
- * @param options Handle the request token options.
+ * @param options Handle token options.
  */
 export const handleToken = ({
   accessId,

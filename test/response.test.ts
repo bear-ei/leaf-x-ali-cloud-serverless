@@ -21,7 +21,7 @@ describe('test/response.test.ts', () => {
     );
   });
 
-  it('should be a gateway response', async () => {
+  it('should be an API gateway response', async () => {
     const result = handleResponse('GATEWAY', {
       status: 200,
       options: {},
@@ -44,7 +44,7 @@ describe('test/response.test.ts', () => {
     assert(typeof result.headers === 'object');
   });
 
-  it('should be a gateway base64 response', async () => {
+  it('should be the response of the API gateway base64 encoded data', async () => {
     const result = handleResponse('GATEWAY', {
       status: 200,
       options: {},
@@ -67,7 +67,7 @@ describe('test/response.test.ts', () => {
     assert(typeof result.headers === 'object');
   });
 
-  it('should be a gateway error response', async () => {
+  it('should be an API gateway error response', async () => {
     try {
       handleResponse('GATEWAY', {
         options: {},
@@ -93,7 +93,7 @@ describe('test/response.test.ts', () => {
     }
   });
 
-  it('should be a gateway with no content type response', async () => {
+  it('should be a response of the API Gateway No Response header content type', async () => {
     const result = handleResponse('GATEWAY', {
       options: {},
       status: 200,

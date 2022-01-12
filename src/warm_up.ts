@@ -2,50 +2,54 @@ import {EventTypeString} from './event';
 import {initInvoke, InitInvokeOptions} from './invoke';
 
 /**
- * Function warm-up options.
+ * Warm-up function options.
  */
 export interface WarmUpOptions {
   /**
-   * Event type string.
+   * Trigger event type enumeration string.
    */
   type: EventTypeString;
 
   /**
-   * Function name.
+   * Name of the function to be warmed up.
    */
   functionName: string;
 }
 
 /**
- * Execute function warm-up.
+ * Execute the warm-up function.
  *
- * @param serviceName
- * @param options Function warm-up options.
+ * @param serviceName Name of the service to be warmed up.
+ * @param options Warm-up function options.
  * @param initInvokeOptions Initialize the options for invoke the function.
  */
-const execWarmUp = (
+const execWarmUp = async (
   serviceName: string,
   {type, functionName}: WarmUpOptions,
   initInvokeOptions: InitInvokeOptions
 ) => {
   const invoke = initInvoke(initInvokeOptions);
 
-  return invoke({
-    serviceName,
-    functionName,
-    event: {
-      type,
-      data: {httpMethod: 'OPTIONS', headers: {'x-warm-up': 'warmUp'}},
-    },
-  })
-    .then(result => ({...result, serviceName, functionName}))
-    .catch(error => error);
+  try {
+    const result = await invoke({
+      serviceName,
+      functionName,
+      event: {
+        type,
+        data: {httpMethod: 'OPTIONS', headers: {'x-warm-up': 'warmUp'}},
+      },
+    });
+
+    return {...result, serviceName, functionName};
+  } catch (error) {
+    return error;
+  }
 };
 
 /**
- * Initialize the function that performs the function warm-up.
+ * Initialize the execution of the warm-up function.
  *
- * @param serviceName Service name.
+ * @param serviceName Name of the service to be warmed up.
  * @param initInvokeOptions Initialize the options for invoke the function.
  */
 const initExecWarmUp =
@@ -54,10 +58,10 @@ const initExecWarmUp =
     execWarmUp(serviceName, options, initInvokeOptions);
 
 /**
- * Function warm-up.
+ * Warm-up function.
  *
- * @param serviceName Service name.
- * @param options Function warm-up options.
+ * @param serviceName Name of the service to be warmed up.
+ * @param options Warm-up function options.
  * @param initInvokeOptions Initialize the options for invoke the function.
  */
 const warmUp = (
@@ -71,7 +75,7 @@ const warmUp = (
 };
 
 /**
- * Initialize the function to warm up the function.
+ * Initialize the warm-up function.
  *
  * @param initInvokeOptions Initialize the options for invoke the function.
  */

@@ -6,17 +6,17 @@ import {EventType, EventTypeString} from './event';
  */
 export interface HandleGatewayResponseOptions {
   /**
-   * API gateway response status code.
+   *  API gateway response status code.
    */
   statusCode: number;
 
   /**
-   * Whether to encode the request body in base64 or not.
+   * Whether the event body is base64 encoded or not.
    */
   isBase64Encoded: boolean;
 
   /**
-   * API gateway response headers information.
+   * API gateway response header information.
    */
   headers: Record<string, string>;
 
@@ -27,31 +27,31 @@ export interface HandleGatewayResponseOptions {
 }
 
 /**
- * Response events.
+ * Response event.
  */
 export interface ResponseEvent {
   /**
-   * Request response Body.
+   * Respond to the event body.
    */
   data: unknown;
 
   /**
-   * Fetch options.
+   * The options to initiate an event.
    */
   options: FetchOptions;
 
   /**
-   * Request response headers.
+   * Response event header information.
    */
   headers: Record<string, string>;
 
   /**
-   * Request response status code.
+   * Response event status code.
    */
   status: number;
 
   /**
-   * Request response status code text description.
+   * Response event status code text description.
    */
   statusText: string;
 
@@ -62,9 +62,9 @@ export interface ResponseEvent {
 }
 
 /**
- * Handle API gateway responses.
+ * Handle API gateway response.
  *
- * @param options Handles API gateway response options.
+ * @param Handles API gateway response options.
  */
 const handleGatewayResponse = ({
   statusCode,
@@ -91,10 +91,10 @@ const handleGatewayResponse = ({
 };
 
 /**
- * Handle response.
+ * Handle response event.
  *
- * @param type Event type string.
- * @param response Response events.
+ * @param type Response event type.
+ * @param response Response event.
  */
 export const handleResponse = (
   type: EventTypeString,

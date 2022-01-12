@@ -11,12 +11,12 @@ export interface AliCloudOptions {
   accountId: string;
 
   /**
-   * Serverless access ID.
+   * Ali cloud serverless access ID.
    */
   accessId: string;
 
   /**
-   * Serverless secret key.
+   * Ali cloud serverless access secret key.
    */
   accessSecretKey: string;
 }
@@ -26,40 +26,48 @@ export interface AliCloudOptions {
  */
 export interface ServerlessOptions extends AliCloudOptions {
   /**
-   * Serverless region.
+   * Serverless is located in the region.
    */
   region: string;
 
   /**
-   * Serverless request timeout, the default is 3000 milliseconds.
+   * Request timeout time.
+   *
+   * The default value is 3000 milliseconds.
    */
   timeout?: number;
 
   /**
-   * Serverless request version alias, default is 'LATEST'.
+   * Request service qualifier.
+   *
+   * The default value is LATEST.
    */
   qualifier?: string;
 
   /**
-   * Whether to enable intranet access, default is true.
+   * Whether the request is made through the intranet.
+   *
+   * The default value is true.
    */
   internal?: boolean;
 
   /**
-   * Whether to enable request protection, default is true.
+   * Whether to turn on request protection.
+   *
+   * The default value is true.
    */
   secure?: boolean;
 
   /**
-   * Serverless API version number, default is '2016-08-15'.
+   * Serverless API version number.
+   *
+   * The default value is 2016-08-15.
    */
   version?: string;
 }
 
 /**
- * Serverless.
- *
- * @param options Serverless options.
+ * Ali cloud serverless microservice applications.
  */
 export const serverless = ({
   accountId,

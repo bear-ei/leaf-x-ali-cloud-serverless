@@ -1,4 +1,5 @@
 import {FetchOptions} from '@leaf-x/fetch';
+import {HandleErrorOptions} from '.';
 import {initHandleServerlessError} from './error';
 import {
   EventTypeString,
@@ -10,11 +11,11 @@ import {handleResponse} from './response';
 import {AliCloudOptions} from './serverless';
 
 /**
- * Initialize options for retrying function invoke.
+ * Initialize the options to retry invoke the function.
  */
 export interface InitRetryInvokeOptions {
   /**
-   * Options for initializing the request function.
+   * Initialize request options.
    */
   initRequestOptions: InitRequestOptions;
 
@@ -29,11 +30,11 @@ export interface InitRetryInvokeOptions {
  */
 export interface ExecInvokeOptions {
   /**
-   * Fetch options.
+   * Fetch API options.
    */
   options: FetchOptions & {
     /**
-     * Whether to execute asynchronous requests.
+     * Whether the current invoke is an asynchronous invoke.
      */
     async?: boolean;
   };
@@ -45,96 +46,96 @@ export interface ExecInvokeOptions {
 }
 
 /**
- * Handle function request error options.
+ * Handle invoke function error options.
  */
 export interface HandleInvokeErrorOptions {
   /**
-   * Service name.
+   * Name of the service where the error occurred.
    */
-  serviceName: string;
+  serviceName: HandleErrorOptions['serviceName'];
 
   /**
-   * Function name.
+   * Name of the function where the error occurred.
    */
-  functionName: string;
+  functionName: HandleErrorOptions['functionName'];
 
   /**
-   * Invoke function deployment environment.
+   * The deployment environment where the error occurred.
    */
-  env: string;
+  env: HandleErrorOptions['env'];
 }
 
 /**
- * Initialize the options for invoke the function.
+ * Initialize the invoke function options.
  */
 export interface InitInvokeOptions extends AliCloudOptions {
   /**
-   * The qualifier of the function to invoke.
+   * Request service qualifier.
    */
   qualifier: string;
 
   /**
-   * The address of the host where the function is invoke.
+   * The host address of the invoke service.
    */
   host: string;
 
   /**
-   * The timeout for invoke the function.
+   * Request timeout time.
    */
   timeout: number;
 
   /**
-   * The endpoint of the invoke to the function.
+   * The endpoint for invoke the service.
    */
   endpoint: string;
 
   /**
-   * Invoke the API version of this function.
+   * Serverless API version number.
    */
   version: string;
 }
 
 /**
- * Options for invoke the function.
+ * Invoke function options.
  */
 export interface InvokeOptions {
   /**
-   * Invoke events.
+   * The event that invoke the function.
    */
   event: {
     /**
-     * Event type string.
+     * Trigger event type enumeration string.
      */
     type: EventTypeString;
 
     /**
-     * Options for handle API gateway trigger event.
+     * Handle API gateway event options.
      */
     data: HandleGatewayEventOptions;
   };
 
   /**
-   * Service name.
+   * Invoke the service name.
    */
   serviceName: string;
 
   /**
-   * Function name.
+   * Invoke the function name.
    */
   functionName: string;
 
   /**
-   * Whether to execute asynchronous requests. default is false.
+   * Whether the current invoke is an asynchronous invoke.
    */
   async?: boolean;
 }
 
 /**
- * Execute function invoke.
+ * Execute the invoke function.
  *
  * @param retryNumber Number of retries.
  * @param options Execute the invoke function options.
- * @param initRequestOptions Options for initializing the request function.
+ * @param initRequestOptions Initialize request options.
  */
 const execInvoke = (
   retryNumber: number,
@@ -158,9 +159,9 @@ const execInvoke = (
 };
 
 /**
- * Initializes the function to execute the function invoke.
+ * Initializes the execution of the invoke function.
  *
- * @param initRequestOptions Options for initializing the request function.
+ * @param initRequestOptions Initialize request options.
  */
 const initExecInvoke =
   (initRequestOptions: InitRequestOptions) =>
@@ -168,11 +169,11 @@ const initExecInvoke =
     execInvoke(retryNumber, options, initRequestOptions);
 
 /**
- * Retry function invoke.
+ * Retry the function invoke.
  *
  * @param error Error.
  * @param options Execute the invoke function options.
- * @param initRetryInvokeOptions Initialize options for retrying function invoke.
+ * @param initRetryInvokeOptions Initialize the options to retry invoke the function.
  */
 const retryInvoke = (
   error: unknown,
@@ -191,10 +192,10 @@ const retryInvoke = (
 };
 
 /**
- * Initialize the function to be invoke by the retry function.
+ * Initialize the retry invoke function.
  *
  * @param options Execute the invoke function options.
- * @param initRetryInvokeOptions Initialize options for retrying function invoke.
+ * @param initRetryInvokeOptions Initialize the options to retry invoke the function.
  */
 const initRetryInvoke =
   (
@@ -208,7 +209,7 @@ const initRetryInvoke =
  * Handle function invoke errors.
  *
  * @param error Error.
- * @param options Handle function request error options.
+ * @param options Handle invoke function error options.
  */
 const handleInvokeError = (
   error: unknown,
@@ -226,19 +227,19 @@ const handleInvokeError = (
 };
 
 /**
- * Initialize the function that handles function invoke errors.
+ * Initialize to handle function invoke errors.
  *
- * @param options Handle function request error options.
+ * @param options Handle invoke function error options.
  */
 const initHandleInvokeError =
   (options: HandleInvokeErrorOptions) => (error: unknown) =>
     handleInvokeError(error, options);
 
 /**
- * Function invoke.
+ * Invoke functions.
  *
- * @param options Options for invoke the function.
- * @param initInvokeOptions Initialize the options for invoke the function.
+ * @param options Invoke function options.
+ * @param initInvokeOptions Initialize the invoke function options.
  */
 const invoke = (
   {serviceName, functionName, async = false, event}: InvokeOptions,
@@ -254,7 +255,7 @@ const invoke = (
     env: qualifier,
   });
 
-  return invokeFun(/** Number of retries */ 3, {
+  return invokeFun(/** Number of retries.*/ 3, {
     url,
     options: {method: 'POST', body, async, timeout},
   })
@@ -263,9 +264,9 @@ const invoke = (
 };
 
 /**
- * Initializes the function invoke by the function.
+ * Initialize the invoke function.
  *
- * @param initInvokeOptions Initialize the options for invoke the function.
+ * @param initInvokeOptions Initialize the invoke function options.
  */
 export const initInvoke =
   (initInvokeOptions: InitInvokeOptions) => (options: InvokeOptions) =>

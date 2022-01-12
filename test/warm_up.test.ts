@@ -11,16 +11,18 @@ describe('test/warmUp.test.ts', () => {
       headers: {'content-type': 'application/json; charset=utf-8'},
     }));
 
-    await initWarmUp({
+    const warmUp = initWarmUp({
       qualifier: 'PROD',
-      endpoint: 'https://leaf-x.app',
+      endpoint: 'https://leaf-x.com',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
       timeout: 3000,
-    })('leaf-x@snowflake', [
+    });
+
+    await warmUp('leaf-x@snowflake', [
       {type: 'GATEWAY', functionName: 'snowflake'},
       {type: 'GATEWAY', functionName: 'snowflakeIndex'},
     ]).then(result => {
@@ -37,7 +39,7 @@ describe('test/warmUp.test.ts', () => {
     });
   });
 
-  it('should be a warm-up failure', async () => {
+  it('should be a failure to warm-up', async () => {
     sinon.stub(invoke, 'initInvoke').returns(async () => {
       throw Object.assign(new Error('Invalid invoke'), {
         code: 4000000,
@@ -46,16 +48,18 @@ describe('test/warmUp.test.ts', () => {
       });
     });
 
-    await initWarmUp({
+    const warmUp = initWarmUp({
       qualifier: 'PROD',
-      endpoint: 'https://leaf-x.app',
+      endpoint: 'https://leaf-x.com',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
       timeout: 3000,
-    })('leaf-x@snowflake', [
+    });
+
+    await warmUp('leaf-x@snowflake', [
       {type: 'GATEWAY', functionName: 'snowflake'},
       {type: 'GATEWAY', functionName: 'snowflakeIndex'},
     ]).then(result => {

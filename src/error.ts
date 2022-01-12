@@ -1,32 +1,32 @@
 /**
- * Handle the error options.
+ * Handle error options.
  */
 export interface HandleErrorOptions {
   /**
-   * The name of the requested service.
+   * Name of the service where the error occurred.
    */
   serviceName: string;
 
   /**
-   * The name of the requested function.
+   * Name of the function where the error occurred.
    */
   functionName: string;
 
   /**
-   * The requested deployment environment.
+   * The deployment environment where the error occurred.
    */
   env: string;
 
   /**
-   * Request ID.
+   * The request ID of the error that occurred.
    */
   requestId?: string;
 }
 /**
- * Handle errors.
+ * Handle error.
  *
  * @param error Error.
- * @param options Handle the error options.
+ * @param options Handle error options.
  */
 export const handleError = (
   error: unknown,
@@ -64,10 +64,10 @@ export const handleError = (
 };
 
 /**
- * Handle serverless errors.
+ * Handle serverless error.
  *
  * @param error Error.
- * @param options Handle the error options.
+ * @param options Handle error options.
  */
 const handleServerlessError = (error: unknown, options: HandleErrorOptions) => {
   throw Object.assign(
@@ -77,9 +77,9 @@ const handleServerlessError = (error: unknown, options: HandleErrorOptions) => {
 };
 
 /**
- * Initialize the function that handles serverless errors.
+ * Initialize to handle serverless errors.
  *
- * @param options Handle the error options.
+ * @param options Handle error options.
  */
 export const initHandleServerlessError =
   (options: HandleErrorOptions) => (error: unknown) =>

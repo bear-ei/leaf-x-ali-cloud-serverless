@@ -1,22 +1,21 @@
-import {FetchOptions} from '@leaf-x/fetch';
 import * as crypto from 'crypto';
 import {HttpMethod} from './event';
-import {InitRequestOptions} from './request';
+import {InitRequestOptions, RequestOptions} from './request';
 import {handleToken} from './token';
 
 /**
- * Handle request headers options.
+ * Handle request header information options.
  */
 export interface HandleRequestHeadersOptions {
   /**
-   * Request content.
+   * Request body content.
    */
   content: string | Buffer;
 
   /**
    * A string to set request's method.
    */
-  method: FetchOptions['method'];
+  method: RequestOptions['method'];
 
   /**
    * Request URL.
@@ -24,16 +23,16 @@ export interface HandleRequestHeadersOptions {
   url: string;
 
   /**
-   * Whether to execute asynchronous requests.
+   * Whether the current request is an asynchronous request.
    */
-  async?: boolean;
+  async?: RequestOptions['async'];
 }
 
 /**
- * Handle request headers.
+ * Handle the request header information.
  *
- * @param options Handle request headers options.
- * @param initRequestOptions Options for initializing the request function.
+ * @param options Handle request header information options.
+ * @param initRequestOptions Initialize request options.
  */
 const handleRequestHeaders = (
   {content, method, url, async}: HandleRequestHeadersOptions,
@@ -65,9 +64,9 @@ const handleRequestHeaders = (
 };
 
 /**
- * Initialize the request handling function.
+ * Initialize the handle request header information.
  *
- * @param initRequestOptions Options for initializing the request function.
+ * @param initRequestOptions Initialize request options.
  */
 export const initHandleRequestHeaders =
   (initRequestOptions: InitRequestOptions) =>
@@ -75,10 +74,10 @@ export const initHandleRequestHeaders =
     handleRequestHeaders(options, initRequestOptions);
 
 /**
- * Handle canonical request headers strings.
+ * Handles the canonical request header information string.
  *
- * @param prefix Canonical request headers prefix.
- * @param headers Request headers information.
+ * @param prefix Canonical request header prefix.
+ * @param headers Request header information.
  */
 export const handleCanonicalHeadersString = (
   prefix: string,

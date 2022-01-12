@@ -1,17 +1,17 @@
 /**
- * Event type enumeration.
+ * Trigger event type enumeration.
  */
 export enum EventType {
   GATEWAY = 'gateway',
 }
 
 /**
- * Event type string.
+ * Trigger event type enumeration string.
  */
 export type EventTypeString = 'GATEWAY';
 
 /**
- * HTTP request method.
+ * Trigger event HTTP request method.
  */
 export type HttpMethod =
   | 'GET'
@@ -30,38 +30,40 @@ export type HttpMethod =
  */
 export interface HandleGatewayEventOptions {
   /**
-   * HTTP request method.
+   * Trigger event HTTP request method.
    */
   httpMethod?: HttpMethod;
 
   /**
-   * Whether to encode the request body in base64 or not.
+   * Whether the event body is base64 encoded or not.
+   *
+   * The default value is true.
    */
   isBase64Encoded?: boolean;
 
   /**
-   * Request query parameters.
+   * Event query parameters.
    */
   queryParameters?: Record<string, unknown>;
 
   /**
-   * Request path parameters.
+   * Event path parameters.
    */
   pathParameters?: Record<string, string>;
 
   /**
-   * Request body.
+   * Event body.
    */
   body?: unknown;
 
   /**
-   * Request headers information.
+   * Event request header information.
    */
   headers?: Record<string, string>;
 }
 
 /**
- * Handles API gateway events.
+ * Handle API gateway event.
  *
  * @param options Handle API gateway event options.
  */
@@ -94,9 +96,9 @@ const handleGatewayEvent = ({
 };
 
 /**
- * Handle trigger events.
+ * Handle trigger event.
  *
- * @param options Event type string.
+ * @param type Trigger event type.
  * @param options Handle API gateway event options.
  */
 export const handleTriggerEvent = (

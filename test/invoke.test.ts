@@ -6,24 +6,26 @@ import {initInvoke} from '../src/invoke';
 describe('test/invoke.test.ts', () => {
   it('should be invoke asynchronously', async () => {
     sinon.stub(fetch, 'default').resolves({
-      options: {url: 'https://leaf-x.app'},
+      options: {url: 'https://leaf-x.com'},
       status: 202,
       data: '',
       headers: {},
       statusText: '',
-      url: 'https://leaf-x.app',
+      url: 'https://leaf-x.com',
     });
 
-    await initInvoke({
+    const invoke = initInvoke({
       qualifier: 'PROD',
-      endpoint: 'https://leaf-x.app',
+      endpoint: 'https://leaf-x.com',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
       timeout: 3000,
-    })({
+    });
+
+    await invoke({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
       async: true,
@@ -41,9 +43,9 @@ describe('test/invoke.test.ts', () => {
     });
   });
 
-  it('should be invoke correctly', async () => {
+  it('should be the correct invoke', async () => {
     sinon.stub(fetch, 'default').resolves({
-      options: {url: 'https://leaf-x.app'},
+      options: {url: 'https://leaf-x.com'},
       status: 200,
       data: {
         statusCode: 200,
@@ -55,19 +57,21 @@ describe('test/invoke.test.ts', () => {
       },
       headers: {'content-type': 'application/json; charset=utf-8'},
       statusText: '',
-      url: 'https://leaf-x.app',
+      url: 'https://leaf-x.com',
     });
 
-    await initInvoke({
+    const invoke = initInvoke({
       qualifier: 'PROD',
-      endpoint: 'https://leaf-x.app',
+      endpoint: 'https://leaf-x.com',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
       timeout: 3000,
-    })({
+    });
+
+    await invoke({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
       event: {
@@ -86,7 +90,7 @@ describe('test/invoke.test.ts', () => {
 
   it('should be an error invoke', async () => {
     sinon.stub(fetch, 'default').resolves({
-      options: {url: 'https://leaf-x.app'},
+      options: {url: 'https://leaf-x.com'},
       status: 200,
       data: {
         statusCode: 400,
@@ -98,19 +102,21 @@ describe('test/invoke.test.ts', () => {
       },
       headers: {'content-type': 'application/json; charset=utf-8'},
       statusText: '',
-      url: 'https://leaf-x.app',
+      url: 'https://leaf-x.com',
     });
 
-    await initInvoke({
+    const invoke = initInvoke({
       qualifier: 'PROD',
-      endpoint: 'https://leaf-x.app',
+      endpoint: 'https://leaf-x.com',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
       timeout: 3000,
-    })({
+    });
+
+    await invoke({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
       event: {
@@ -126,7 +132,7 @@ describe('test/invoke.test.ts', () => {
     });
   });
 
-  it('should be a response error', async () => {
+  it('should be in response to an error invoke', async () => {
     sinon.stub(fetch, 'default').rejects({
       status: 404,
       data: {ErrorMessage: 'Bad Request.'},
@@ -135,19 +141,21 @@ describe('test/invoke.test.ts', () => {
         'x-fc-request-id': '87af2ed2-5205-4a13-9ee1-90ceaf51eee3',
       },
       statusText: '',
-      url: 'https://leaf-x.app',
+      url: 'https://leaf-x.com',
     });
 
-    await initInvoke({
+    const invoke = initInvoke({
       qualifier: 'PROD',
-      endpoint: 'https://leaf-x.app',
+      endpoint: 'https://leaf-x.com',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
       timeout: 3000,
-    })({
+    });
+
+    await invoke({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
       event: {
@@ -163,21 +171,23 @@ describe('test/invoke.test.ts', () => {
     });
   });
 
-  it('should be a invoke timeout', async () => {
+  it('should be a timeout invoke', async () => {
     sinon.stub(fetch, 'default').rejects({
       message: {ErrorMessage: 'Bad Request.'},
     });
 
-    await initInvoke({
+    const invoke = initInvoke({
       qualifier: 'PROD',
-      endpoint: 'https://leaf-x.app',
+      endpoint: 'https://leaf-x.com',
       version: '2016-10-17',
       host: 'github.com',
       accountId: '1235555677',
       accessId: 'aHR0cHM6Ly9naXRodWIuY29tLw==',
       accessSecretKey: 'MTIzNTU1NTY3Nw==',
       timeout: 3000,
-    })({
+    });
+
+    await invoke({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
       event: {
