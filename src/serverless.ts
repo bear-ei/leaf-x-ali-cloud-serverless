@@ -67,7 +67,7 @@ export interface ServerlessOptions extends AliCloudOptions {
 }
 
 /**
- * Ali cloud serverless microservice applications.
+ * Ali cloud serverless API.
  */
 export const serverless = ({
   accountId,

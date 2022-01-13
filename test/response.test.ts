@@ -93,7 +93,7 @@ describe('test/response.test.ts', () => {
     }
   });
 
-  it('should be a response of the API Gateway No Response header content type', async () => {
+  it('should be a response of the API gateway No Response header content type', async () => {
     const result = handleResponse('GATEWAY', {
       options: {},
       status: 200,
