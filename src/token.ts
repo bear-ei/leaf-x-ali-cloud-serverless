@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
-import {AliCloudOptions} from '.';
 import {HttpMethod} from './event';
 import {handleCanonicalHeadersString} from './headers';
+import {AliCloudOptions} from './serverless';
 
 /**
  *  Signature options.

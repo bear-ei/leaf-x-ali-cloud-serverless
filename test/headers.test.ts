@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import {
   handleCanonicalHeadersString,
   initHandleRequestHeaders,
-} from './../src/headers';
+} from '../src/headers';
 
 describe('test/headers.test.ts', () => {
   it('should be a synchronization request header', async () => {

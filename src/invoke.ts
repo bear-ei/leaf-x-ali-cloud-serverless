@@ -1,6 +1,5 @@
 import {FetchOptions} from '@leaf-x/fetch';
-import {HandleErrorOptions} from '.';
-import {initHandleServerlessError} from './error';
+import {HandleErrorOptions, initHandleServerlessError} from './error';
 import {
   EventTypeString,
   HandleGatewayEventOptions,
