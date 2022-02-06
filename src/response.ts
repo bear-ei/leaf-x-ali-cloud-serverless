@@ -64,7 +64,7 @@ export interface ResponseEvent {
 /**
  * Handle API gateway response.
  *
- * @param Handles API gateway response options.
+ * @param options API gateway response options.
  */
 const handleGatewayResponse = ({
   statusCode,
