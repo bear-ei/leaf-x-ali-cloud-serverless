@@ -1,7 +1,22 @@
 /**
+ * Handle SQL select options.
+ */
+export interface HandleSelectOptions {
+  /**
+   * Creates SELECT query. Replaces all previous selections if they exist.
+   */
+  select?: string[];
+
+  /**
+   * Table name prefix.
+   */
+  prefix: string;
+}
+
+/**
  * Handle equal SQL statements.
  *
- * @param options Sql statement options.
+ * @param options SQL statement options.
  */
 export const handleEqualSql =
   (options: Record<string, unknown>) => (key: string) => ({
@@ -11,7 +26,7 @@ export const handleEqualSql =
 /**
  * Handle unequal SQL statements.
  *
- * @param options Sql statement options.
+ * @param options SQL statement options.
  */
 export const handleNotEqualSql =
   (options: Record<string, unknown>) => (key: string) => {
@@ -23,15 +38,16 @@ export const handleNotEqualSql =
 /**
  * SQl statements that handle aggregate queries.
  *
- * @param options Sql statement options.
+ * @param options SQL statement options.
  */
 export const handleSetQuerySql =
-  (options: Record<string, unknown[]>) => (key: string) => {
+  (options: Record<string, unknown>) => (key: string) => {
     const field = key.substring(0, key.length - 1);
+    const value = options[key] as unknown[];
 
     return {
       [`${field} IN (:...${key})`]: {
-        [key]: options[key]?.length !== 0 ? [...new Set(options[key])] : [],
+        [key]: value?.length !== 0 ? [...new Set(value)] : [],
       },
     };
   };
@@ -39,16 +55,17 @@ export const handleSetQuerySql =
 /**
  * Handle queries between ranges of SQL statements.
  *
- * @param options Sql statement options.
+ * @param options SQL statement options.
  */
 export const handleBetweenSql =
-  (options: Record<string, unknown[]>) => (key: string) => {
+  (options: Record<string, unknown>) => (key: string) => {
     const field = key.replace(/Range/, '');
+    const value = options[key] as unknown[];
 
     return {
       [`${field} BETWEEN :${field}Start and :${field}End`]: {
-        [`${field}Start`]: options[key][0],
-        [`${field}End`]: options[key][1],
+        [`${field}Start`]: value[0],
+        [`${field}End`]: value[1],
       },
     };
   };
@@ -57,11 +74,11 @@ export const handleBetweenSql =
  * Handle SQL statement splicing.
  *
  * @param prefix Query prefix.
- * @param options Sql statement options.
+ * @param options SQL statement options.
  */
 export const handleWhere = (
   prefix: string,
-  options: Record<string, unknown>
+  options: Record<string, Record<string, unknown>>
 ) => {
   const keys = Object.keys(options);
   const whereString = keys.map(key => `${prefix}.${key}`).join(' and ');
@@ -71,3 +88,17 @@ export const handleWhere = (
 
   return {where: whereString, value};
 };
+
+/**
+ * Handle SQL select options.
+ *
+ * @param entity Data entity.
+ * @param options Handle SQL select options.
+ */
+export const handleSelect = <T>(
+  entity: new () => T,
+  {select, prefix}: HandleSelectOptions
+) =>
+  select
+    ? select.map(key => `${prefix}.${key}`)
+    : Object.keys(new entity()).map(key => `${prefix}.${key}`);

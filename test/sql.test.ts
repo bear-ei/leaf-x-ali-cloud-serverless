@@ -1,8 +1,10 @@
 import * as assert from 'assert';
+import {isArray} from 'class-validator';
 import {
   handleBetweenSql,
   handleEqualSql,
   handleNotEqualSql,
+  handleSelect,
   handleSetQuerySql,
   handleWhere,
 } from '../src/sql';
@@ -71,5 +73,27 @@ describe('test/sql.test.ts', () => {
           timeEnd: 321,
         })
     );
+  });
+
+  it('should handle SQL select', async () => {
+    class Entity {
+      a!: string;
+    }
+
+    const result = handleSelect(Entity, {
+      select: ['a'],
+      prefix: 'test',
+    });
+
+    assert(isArray(result));
+    assert(result[0] === 'test.a');
+
+    const entityResult = handleSelect(Entity, {
+      select: ['a'],
+      prefix: 'test',
+    });
+
+    assert(isArray(entityResult));
+    assert(entityResult[0] === 'test.a');
   });
 });

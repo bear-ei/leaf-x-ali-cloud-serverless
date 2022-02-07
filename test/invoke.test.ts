@@ -28,7 +28,7 @@ describe('test/invoke.test.ts', () => {
     await invoke({
       serviceName: 'leaf-x@snowflake',
       functionName: 'snowflake',
-      async: true,
+      isAsync: true,
       event: {
         type: 'GATEWAY',
         data: {queryParameters: {name: 'snowflake'}},

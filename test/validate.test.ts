@@ -1,6 +1,11 @@
 import * as assert from 'assert';
 import {IsDefined, IsNumberString} from 'class-validator';
-import {validate} from '../src/validate';
+import {
+  DeleteOptions,
+  handleValidate,
+  IndexOptions,
+  PathParametersOptions,
+} from '../src/validate';
 
 describe('test/validate.test.ts', () => {
   it('should be a validation parameter', async () => {
@@ -10,23 +15,54 @@ describe('test/validate.test.ts', () => {
       id!: string;
     }
 
-    const result = validate(Rule, {id: '123'});
+    const result = handleValidate(Rule, {id: '123'});
 
     assert(typeof result === 'object');
     assert(result['id'] === '123');
 
-    const jsonStringResult = validate(Rule, '{"id": "123"}');
+    const jsonStringResult = handleValidate(Rule, '{"id": "123"}');
 
     assert(typeof jsonStringResult === 'object');
     assert(jsonStringResult['id'] === '123');
 
     try {
-      validate(Rule, {id: 'abc'});
+      handleValidate(Rule, {id: 'abc'});
     } catch (error) {
       const err = error as Record<string, unknown>;
 
       assert(typeof err === 'object');
       assert(err['status'] === 422);
     }
+
+    const indexResult = handleValidate(IndexOptions, {
+      page: 1,
+      size: 2,
+      isCount: 'true',
+      orderBy: 'ASC',
+      id: '1',
+      projectId: '1',
+      ids: '1,2',
+      notId: '3',
+      notIds: '1,2,3',
+    });
+
+    assert(typeof indexResult === 'object');
+
+    const deleteResult = handleValidate(DeleteOptions, {
+      id: '1',
+      ids: '1,2',
+    });
+
+    assert(typeof deleteResult === 'object');
+
+    const pathResult = handleValidate(PathParametersOptions, {
+      id: '1',
+    });
+
+    assert(typeof pathResult === 'object');
+
+    const nullIndexResult = handleValidate(IndexOptions, {});
+
+    assert(typeof nullIndexResult === 'object');
   });
 });

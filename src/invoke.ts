@@ -35,7 +35,7 @@ export interface ExecInvokeOptions {
     /**
      * Whether the current invoke is an asynchronous invoke.
      */
-    async?: boolean;
+    isAsync?: boolean;
   };
 
   /**
@@ -126,7 +126,7 @@ export interface InvokeOptions {
   /**
    * Whether the current invoke is an asynchronous invoke.
    */
-  async?: boolean;
+  isAsync?: boolean;
 }
 
 /**
@@ -241,7 +241,7 @@ const initHandleInvokeError =
  * @param initInvokeOptions Initialize the invoke function options.
  */
 const invoke = (
-  {serviceName, functionName, async = false, event}: InvokeOptions,
+  {serviceName, functionName, isAsync = false, event}: InvokeOptions,
   {qualifier, endpoint, version, timeout, ...args}: InitInvokeOptions
 ) => {
   const path = `/services/${serviceName}.${qualifier}/functions/${functionName}/invocations`;
@@ -256,7 +256,7 @@ const invoke = (
 
   return invokeFun(/** Number of retries.*/ 3, {
     url,
-    options: {method: 'POST', body, async, timeout},
+    options: {method: 'POST', body, isAsync, timeout},
   })
     .catch(invokeError)
     .then(response => handleResponse(event.type, response));

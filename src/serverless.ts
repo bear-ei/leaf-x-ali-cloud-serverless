@@ -1,13 +1,4 @@
 import {initInvoke} from './invoke';
-import {generateRandom} from './random';
-import {
-  handleBetweenSql,
-  handleEqualSql,
-  handleNotEqualSql,
-  handleSetQuerySql,
-  handleWhere,
-} from './sql';
-import {validate} from './validate';
 import {initWarmUp} from './warm_up';
 
 /**
@@ -107,14 +98,5 @@ export const serverless = ({
   return Object.freeze({
     invoke: initInvoke(options),
     warmUp: initWarmUp(options),
-    random: generateRandom,
-    validate,
-    sql: {
-      between: handleBetweenSql,
-      equal: handleEqualSql,
-      notEqual: handleNotEqualSql,
-      in: handleSetQuerySql,
-      where: handleWhere,
-    },
   });
 };
