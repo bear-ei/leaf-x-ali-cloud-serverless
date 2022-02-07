@@ -24,8 +24,8 @@ describe('test/serverless.test.ts', () => {
       timeout: 3000,
       version: '2016-08-15',
       qualifier: 'PROD',
-      internal: false,
-      secure: false,
+      isInternal: false,
+      isSecure: false,
     });
 
     assert(typeof result === 'object');

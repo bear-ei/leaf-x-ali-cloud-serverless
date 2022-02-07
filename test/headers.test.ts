@@ -41,7 +41,7 @@ describe('test/headers.test.ts', () => {
       url: 'https://leaf-x.com',
       method: 'GET',
       content,
-      async: true,
+      isAsync: true,
     });
 
     assert(typeof result === 'object');

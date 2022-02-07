@@ -1,4 +1,13 @@
 import {initInvoke} from './invoke';
+import {generateRandom} from './random';
+import {
+  handleBetweenSql,
+  handleEqualSql,
+  handleNotEqualSql,
+  handleSetQuerySql,
+  handleWhere,
+} from './sql';
+import {validate} from './validate';
 import {initWarmUp} from './warm_up';
 
 /**
@@ -49,14 +58,14 @@ export interface ServerlessOptions extends AliCloudOptions {
    *
    * The default value is true.
    */
-  internal?: boolean;
+  isInternal?: boolean;
 
   /**
    * Whether to turn on request protection.
    *
    * The default value is true.
    */
-  secure?: boolean;
+  isSecure?: boolean;
 
   /**
    * Serverless API version number.
@@ -77,12 +86,12 @@ export const serverless = ({
   timeout = 30000,
   version = '2016-08-15',
   qualifier = 'LATEST',
-  internal = true,
-  secure = true,
+  isInternal = true,
+  isSecure = true,
   ...args
 }: ServerlessOptions) => {
-  const protocol = secure ? 'https' : 'http';
-  const network = internal ? '-internal' : '';
+  const protocol = isSecure ? 'https' : 'http';
+  const network = isInternal ? '-internal' : '';
   const endpoint = `${protocol}://${accountId}.${region}${network}.fc.aliyuncs.com`;
   const host = `${accountId}.${region}${network}.fc.aliyuncs.com`;
   const options = {
@@ -98,5 +107,14 @@ export const serverless = ({
   return Object.freeze({
     invoke: initInvoke(options),
     warmUp: initWarmUp(options),
+    random: generateRandom,
+    validate,
+    sql: {
+      between: handleBetweenSql,
+      equal: handleEqualSql,
+      notEqual: handleNotEqualSql,
+      in: handleSetQuerySql,
+      where: handleWhere,
+    },
   });
 };

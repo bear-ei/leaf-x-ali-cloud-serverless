@@ -19,7 +19,7 @@ export interface RequestOptions extends FetchOptions {
   /**
    * Whether the current request is an asynchronous request.
    */
-  async?: boolean;
+  isAsync?: boolean;
 }
 
 /**
@@ -34,13 +34,13 @@ const request = (
   initRequestOptions: InitRequestOptions,
   options: RequestOptions = {}
 ) => {
-  const {method = 'GET', body = '', timeout, async} = options;
+  const {method = 'GET', body = '', timeout, isAsync} = options;
   const handleRequestHeaders = initHandleRequestHeaders(initRequestOptions);
   const headers = handleRequestHeaders({
     url,
     method,
     content: body as string,
-    async,
+    isAsync,
   });
 
   return fetch(url, {

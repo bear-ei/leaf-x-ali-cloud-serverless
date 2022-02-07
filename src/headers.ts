@@ -25,7 +25,7 @@ export interface HandleRequestHeadersOptions {
   /**
    * Whether the current request is an asynchronous request.
    */
-  async?: RequestOptions['async'];
+  isAsync?: RequestOptions['isAsync'];
 }
 
 /**
@@ -35,7 +35,7 @@ export interface HandleRequestHeadersOptions {
  * @param initRequestOptions Initialize request options.
  */
 const handleRequestHeaders = (
-  {content, method, url, async}: HandleRequestHeadersOptions,
+  {content, method, url, isAsync}: HandleRequestHeadersOptions,
   {host, accountId, accessSecretKey, accessId}: InitRequestOptions
 ) => {
   const headers = {
@@ -49,7 +49,7 @@ const handleRequestHeaders = (
     'content-length': Buffer.isBuffer(content)
       ? `${content.length}`
       : `${Buffer.from(content).length}`,
-    ...(async ? {'x-fc-invocation-type': 'Async'} : undefined),
+    ...(isAsync ? {'x-fc-invocation-type': 'Async'} : undefined),
   };
 
   const authorization = handleToken({
