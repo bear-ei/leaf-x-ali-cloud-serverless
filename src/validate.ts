@@ -6,22 +6,18 @@ import {
   IsBoolean,
   IsDefined,
   IsEnum,
+  IsIP,
+  IsNotEmpty,
   IsNumber,
   IsNumberString,
+  IsString,
+  IsUUID,
+  Length,
   Max,
   Min,
   ValidateIf,
   validateSync,
 } from 'class-validator';
-
-/**
- * Handle validate parameters type.
- */
-type HandleValidateType = typeof relHandleValidate & {
-  Index: typeof IndexOptions;
-  Delete: typeof DeleteOptions;
-  Path: typeof PathParametersOptions;
-};
 
 /**
  * Get data index options.
@@ -134,9 +130,9 @@ export class DeleteOptions {
 }
 
 /**
- * Path parameter options.
+ * Path param options.
  */
-export class PathParametersOptions {
+export class PathParamsOptions {
   /**
    * Data ID.
    */
@@ -146,12 +142,54 @@ export class PathParametersOptions {
 }
 
 /**
- * Handle validate parameters.
+ * Request headers options.
+ */
+export class HeadersOptions {
+  /**
+   * Client ip address.
+   */
+  @IsDefined()
+  @IsIP()
+  ip!: string;
+
+  /**
+   * Request ID.
+   */
+  @IsDefined()
+  @IsUUID()
+  requestId!: string;
+
+  /**
+   * Project ID.
+   */
+  @IsDefined()
+  @IsNumberString()
+  projectId!: string;
+
+  /**
+   * Client number.
+   */
+  @IsDefined()
+  @IsNotEmpty()
+  @Length(1, 20)
+  @IsString()
+  clientNo!: string;
+
+  /**
+   * Client authorization ID.
+   */
+  @IsDefined()
+  @IsNumberString()
+  authorization!: string;
+}
+
+/**
+ * Handle validate params.
  *
  * @param rule Validation rules.
  * @param options Validate the parameter options.
  */
-export const relHandleValidate = <T, P>(rule: new () => T, options: P) => {
+export const handleValidate = <T, P>(rule: new () => T, options: P) => {
   const relOptions =
     typeof options === 'string' ? JSON.parse(options) : options;
 
@@ -172,17 +210,3 @@ export const relHandleValidate = <T, P>(rule: new () => T, options: P) => {
 
   return data;
 };
-
-Object.defineProperty(relHandleValidate, 'Index', {
-  value: IndexOptions,
-});
-
-Object.defineProperty(relHandleValidate, 'Delete', {
-  value: DeleteOptions,
-});
-
-Object.defineProperty(relHandleValidate, 'Path', {
-  value: PathParametersOptions,
-});
-
-export const handleValidate = relHandleValidate as HandleValidateType;

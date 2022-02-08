@@ -42,12 +42,12 @@ export interface HandleGatewayEventOptions {
   isBase64Encoded?: boolean;
 
   /**
-   * Event query parameters.
+   * Event query params.
    */
   queryParameters?: Record<string, unknown>;
 
   /**
-   * Event path parameters.
+   * Event path params.
    */
   pathParameters?: Record<string, string>;
 

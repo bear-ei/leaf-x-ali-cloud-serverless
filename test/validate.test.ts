@@ -3,8 +3,9 @@ import {IsDefined, IsNumberString} from 'class-validator';
 import {
   DeleteOptions,
   handleValidate,
+  HeadersOptions,
   IndexOptions,
-  PathParametersOptions,
+  PathParamsOptions,
 } from '../src/validate';
 
 describe('test/validate.test.ts', () => {
@@ -55,7 +56,7 @@ describe('test/validate.test.ts', () => {
 
     assert(typeof deleteResult === 'object');
 
-    const pathResult = handleValidate(PathParametersOptions, {
+    const pathResult = handleValidate(PathParamsOptions, {
       id: '1',
     });
 
@@ -64,5 +65,15 @@ describe('test/validate.test.ts', () => {
     const nullIndexResult = handleValidate(IndexOptions, {});
 
     assert(typeof nullIndexResult === 'object');
+
+    const headersResult = handleValidate(HeadersOptions, {
+      ip: '211.212.126.121',
+      requestId: '19e3e7b5-e70a-458c-a9ca-742410fcdfdc',
+      projectId: '1',
+      clientNo: '1',
+      authorization: '1',
+    });
+
+    assert(typeof headersResult === 'object');
   });
 });
