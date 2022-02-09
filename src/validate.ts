@@ -18,6 +18,7 @@ import {
   ValidateIf,
   validateSync,
 } from 'class-validator';
+import {throwError} from './error';
 
 /**
  * Get data index options.
@@ -187,7 +188,7 @@ export class HeadersOptions {
  * Handle validate params.
  *
  * @param rule Validation rules.
- * @param options Validate the parameter options.
+ * @param options Validate the param options.
  */
 export const handleValidate = <T, P>(rule: new () => T, options: P) => {
   const relOptions =
@@ -200,13 +201,12 @@ export const handleValidate = <T, P>(rule: new () => T, options: P) => {
     forbidNonWhitelisted: true,
   });
 
-  if (result.length !== 0) {
-    throw Object.assign(new Error('Parameter validation errors.'), {
+  result.length !== 0 &&
+    throwError('Params validation errors.', {
       status: 422,
       code: 422000,
       details: result,
     });
-  }
 
   return data;
 };

@@ -64,7 +64,7 @@ describe('test/sql.test.ts', () => {
     );
 
     assert(
-      JSON.stringify(result['value']) ===
+      JSON.stringify(result['whereValue']) ===
         JSON.stringify({
           a: 'b',
           notA: 'b',

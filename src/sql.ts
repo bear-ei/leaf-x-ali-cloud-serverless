@@ -86,7 +86,7 @@ export const handleWhere = (
     .map(key => options[key])
     .reduce((a, b) => Object.assign(a, b), {});
 
-  return {where: whereString, value};
+  return {where: whereString, whereValue: value};
 };
 
 /**

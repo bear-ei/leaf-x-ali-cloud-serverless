@@ -22,6 +22,7 @@ export interface HandleErrorOptions {
    */
   requestId?: string;
 }
+
 /**
  * Handle error.
  *
@@ -69,12 +70,8 @@ export const handleError = (
  * @param error Error.
  * @param options Handle error options.
  */
-const handleServerlessError = (error: unknown, options: HandleErrorOptions) => {
-  throw Object.assign(
-    new Error('Invalid invoke.'),
-    handleError(error, options)
-  );
-};
+const handleServerlessError = (error: unknown, options: HandleErrorOptions) =>
+  throwError('Invalid invoke.', handleError(error, options));
 
 /**
  * Initialize to handle serverless errors.
@@ -84,3 +81,13 @@ const handleServerlessError = (error: unknown, options: HandleErrorOptions) => {
 export const initHandleServerlessError =
   (options: HandleErrorOptions) => (error: unknown) =>
     handleServerlessError(error, options);
+
+/**
+ * Throw error.
+ *
+ * @param message Error message.
+ * @param options Error message options.
+ */
+export const throwError = (message: string, options: unknown) => {
+  throw Object.assign(new Error(message), options);
+};

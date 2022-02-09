@@ -1,4 +1,5 @@
 import {FetchOptions} from '@leaf-x/fetch';
+import {throwError} from '.';
 import {EventType, EventTypeString} from './event';
 
 /**
@@ -81,11 +82,9 @@ const handleGatewayResponse = ({
     : originalBody;
 
   const result = {status: statusCode, headers, data};
-  const isError = result.status < 200 || result.status >= 300;
 
-  if (isError) {
-    throw Object.assign(new Error('Invalid response.'), {...data});
-  }
+  (result.status < 200 || result.status >= 300) &&
+    throwError('Invalid response.', data);
 
   return result;
 };
