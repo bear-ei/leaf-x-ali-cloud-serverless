@@ -25,7 +25,7 @@ describe('test/error.test.ts', () => {
     assert(typeof result.details === 'object');
   });
 
-  it('should be a param validation error', async () => {
+  it('should be a params validation error', async () => {
     const result = handleError(
       {
         status: 422,

@@ -4,7 +4,7 @@ import {InitRequestOptions, RequestOptions} from './request';
 import {handleToken} from './token';
 
 /**
- * Handle request header information options.
+ * Handle request headers information options.
  */
 export interface HandleRequestHeadersOptions {
   /**
@@ -29,9 +29,9 @@ export interface HandleRequestHeadersOptions {
 }
 
 /**
- * Handle the request header information.
+ * Handle the request headers information.
  *
- * @param options Handle request header information options.
+ * @param options Handle request headers information options.
  * @param initRequestOptions Initialize request options.
  */
 const handleRequestHeaders = (
@@ -64,7 +64,7 @@ const handleRequestHeaders = (
 };
 
 /**
- * Initialize the handle request header information.
+ * Initialize the handle request headers information.
  *
  * @param initRequestOptions Initialize request options.
  */
@@ -74,10 +74,10 @@ export const initHandleRequestHeaders =
     handleRequestHeaders(options, initRequestOptions);
 
 /**
- * Handles the canonical request header information string.
+ * Handles the canonical request headers information string.
  *
- * @param prefix Canonical request header prefix.
- * @param headers Request header information.
+ * @param prefix Canonical request headers prefix.
+ * @param headers Request headers information.
  */
 export const handleCanonicalHeadersString = (
   prefix: string,

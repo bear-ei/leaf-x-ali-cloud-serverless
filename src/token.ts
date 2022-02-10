@@ -33,7 +33,7 @@ export interface HandleSignStringOptions {
   url: string;
 
   /**
-   * Request header information.
+   * Request headers information.
    */
   headers: Record<string, string>;
 }
@@ -63,7 +63,7 @@ export interface HandleTokenOptions {
   url: string;
 
   /**
-   * Request header information.
+   * Request headers information.
    */
   headers: Record<string, string>;
 }
@@ -89,7 +89,7 @@ const sign = ({secret, signString}: SignOptions) => {
  */
 const handleSignString = ({method, url, headers}: HandleSignStringOptions) => {
   const canonicalHeaderString = handleCanonicalHeadersString(
-    /** Canonical request header prefix. */ 'x-fc-',
+    /** Canonical request headers prefix. */ 'x-fc-',
     headers
   );
 

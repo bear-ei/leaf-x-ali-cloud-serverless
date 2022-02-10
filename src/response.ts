@@ -17,7 +17,7 @@ export interface HandleGatewayResponseOptions {
   isBase64Encoded: boolean;
 
   /**
-   * API gateway response header information.
+   * API gateway response headers information.
    */
   headers: Record<string, string>;
 
@@ -42,7 +42,7 @@ export interface ResponseEvent {
   options: FetchOptions;
 
   /**
-   * Response event header information.
+   * Response event headers information.
    */
   headers: Record<string, string>;
 

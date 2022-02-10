@@ -131,7 +131,7 @@ export class DeleteOptions {
 }
 
 /**
- * Path param options.
+ * Path params options.
  */
 export class PathParamsOptions {
   /**
@@ -188,7 +188,7 @@ export class HeadersOptions {
  * Handle validate params.
  *
  * @param rule Validation rules.
- * @param options Validate the param options.
+ * @param options Validate the params options.
  */
 export const handleValidate = <T, P>(rule: new () => T, options: P) => {
   const relOptions =

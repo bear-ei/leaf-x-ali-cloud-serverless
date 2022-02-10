@@ -5,7 +5,7 @@ import {
 } from '../src/headers';
 
 describe('test/headers.test.ts', () => {
-  it('should be a synchronization request header', async () => {
+  it('should be a synchronization request headers', async () => {
     const content = Buffer.from(JSON.stringify({data: 'This is request.'}));
     const result = initHandleRequestHeaders({
       host: 'leaf-x.com',
@@ -30,7 +30,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result['authorization'] === 'string');
   });
 
-  it('should be an asynchronous request header', async () => {
+  it('should be an asynchronous request headers', async () => {
     const content = JSON.stringify({data: 'This is request.'});
     const result = initHandleRequestHeaders({
       host: 'leaf-x.com',
@@ -57,7 +57,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result['authorization'] === 'string');
   });
 
-  it('should be the canonical request header string', async () => {
+  it('should be the canonical request headers string', async () => {
     const result = handleCanonicalHeadersString('x-fc-', {
       accept: 'application/json; charset=utf-8',
       date: new Date().toUTCString(),

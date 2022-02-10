@@ -57,7 +57,7 @@ export interface HandleGatewayEventOptions {
   body?: unknown;
 
   /**
-   * Event request header information.
+   * Event request headers information.
    */
   headers?: Record<string, string>;
 }
@@ -105,9 +105,9 @@ export const handleTriggerEvent = (
   type: EventTypeString,
   options: HandleGatewayEventOptions
 ) => {
-  const handleEventMethod = Object.freeze({
+  const handleEventMethods = Object.freeze({
     gateway: handleGatewayEvent,
   });
 
-  return handleEventMethod[EventType[type]](options);
+  return handleEventMethods[EventType[type]](options);
 };

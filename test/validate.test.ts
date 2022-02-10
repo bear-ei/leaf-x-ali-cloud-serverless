@@ -9,7 +9,7 @@ import {
 } from '../src/validate';
 
 describe('test/validate.test.ts', () => {
-  it('should be a validation param', async () => {
+  it('should be a validation params', async () => {
     class Rule {
       @IsDefined()
       @IsNumberString()
