@@ -1,5 +1,5 @@
 import {FetchOptions} from '@leaf-x/fetch';
-import {HandleErrorOptions, initHandleServerlessError} from './error';
+import {initHandleInvokeError} from './error';
 import {
   EventTypeString,
   HandleGatewayEventOptions,
@@ -42,26 +42,6 @@ export interface ExecInvokeOptions {
    * Request URL.
    */
   url: string;
-}
-
-/**
- * Handle invoke function error options.
- */
-export interface HandleInvokeErrorOptions {
-  /**
-   * Name of the service where the error occurred.
-   */
-  serviceName: HandleErrorOptions['serviceName'];
-
-  /**
-   * Name of the function where the error occurred.
-   */
-  functionName: HandleErrorOptions['functionName'];
-
-  /**
-   * The deployment environment where the error occurred.
-   */
-  env: HandleErrorOptions['env'];
 }
 
 /**
@@ -203,36 +183,6 @@ const initRetryInvoke =
   ) =>
   (error: unknown) =>
     retryInvoke(error, options, initRetryInvokeOptions);
-
-/**
- * Handle function invoke errors.
- *
- * @param error Error.
- * @param options Handle invoke function error options.
- */
-const handleInvokeError = (
-  error: unknown,
-  options: HandleInvokeErrorOptions
-) => {
-  const relError = error as Record<string, unknown>;
-  const headers = (relError.headers ?? {}) as Record<string, string>;
-  const requestId = headers['x-fc-request-id'];
-  const handleServerlessError = initHandleServerlessError({
-    ...options,
-    requestId,
-  });
-
-  return handleServerlessError(error);
-};
-
-/**
- * Initialize to handle function invoke errors.
- *
- * @param options Handle invoke function error options.
- */
-const initHandleInvokeError =
-  (options: HandleInvokeErrorOptions) => (error: unknown) =>
-    handleInvokeError(error, options);
 
 /**
  * Invoke functions.

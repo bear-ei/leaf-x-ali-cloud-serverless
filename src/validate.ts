@@ -202,11 +202,10 @@ export const handleValidate = <T, P>(rule: new () => T, options: P) => {
   });
 
   result.length !== 0 &&
-    throwError('Params validation errors.', {
-      status: 422,
-      code: 422000,
-      details: result,
-    });
+    throwError(
+      {status: 422, code: 422000, details: result},
+      'Params validation errors.'
+    );
 
   return data;
 };

@@ -20,7 +20,27 @@ export interface HandleErrorOptions {
   /**
    * The request ID of the error that occurred.
    */
-  requestId?: string;
+  requestId: string;
+}
+
+/**
+ * Handle invoke function error options.
+ */
+export interface HandleInvokeErrorOptions {
+  /**
+   * Name of the service where the error occurred.
+   */
+  serviceName: HandleErrorOptions['serviceName'];
+
+  /**
+   * Name of the function where the error occurred.
+   */
+  functionName: HandleErrorOptions['functionName'];
+
+  /**
+   * The deployment environment where the error occurred.
+   */
+  env: HandleErrorOptions['env'];
 }
 
 /**
@@ -65,13 +85,44 @@ export const handleError = (
 };
 
 /**
+ * Handle function invoke errors.
+ *
+ * @param error Error.
+ * @param options Handle invoke function error options.
+ */
+const handleInvokeError = (
+  error: unknown,
+  options: HandleInvokeErrorOptions
+) => {
+  const relError = error as Record<string, unknown>;
+  const headers = (relError.headers ?? {}) as Record<string, string>;
+  const requestId = headers['x-fc-request-id'];
+  const serverlessError = initHandleServerlessError({
+    ...options,
+    requestId,
+  });
+
+  return serverlessError(error);
+};
+
+/**
+ * Initialize to handle function invoke errors.
+ *
+ * @param options Handle invoke function error options.
+ */
+export const initHandleInvokeError =
+  (options: HandleInvokeErrorOptions) => (error: unknown) =>
+    handleInvokeError(error, options);
+
+/**
  * Handle serverless error.
  *
  * @param error Error.
  * @param options Handle error options.
  */
-const handleServerlessError = (error: unknown, options: HandleErrorOptions) =>
-  throwError('Invalid invoke.', handleError(error, options));
+const handleServerlessError = (error: unknown, options: HandleErrorOptions) => {
+  throw handleError(error, options);
+};
 
 /**
  * Initialize to handle serverless errors.
@@ -88,6 +139,6 @@ export const initHandleServerlessError =
  * @param message Error message.
  * @param options Error message options.
  */
-export const throwError = (message: string, options: unknown) => {
+export const throwError = (options: unknown, message?: string) => {
   throw Object.assign(new Error(message), options);
 };

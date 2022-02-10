@@ -1,5 +1,5 @@
 import {FetchOptions} from '@leaf-x/fetch';
-import {throwError} from '.';
+import {throwError} from './error';
 import {EventType, EventTypeString} from './event';
 
 /**
@@ -83,8 +83,7 @@ const handleGatewayResponse = ({
 
   const result = {status: statusCode, headers, data};
 
-  (result.status < 200 || result.status >= 300) &&
-    throwError('Invalid response.', data);
+  (result.status < 200 || result.status >= 300) && throwError(data);
 
   return result;
 };
