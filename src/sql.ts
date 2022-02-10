@@ -84,7 +84,7 @@ export const handleWhere = (
   const whereString = keys.map(key => `${prefix}.${key}`).join(' and ');
   const value = keys
     .map(key => options[key])
-    .reduce((a, b) => Object.assign(a, b), {});
+    .reduce((a, b) => ({...a, ...b}), {});
 
   return {where: whereString, whereValue: value};
 };

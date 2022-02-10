@@ -98,7 +98,7 @@ export const handleResponse = (
   type: EventTypeString,
   response: ResponseEvent
 ) => {
-  const handleResponseMethod = Object.freeze({
+  const handleResponseMethods = Object.freeze({
     gateway: handleGatewayResponse,
   });
 
@@ -106,7 +106,7 @@ export const handleResponse = (
     return response;
   }
 
-  return handleResponseMethod[EventType[type]](
+  return handleResponseMethods[EventType[type]](
     response.data as HandleGatewayResponseOptions
   );
 };
