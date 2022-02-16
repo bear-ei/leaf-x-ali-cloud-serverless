@@ -1,9 +1,9 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "experimentalDecorators": true,
     "rootDir": ".",
     "outDir": "dist",
+    "experimentalDecorators": true,
     "lib": ["DOM", "DOM.Iterable"]
   },
   "include": ["src/**/*.ts", "test/**/*.ts"]
