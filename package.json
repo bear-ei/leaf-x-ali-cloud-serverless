@@ -1,6 +1,6 @@
 {
   "name": "@leaf-x/ali-cloud-serverless",
-  "version": "2.7.2",
+  "version": "2.7.5",
   "main": "./dist/src/index.js",
   "author": "sound shell <sound_shell@outlook.com>",
   "description": "Ali cloud serverless.",
@@ -14,7 +14,7 @@
     "url": "https://github.com/SoundShell/leaf-x-ali-cloud-serverless/issues"
   },
   "dependencies": {
-    "@leaf-x/fetch": "^2.5.5",
+    "@leaf-x/fetch": "^2.5.10",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "typeorm": "^0.2.41"
@@ -59,9 +59,9 @@
     "clean": "gts clean",
     "compile": "tsc",
     "fix": "gts fix",
-    "prepare": "yarn run compile",
-    "pretest": "yarn run compile",
-    "posttest": "yarn run lint"
+    "prepare": "yarn compile",
+    "pretest": "yarn compile",
+    "posttest": "yarn lint"
   },
   "engines": {
     "node": ">=11.0.0"

@@ -1,11 +1,10 @@
-import {FetchOptions} from '@leaf-x/fetch';
 import {initHandleInvokeError} from './error';
 import {
   EventTypeString,
   HandleGatewayEventOptions,
   handleTriggerEvent,
 } from './event';
-import {initRequest, InitRequestOptions} from './request';
+import {initRequest, InitRequestOptions, RequestOptions} from './request';
 import {handleResponse} from './response';
 import {AliCloudOptions} from './serverless';
 
@@ -31,12 +30,7 @@ export interface ExecInvokeOptions {
   /**
    * Fetch API options.
    */
-  options: FetchOptions & {
-    /**
-     * Whether the current invoke is an asynchronous invoke.
-     */
-    isAsync?: boolean;
-  };
+  options: RequestOptions;
 
   /**
    * Request URL.
@@ -122,7 +116,7 @@ const execInvoke = (
   initRequestOptions: InitRequestOptions
 ): Promise<{
   data: unknown;
-  options: FetchOptions;
+  options: RequestOptions;
   headers: Record<string, string>;
   status: number;
   statusText: string;

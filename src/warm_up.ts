@@ -17,6 +17,28 @@ export interface WarmUpOptions {
 }
 
 /**
+ * Function warm-up result.
+ */
+export interface WarmUpResult {
+  /**
+   * Response status code.
+   */
+  status: number;
+
+  /**
+   * Response headers.
+   */
+  headers?: Record<string, string>;
+
+  /**
+   * Response data.
+   */
+  data?: unknown;
+
+  [key: string]: unknown;
+}
+
+/**
  * Execute the warm-up function.
  *
  * @param serviceName Name of the service to be warmed up.
@@ -42,7 +64,7 @@ const execWarmUp = async (
 
     return {...result, serviceName, functionName};
   } catch (error) {
-    return error;
+    return error as WarmUpResult;
   }
 };
 
