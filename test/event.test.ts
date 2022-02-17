@@ -7,7 +7,7 @@ describe('test/event.test.ts', () => {
 
     assert(typeof result === 'object');
     assert(result.httpMethod === 'GET');
-    assert(result.isBase64Encoded === true);
+    assert(result.isBase64Encoded === false);
     assert(typeof result.queryParameters === 'object');
     assert(typeof result.pathParameters === 'object');
     assert(!result.body);
@@ -29,7 +29,7 @@ describe('test/event.test.ts', () => {
 
     assert(typeof result === 'object');
     assert(result.httpMethod === 'GET');
-    assert(result.isBase64Encoded === true);
+    assert(result.isBase64Encoded === false);
     assert(typeof result.queryParameters === 'object');
     assert(typeof result.pathParameters === 'object');
     assert(result.body === Buffer.from('data').toString('base64'));

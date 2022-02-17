@@ -136,9 +136,9 @@ export const initHandleServerlessError =
 /**
  * Throw error.
  *
- * @param message Error message.
  * @param options Error message options.
+ * @param message Error message.
  */
-export const throwError = (options: unknown, message?: string) => {
+export const throwError = (options?: unknown, message?: string) => {
   throw Object.assign(new Error(message), options);
 };

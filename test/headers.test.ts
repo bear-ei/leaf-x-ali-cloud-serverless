@@ -37,6 +37,7 @@ describe('test/headers.test.ts', () => {
       accountId: '1787993',
       accessSecretKey: '5556123',
       accessId: '58575729',
+      securityToken: 'MTIzNTg5MA',
     })({
       url: 'https://leaf-x.com',
       method: 'GET',
@@ -49,6 +50,7 @@ describe('test/headers.test.ts', () => {
     assert(typeof result['date'] === 'string');
     assert(result['host'] === 'leaf-x.com');
     assert(result['user-agent'].startsWith('Node.js'));
+    assert(result['x-fc-security-token'] === 'MTIzNTg5MA');
     assert(result['x-fc-account-id'] === '1787993');
     assert(result['content-length'] === content.length.toString());
     assert(typeof result['content-md5'] === 'string');

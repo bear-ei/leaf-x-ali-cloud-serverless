@@ -69,7 +69,7 @@ export interface HandleGatewayEventOptions {
  */
 const handleGatewayEvent = ({
   httpMethod = 'GET',
-  isBase64Encoded = true,
+  isBase64Encoded = false,
   queryParameters = {},
   pathParameters = {},
   body,

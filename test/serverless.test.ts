@@ -32,4 +32,27 @@ describe('test/serverless.test.ts', () => {
     assert(typeof result.invoke === 'function');
     assert(typeof result.warmUp === 'function');
   });
+
+  it('should be STS access id', async () => {
+    try {
+      serverless({
+        accountId: '1234455',
+        accessId: 'STS.MTIzMjEzMTQ1NQ==',
+        accessSecretKey: 'MTIzNTg5MA==',
+        region: 'cn-shanghai',
+        timeout: 3000,
+        version: '2016-08-15',
+        qualifier: 'PROD',
+        isInternal: false,
+        isSecure: false,
+      });
+    } catch (error) {
+      const relError = error as Record<string, unknown>;
+
+      assert(typeof relError === 'object');
+      assert(
+        relError.message === 'The securityToken must be passed in the STS.'
+      );
+    }
+  });
 });

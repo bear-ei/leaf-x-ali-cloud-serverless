@@ -36,7 +36,13 @@ export interface HandleRequestHeadersOptions {
  */
 const handleRequestHeaders = (
   {content, method, url, isAsync}: HandleRequestHeadersOptions,
-  {host, accountId, accessSecretKey, accessId}: InitRequestOptions
+  {
+    host,
+    accountId,
+    accessSecretKey,
+    accessId,
+    securityToken,
+  }: InitRequestOptions
 ) => {
   const headers = {
     accept: '*/*',
@@ -49,6 +55,7 @@ const handleRequestHeaders = (
     'content-length': Buffer.isBuffer(content)
       ? `${content.length}`
       : `${Buffer.from(content).length}`,
+    ...(securityToken ? {'x-fc-security-token': securityToken} : undefined),
     ...(isAsync ? {'x-fc-invocation-type': 'Async'} : undefined),
   };
 

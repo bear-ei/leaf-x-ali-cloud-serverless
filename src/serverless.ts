@@ -1,3 +1,4 @@
+import {throwError} from '.';
 import {initInvoke} from './invoke';
 import {initWarmUp} from './warm_up';
 
@@ -19,6 +20,11 @@ export interface AliCloudOptions {
    * Ali cloud serverless access secret key.
    */
   accessSecretKey: string;
+
+  /**
+   * Ali cloud serverless security token.
+   */
+  securityToken?: string;
 }
 
 /**
@@ -94,6 +100,10 @@ export const serverless = ({
     endpoint,
     ...args,
   };
+
+  const isSTS = options.accessId.startsWith('STS');
+
+  isSTS && throwError({isSTS}, 'The securityToken must be passed in the STS.');
 
   return Object.freeze({
     invoke: initInvoke(options),
