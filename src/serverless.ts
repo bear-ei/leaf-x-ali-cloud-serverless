@@ -103,7 +103,9 @@ export const serverless = ({
 
   const isSTS = options.accessId.startsWith('STS');
 
-  isSTS && throwError({isSTS}, 'The securityToken must be passed in the STS.');
+  if (isSTS && !options.securityToken) {
+    throwError({isSTS}, 'The securityToken must be passed in the STS.');
+  }
 
   return Object.freeze({
     invoke: initInvoke(options),

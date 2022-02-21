@@ -90,7 +90,10 @@ const handleGatewayEvent = ({
     isBase64Encoded,
     queryParameters,
     pathParameters,
-    body: data ? Buffer.from(data as string).toString('base64') : data,
+    body:
+      isBase64Encoded && data
+        ? Buffer.from(data as string).toString('base64')
+        : data,
     headers: {'content-type': contentType, accept, ...args},
   };
 };

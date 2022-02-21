@@ -32,7 +32,7 @@ describe('test/event.test.ts', () => {
     assert(result.isBase64Encoded === false);
     assert(typeof result.queryParameters === 'object');
     assert(typeof result.pathParameters === 'object');
-    assert(result.body === Buffer.from('data').toString('base64'));
+    assert(result.body === 'data');
     assert(typeof result.headers === 'object');
     assert(result.headers['content-type'] === 'application/text');
     assert(result.headers['accept'] === 'application/text');
