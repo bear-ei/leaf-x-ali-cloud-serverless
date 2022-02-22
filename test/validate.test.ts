@@ -2,6 +2,8 @@ import * as assert from 'assert';
 import {IsDefined, IsNumberString} from 'class-validator';
 import {
   DeleteOptions,
+  handleBooleanString,
+  handleSet,
   handleValidate,
   HeadersOptions,
   IndexOptions,
@@ -75,5 +77,23 @@ describe('test/validate.test.ts', () => {
     });
 
     assert(typeof headersResult === 'object');
+  });
+
+  it('should handle boolean string', async () => {
+    const result = handleBooleanString('true');
+
+    assert(typeof result === 'boolean');
+    assert(result);
+
+    const booleanResult = handleBooleanString(false);
+
+    assert(typeof booleanResult === 'boolean');
+    assert(!booleanResult);
+  });
+
+  it('should handle set', async () => {
+    const result = handleSet('123,123');
+
+    assert(Array.isArray(result));
   });
 });

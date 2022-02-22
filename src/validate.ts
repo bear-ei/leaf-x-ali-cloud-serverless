@@ -51,7 +51,7 @@ export class IndexOptions {
    *
    * Default value is false.
    */
-  @Transform(({value}) => (value === 'true' ? true : false))
+  @Transform(({value}) => handleBooleanString(value))
   @IsBoolean()
   isCount?: boolean;
 
@@ -78,9 +78,7 @@ export class IndexOptions {
   /**
    * Data id set.
    */
-  @Transform(({value}) =>
-    typeof value === 'string' ? value.split(',') : value
-  )
+  @Transform(({value}) => handleSet(value))
   @ArrayMinSize(1)
   @ArrayMaxSize(1000)
   @IsNumberString({}, {each: true})
@@ -95,9 +93,7 @@ export class IndexOptions {
   /**
    * Is not equal to the data ID set.
    */
-  @Transform(({value}) =>
-    typeof value === 'string' ? value.split(',') : value
-  )
+  @Transform(({value}) => handleSet(value))
   @ArrayMinSize(1)
   @ArrayMaxSize(1000)
   @IsNumberString({}, {each: true})
@@ -121,9 +117,7 @@ export class DeleteOptions {
    */
   @ValidateIf(e => !e.id)
   @IsDefined()
-  @Transform(({value}) =>
-    typeof value === 'string' ? value.split(',') : value
-  )
+  @Transform(({value}) => handleSet(value))
   @ArrayMinSize(1)
   @ArrayMaxSize(1000)
   @IsNumberString({}, {each: true})
@@ -183,6 +177,29 @@ export class HeadersOptions {
   @IsNumberString()
   authorization!: string;
 }
+
+/**
+ * Handle boolean string.
+ *
+ * @param value A Boolean value or a Boolean string.
+ */
+export const handleBooleanString = (value: boolean | string) => {
+  const isBooleanString = typeof value === 'string';
+
+  if (!isBooleanString) {
+    return value;
+  }
+
+  return value === 'true' ? true : false;
+};
+
+/**
+ * Handle set.
+ *
+ * @param value A string of data or a string concatenated by ",".
+ */
+export const handleSet = (value: string[] | string) =>
+  typeof value === 'string' ? value.split(',') : value;
 
 /**
  * Handle validate params.
