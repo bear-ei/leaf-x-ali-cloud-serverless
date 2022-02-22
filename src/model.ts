@@ -24,7 +24,7 @@ export class PublicEntity extends BaseEntity {
     default: '0',
     comment: 'Project ID.',
   })
-  projectId!: string;
+  projectId?: string;
 
   /**
    * Data creation time.
@@ -58,7 +58,7 @@ export class PublicEntity extends BaseEntity {
     default: '0',
     comment: 'Data delete time.',
   })
-  deletedAt!: string;
+  deletedAt?: string;
 
   /**
    * Data version.

@@ -108,9 +108,7 @@ export const handleTriggerEvent = (
   type: EventTypeString,
   options: HandleGatewayEventOptions
 ) => {
-  const handleEventMethods = Object.freeze({
-    gateway: handleGatewayEvent,
-  });
+  const event = {gateway: handleGatewayEvent};
 
-  return handleEventMethods[EventType[type]](options);
+  return event[EventType[type]](options);
 };

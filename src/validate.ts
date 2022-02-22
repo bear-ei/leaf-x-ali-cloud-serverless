@@ -196,7 +196,7 @@ export const handleBooleanString = (value: boolean | string) => {
 /**
  * Handle set.
  *
- * @param value A string of data or a string concatenated by ",".
+ * @param value An array or a string concatenated by ",".
  */
 export const handleSet = (value: string[] | string) =>
   typeof value === 'string' ? value.split(',') : value;

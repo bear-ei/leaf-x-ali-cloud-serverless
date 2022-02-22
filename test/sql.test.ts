@@ -1,48 +1,41 @@
 import * as assert from 'assert';
 import {isArray} from 'class-validator';
-import {
-  handleBetweenSql,
-  handleEqualSql,
-  handleNotEqualSql,
-  handleSelect,
-  handleSetQuerySql,
-  handleWhere,
-} from '../src/sql';
+import {sql} from '../src/sql';
 
 describe('test/sql.test.ts', () => {
   it('should handle equal SQL statements', async () => {
-    const equalSql = handleEqualSql({a: 'b'});
-    const result = equalSql('a');
+    const {equal} = sql({a: 'b'});
+    const result = equal('a');
 
     assert(typeof result === 'object');
     assert(result['a = :a']['a'] === 'b');
   });
 
   it('should be processing not equal to SQL statement', async () => {
-    const notEqualSql = handleNotEqualSql({notA: 'b'});
-    const result = notEqualSql('notA');
+    const {notEqual} = sql({notA: 'b'});
+    const result = notEqual('notA');
 
     assert(typeof result === 'object');
     assert(result['a != :notA']['notA'] === 'b');
   });
 
   it('should be a query collection SQL statement', async () => {
-    const setQuerySql = handleSetQuerySql({ids: ['b']});
-    const result = setQuerySql('ids');
+    const {set} = sql({ids: ['b']});
+    const result = set('ids');
 
     assert(typeof result === 'object');
     assert(result['id IN (:...ids)']['ids'][0] === 'b');
 
-    const setNullQuerySql = handleSetQuerySql({ids: []});
-    const nullResult = setNullQuerySql('ids');
+    const {set: setNull} = sql({ids: []});
+    const nullResult = setNull('ids');
 
     assert(typeof nullResult === 'object');
     assert(!nullResult['id IN (:...ids)']['ids'][0]);
   });
 
   it('should handle SQL statements between ranges', async () => {
-    const betweenSql = handleBetweenSql({timeRange: [123, 321]});
-    const result = betweenSql('timeRange');
+    const {between} = sql({timeRange: [123, 321]});
+    const result = between('timeRange');
 
     assert(typeof result === 'object');
     assert(result['time BETWEEN :timeStart and :timeEnd']['timeStart'] === 123);
@@ -50,7 +43,7 @@ describe('test/sql.test.ts', () => {
   });
 
   it('should handle SQL statement splicing', async () => {
-    const result = handleWhere('test', {
+    const result = sql.where('test', {
       'a = :a': {a: 'b'},
       'a != :notA': {notA: 'b'},
       'id IN (:...ids)': {ids: ['b']},
@@ -80,7 +73,7 @@ describe('test/sql.test.ts', () => {
       a!: string;
     }
 
-    const result = handleSelect(Entity, {
+    const result = sql.select(Entity, {
       select: ['a'],
       prefix: 'test',
     });
@@ -88,7 +81,7 @@ describe('test/sql.test.ts', () => {
     assert(isArray(result));
     assert(result[0] === 'test.a');
 
-    const entityResult = handleSelect(Entity, {
+    const entityResult = sql.select(Entity, {
       select: ['a'],
       prefix: 'test',
     });

@@ -98,15 +98,11 @@ export const handleResponse = (
   type: EventTypeString,
   response: ResponseEvent
 ) => {
-  const handleResponseMethods = Object.freeze({
-    gateway: handleGatewayResponse,
-  });
+  const event = {gateway: handleGatewayResponse};
 
   if (response.status === 202) {
     return response;
   }
 
-  return handleResponseMethods[EventType[type]](
-    response.data as HandleGatewayResponseOptions
-  );
+  return event[EventType[type]](response.data as HandleGatewayResponseOptions);
 };
