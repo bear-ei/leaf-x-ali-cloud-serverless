@@ -202,6 +202,14 @@ export const handleSet = (value: string[] | string) =>
   typeof value === 'string' ? value.split(',') : value;
 
 /**
+ * Handle language format.
+ *
+ * @param value An ISO 639 language encoding standard language string.
+ */
+export const handleLanguageFormat = (value: string) =>
+  value.toUpperCase().replace(/-/g, '_');
+
+/**
  * Handle validate params.
  *
  * @param rule Validation rules.

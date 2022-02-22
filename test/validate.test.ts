@@ -3,6 +3,7 @@ import {IsDefined, IsNumberString} from 'class-validator';
 import {
   DeleteOptions,
   handleBooleanString,
+  handleLanguageFormat,
   handleSet,
   handleValidate,
   HeadersOptions,
@@ -95,5 +96,11 @@ describe('test/validate.test.ts', () => {
     const result = handleSet('123,123');
 
     assert(Array.isArray(result));
+  });
+
+  it('should handle language format', async () => {
+    const result = handleLanguageFormat('zh-cn');
+
+    assert(result === 'ZH_CN');
   });
 });
