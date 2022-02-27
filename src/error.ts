@@ -44,6 +44,61 @@ export interface HandleInvokeErrorOptions {
 }
 
 /**
+ * Handle the error result.
+ */
+export interface HandleErrorResult {
+  /**
+   * Response status code.
+   */
+  status: number;
+
+  /**
+   * Business error Code.
+   */
+  code: number;
+
+  /**
+   * Service name.
+   */
+  serviceName: string;
+
+  /**
+   * Function name.
+   */
+  functionName: string;
+
+  /**
+   * Request ID.
+   */
+  requestId: string;
+
+  /**
+   * Error message.
+   */
+  message: string;
+
+  /**
+   * Deployment environment
+   */
+  env: string;
+
+  /**
+   * Associated API information.
+   */
+  apis: {
+    serviceName: string;
+    functionName: string;
+    requestId: string;
+    env: string;
+  }[];
+
+  /**
+   * Error details.
+   */
+  details?: Record<string, unknown>;
+}
+
+/**
  * Handle error.
  *
  * @param error Error.
@@ -52,16 +107,13 @@ export interface HandleInvokeErrorOptions {
 export const handleError = (
   error: unknown,
   {serviceName, functionName, requestId, env}: HandleErrorOptions
-) => {
+): HandleErrorResult => {
   const relError = error as Record<string, unknown>;
   const status = (relError.status ?? 500) as number;
   const code =
     relError.code && typeof relError.code === 'number' ? relError.code : status;
 
-  const err = (
-    relError.status && relError.code ? relError : {details: relError}
-  ) as Record<string, unknown> & {details?: Record<string, unknown>};
-
+  const err = relError.status && relError.code ? relError : {details: relError};
   const currentApis = [{serviceName, functionName, requestId, env}];
   const message = (relError.message ??
     `${serviceName} ${functionName} invoke failed.`) as string;

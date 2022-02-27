@@ -1,3 +1,4 @@
+import {HandleErrorResult} from '.';
 import {EventTypeString} from './event';
 import {initInvoke, InitInvokeOptions} from './invoke';
 
@@ -14,28 +15,6 @@ export interface WarmUpOptions {
    * Name of the function to be warmed up.
    */
   functionName: string;
-}
-
-/**
- * Function warm-up result.
- */
-export interface WarmUpResult {
-  /**
-   * Response status code.
-   */
-  status: number;
-
-  /**
-   * Response headers.
-   */
-  headers?: Record<string, string>;
-
-  /**
-   * Response data.
-   */
-  data?: unknown;
-
-  [key: string]: unknown;
 }
 
 /**
@@ -64,7 +43,7 @@ const execWarmUp = async (
 
     return {...result, serviceName, functionName};
   } catch (error) {
-    return error as WarmUpResult;
+    return error as HandleErrorResult;
   }
 };
 

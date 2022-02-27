@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import * as sinon from 'sinon';
+import {HandleErrorResult} from '../src/error';
 import * as invoke from '../src/invoke';
 import {initWarmUp} from '../src/warm_up';
 
@@ -31,7 +32,13 @@ describe('test/warmUp.test.ts', () => {
       assert(Array.isArray(result));
       assert(
         result.some(item => {
-          const {status, data, headers} = item;
+          const {status, data, headers} = item as {
+            serviceName: string;
+            functionName: string;
+            status: number;
+            headers: Record<string, string>;
+            data: unknown;
+          };
 
           return status === 200 && data === '' && typeof headers === 'object';
         })
@@ -68,7 +75,7 @@ describe('test/warmUp.test.ts', () => {
       assert(Array.isArray(result));
       assert(
         result.some(item => {
-          const {status, code, message} = item;
+          const {status, code, message} = item as HandleErrorResult;
 
           return (
             status === 400 && code === 4000000 && message === 'Bad Request.'
