@@ -32,10 +32,10 @@ describe('test/validate.test.ts', () => {
     try {
       handleValidate(Rule, {id: 'abc'});
     } catch (error) {
-      const err = error as Record<string, unknown>;
+      const relError = error as Record<string, unknown>;
 
-      assert(typeof err === 'object');
-      assert(err['status'] === 422);
+      assert(typeof relError === 'object');
+      assert(relError['status'] === 422);
     }
 
     const indexResult = handleValidate(IndexOptions, {

@@ -80,17 +80,17 @@ describe('test/error.test.ts', () => {
         ],
       });
     } catch (error) {
-      const err = error as Record<string, unknown>;
+      const relError = error as Record<string, unknown>;
 
       assert(typeof error === 'object');
-      assert(err.status === 422);
-      assert(err.code === 422000);
-      assert(err.serviceName === 'leaf-x@snowflake');
-      assert(err.functionName === 'snowflake');
-      assert(err.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7');
-      assert(err.message === 'leaf-x@snowflake snowflake invoke failed.');
-      assert(err.env === 'PROD');
-      assert(Array.isArray(err.apis));
+      assert(relError.status === 422);
+      assert(relError.code === 422000);
+      assert(relError.serviceName === 'leaf-x@snowflake');
+      assert(relError.functionName === 'snowflake');
+      assert(relError.requestId === 'ee8890a1-a134-4bfb-83e5-b296d8bba1a7');
+      assert(relError.message === 'leaf-x@snowflake snowflake invoke failed.');
+      assert(relError.env === 'PROD');
+      assert(Array.isArray(relError.apis));
     }
   });
 });
